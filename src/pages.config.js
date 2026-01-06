@@ -4,8 +4,10 @@ import AdminNumerology from './pages/AdminNumerology';
 import AmyLegacy from './pages/AmyLegacy';
 import BrothersLegacy from './pages/BrothersLegacy';
 import CalendarEvents from './pages/CalendarEvents';
+import Candidates from './pages/Candidates';
 import ChristianLegacy from './pages/ChristianLegacy';
 import Community from './pages/Community';
+import Dashboard from './pages/Dashboard';
 import FamilyLegacy from './pages/FamilyLegacy';
 import FamilyTree from './pages/FamilyTree';
 import Games from './pages/Games';
@@ -25,9 +27,8 @@ import NumerologyWar from './pages/NumerologyWar';
 import ParentsLegacy from './pages/ParentsLegacy';
 import PersonalDashboard from './pages/PersonalDashboard';
 import StephenLegacy from './pages/StephenLegacy';
-import Dashboard from './pages/Dashboard';
 import Teams from './pages/Teams';
-import Candidates from './pages/Candidates';
+import Analyzer from './pages/Analyzer';
 import __Layout from './Layout.jsx';
 
 
@@ -38,8 +39,10 @@ export const PAGES = {
     "AmyLegacy": AmyLegacy,
     "BrothersLegacy": BrothersLegacy,
     "CalendarEvents": CalendarEvents,
+    "Candidates": Candidates,
     "ChristianLegacy": ChristianLegacy,
     "Community": Community,
+    "Dashboard": Dashboard,
     "FamilyLegacy": FamilyLegacy,
     "FamilyTree": FamilyTree,
     "Games": Games,
@@ -59,9 +62,8 @@ export const PAGES = {
     "ParentsLegacy": ParentsLegacy,
     "PersonalDashboard": PersonalDashboard,
     "StephenLegacy": StephenLegacy,
-    "Dashboard": Dashboard,
     "Teams": Teams,
-    "Candidates": Candidates,
+    "Analyzer": Analyzer,
 }
 
 export const pagesConfig = {
