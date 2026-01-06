@@ -26,6 +26,8 @@ import ParentsLegacy from './pages/ParentsLegacy';
 import PersonalDashboard from './pages/PersonalDashboard';
 import StephenLegacy from './pages/StephenLegacy';
 import Dashboard from './pages/Dashboard';
+import Teams from './pages/Teams';
+import Candidates from './pages/Candidates';
 import __Layout from './Layout.jsx';
 
 
@@ -58,6 +60,8 @@ export const PAGES = {
     "PersonalDashboard": PersonalDashboard,
     "StephenLegacy": StephenLegacy,
     "Dashboard": Dashboard,
+    "Teams": Teams,
+    "Candidates": Candidates,
 }
 
 export const pagesConfig = {
