@@ -111,14 +111,14 @@ export default function Candidates() {
         education: newCandidate.education || '',
         previous_roles: newCandidate.previous_roles || '',
         status: newCandidate.status,
-        life_path_western: calc.lifePathWestern,
-        life_path_chaldean: calc.lifePathChaldean,
-        expression_western: calc.expressionWestern,
-        soul_urge_western: calc.soulUrgeWestern,
-        personality_western: calc.personalityWestern,
-        birthday_number: calc.birthdayNumber,
+        life_path_western: calc.lifePathWestern || 0,
+        life_path_chaldean: calc.lifePathChaldean || 0,
+        expression_western: calc.expressionWestern || 0,
+        soul_urge_western: calc.soulUrgeWestern || 0,
+        personality_western: calc.personalityWestern || 0,
+        birthday_number: calc.birthdayNumber || 0,
         master_numbers: calc.masterNumbers?.join(', ') || '',
-        element: calc.element
+        element: calc.element || 'Earth'
       });
       
       setNewCandidate({
