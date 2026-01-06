@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-const FAMILY_MEMBERS = [
+const TEAM_MEMBERS = [
   { full_name: 'Amy Cher D\'Angelo', birth_date: '1970-12-27', role: 'Manager', seniority: 'senior' },
   { full_name: 'Christian Stephen Maher', birth_date: '1989-10-25', role: 'Developer', seniority: 'senior' },
   { full_name: 'Melanie Elizabeth Maher', birth_date: '1998-09-28', role: 'Designer', seniority: 'mid' },
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
         client_id: client.id,
         team_name: 'All Stars',
         department: 'Leadership',
-        description: 'Team with all members',
+        description: 'Core team members',
         is_active: true
       });
     } else {
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
     const added = [];
     
-    for (const member of FAMILY_MEMBERS) {
+    for (const member of TEAM_MEMBERS) {
       // Check if already exists
       const existing = await base44.entities.TeamMember.filter({
         team_id: team.id,

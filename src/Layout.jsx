@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { LayoutDashboard, Users, UserPlus, Target, LogOut, Menu, X, Briefcase } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, Target, LogOut, Menu, X, Briefcase, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TeamBuilder7A_Logo from './components/TeamBuilder7A_Logo';
 
@@ -27,7 +27,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Teams', page: 'Teams', icon: Users },
     { name: 'Candidates', page: 'Candidates', icon: UserPlus },
     { name: 'Jobs', page: 'JobPostings', icon: Briefcase },
-    { name: 'Team Builder', page: 'Analyzer', icon: Target }
+    { name: 'Team Builder', page: 'Analyzer', icon: Target },
+    { name: 'Reports', page: 'Reports', icon: TrendingUp }
   ];
 
   return (
