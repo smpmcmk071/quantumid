@@ -5,9 +5,9 @@ import Dashboard from './pages/Dashboard';
 import JobPostings from './pages/JobPostings';
 import Marketing from './pages/Marketing';
 import MeetingPlanner from './pages/MeetingPlanner';
+import MemberProfile from './pages/MemberProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
-import MemberProfile from './pages/MemberProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -19,9 +19,9 @@ export const PAGES = {
     "JobPostings": JobPostings,
     "Marketing": Marketing,
     "MeetingPlanner": MeetingPlanner,
+    "MemberProfile": MemberProfile,
     "Reports": Reports,
     "Teams": Teams,
-    "MemberProfile": MemberProfile,
 }
 
 export const pagesConfig = {

@@ -111,7 +111,9 @@ export default function Teams() {
       if (response.data?.success) {
         const calc = response.data.data;
         
-        console.log('Numerology calc response:', calc);
+        console.log('Full calc response:', JSON.stringify(calc, null, 2));
+        console.log('lifePath object:', calc.lifePath);
+        console.log('expression object:', calc.expression);
         
         // Extract correct values from nested response
         const lifePathWestern = calc.lifePath?.reduced || 0;
@@ -121,7 +123,16 @@ export default function Teams() {
         const personalityWestern = calc.personality?.reduced || 0;
         const birthdayNumber = calc.birthday?.reduced || 0;
         const masterNumbers = calc.masterNumbers?.join(', ') || '';
-        const element = calc.astrology?.element || 'Earth';
+        
+        console.log('Extracted values:', {
+          lifePathWestern,
+          lifePathChaldean,
+          expressionWestern,
+          soulUrgeWestern,
+          personalityWestern,
+          birthdayNumber,
+          masterNumbers
+        });
         
         await base44.entities.TeamMember.create({
           team_id: selectedTeam.id,
