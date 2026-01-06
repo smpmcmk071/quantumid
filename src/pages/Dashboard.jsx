@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from './utils';
+import { createPageUrl } from '../utils';
 import { Users, Briefcase, UserPlus, TrendingUp, Building2, Target } from 'lucide-react';
 import TeamBuilder7A_Logo from '../components/TeamBuilder7A_Logo';
 
