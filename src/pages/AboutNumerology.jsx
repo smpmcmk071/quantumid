@@ -179,8 +179,11 @@ export default function AboutNumerology() {
               Start by adding your team members to see their archetypes, then use the Team Builder 
               to create optimally balanced teams in seconds.
             </p>
+            <p className="text-gray-400 text-sm mb-2">
+              A Product of <span className="text-teal-400 font-semibold">Threshold7 Analytics</span>
+            </p>
             <p className="text-gray-400 text-sm">
-              Questions? Contact us at <a href="mailto:7day11com@gmail.com" className="text-blue-400 underline">7day11com@gmail.com</a>
+              Questions? Contact us at <a href="mailto:7day11com@gmail.com" className="text-teal-400 underline">7day11com@gmail.com</a>
             </p>
           </CardContent>
         </Card>
