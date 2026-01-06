@@ -225,7 +225,7 @@ export default function Candidates() {
                   className="bg-slate-900 border-slate-700 text-white"
                 />
                 <div>
-                  <label className="text-gray-300 text-sm mb-1 block">Birth Date * (Required for numerology)</label>
+                  <label className="text-gray-300 text-sm mb-1 block">Birth Date * (Required for analysis)</label>
                   <Input
                     type="date"
                     value={newCandidate.birth_date}
@@ -265,7 +265,7 @@ export default function Candidates() {
                   {calculating ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Calculating Numerology...
+                      Calculating Profile...
                     </>
                   ) : (
                     'Add Candidate'

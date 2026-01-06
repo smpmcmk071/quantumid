@@ -212,7 +212,7 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-300 text-sm">Analyze candidate fit using AI + Numerology</p>
+                <p className="text-gray-300 text-sm">Analyze candidate fit using AI + Science</p>
               </CardContent>
             </Card>
           </Link>

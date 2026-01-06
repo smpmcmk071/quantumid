@@ -289,7 +289,7 @@ export default function Teams() {
                             {calculating ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Calculating...
+                                Calculating Profile...
                               </>
                             ) : (
                               'Add Member'

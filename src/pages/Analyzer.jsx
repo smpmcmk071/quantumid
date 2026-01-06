@@ -91,7 +91,7 @@ export default function Analyzer() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">AI Team Builder</h1>
-          <p className="text-gray-300">Build optimal teams using numerology & team science</p>
+          <p className="text-gray-300">Build optimal teams using behavioral science & team research</p>
         </div>
 
         {/* Team Builder Config */}
