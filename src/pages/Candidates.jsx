@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 
@@ -225,8 +225,6 @@ export default function Candidates() {
                 Add Candidate
               </Button>
             </DialogTrigger>
-            </Dialog>
-            </div>
             <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-white">Add New Candidate</DialogTitle>
@@ -489,5 +487,3 @@ export default function Candidates() {
                 </div>
                 );
                 }
-
-                import { X } from 'lucide-react';
