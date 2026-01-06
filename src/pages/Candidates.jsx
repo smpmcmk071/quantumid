@@ -321,6 +321,7 @@ export default function Candidates() {
               </div>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         <div className="grid gap-4">
@@ -433,16 +434,16 @@ export default function Candidates() {
               <CardContent className="py-12 text-center">
                 <UserPlus className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-400">No candidates yet. Add your first candidate to get started.</p>
-                </CardContent>
-                </Card>
-                )}
-                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
-                {/* Archetype Test Dialog */}
-                {showArchetypeTest && testingCandidate && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
-                <div className="max-w-2xl mx-auto my-8">
-                <Card className="bg-slate-800 border-slate-700">
+        {/* Archetype Test Dialog */}
+        {showArchetypeTest && testingCandidate && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
+            <div className="max-w-2xl mx-auto my-8">
+              <Card className="bg-slate-800 border-slate-700">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-white">
@@ -469,21 +470,21 @@ export default function Candidates() {
                     onComplete={handleTestComplete}
                   />
                 </CardContent>
-                </Card>
-                </div>
-                </div>
-                )}
+              </Card>
+            </div>
+          </div>
+        )}
 
-                {/* Candidate Comparison */}
-                {showComparison && (
-                <CandidateComparison
-                candidates={candidates}
-                jobs={jobs}
-                teams={teams}
-                onClose={() => setShowComparison(false)}
-                />
-                )}
-                </div>
-                </div>
-                );
-                }
+        {/* Candidate Comparison */}
+        {showComparison && (
+          <CandidateComparison
+            candidates={candidates}
+            jobs={jobs}
+            teams={teams}
+            onClose={() => setShowComparison(false)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
