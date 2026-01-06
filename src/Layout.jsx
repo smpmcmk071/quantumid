@@ -28,6 +28,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Candidates', page: 'Candidates', icon: UserPlus },
     { name: 'Jobs', page: 'JobPostings', icon: Briefcase },
     { name: 'Team Builder', page: 'Analyzer', icon: Target },
+    { name: 'Meeting Planner', page: 'MeetingPlanner', icon: LayoutDashboard },
     { name: 'Reports', page: 'Reports', icon: TrendingUp }
   ];
 

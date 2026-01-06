@@ -6,6 +6,7 @@ import Analyzer from './pages/Analyzer';
 import JobPostings from './pages/JobPostings';
 import Reports from './pages/Reports';
 import Marketing from './pages/Marketing';
+import MeetingPlanner from './pages/MeetingPlanner';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "JobPostings": JobPostings,
     "Reports": Reports,
     "Marketing": Marketing,
+    "MeetingPlanner": MeetingPlanner,
 }
 
 export const pagesConfig = {
