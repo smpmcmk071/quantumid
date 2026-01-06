@@ -24,7 +24,8 @@ export default function Teams() {
     email: '',
     birth_date: '',
     role: '',
-    seniority: 'mid'
+    seniority: 'mid',
+    work_style_challenges: ''
   });
 
   useEffect(() => {
@@ -96,10 +97,11 @@ export default function Teams() {
         master_numbers: calc.masterNumbers?.join(', ') || '',
         element: calc.element,
         strengths: calc.strengths || '',
-        weaknesses: calc.weaknesses || ''
+        weaknesses: calc.weaknesses || '',
+        work_style_challenges: newMember.work_style_challenges || ''
       });
       
-      setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid' });
+      setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid', work_style_challenges: '' });
       setShowAddMember(false);
       loadTeamMembers();
     }
@@ -234,6 +236,12 @@ export default function Teams() {
                             placeholder="Role"
                             value={newMember.role}
                             onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
+                            className="bg-slate-900 border-slate-700 text-white"
+                          />
+                          <Input
+                            placeholder="Work Style Challenges (e.g., prefers solo work, needs structure)"
+                            value={newMember.work_style_challenges || ''}
+                            onChange={(e) => setNewMember({ ...newMember, work_style_challenges: e.target.value })}
                             className="bg-slate-900 border-slate-700 text-white"
                           />
                           <Select value={newMember.seniority} onValueChange={(v) => setNewMember({ ...newMember, seniority: v })}>

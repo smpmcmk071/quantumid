@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
 
 Available people:
 ${membersWithArchetype.map((m, i) => 
-  `${i + 1}. ${m.full_name} - Life Path ${m.life_path_western}, Archetype: ${m.archetype}, Master Numbers: ${m.master_numbers || 'None'}, Role: ${m.role || 'N/A'}`
+  `${i + 1}. ${m.full_name} - Life Path ${m.life_path_western}, Archetype: ${m.archetype}, Master Numbers: ${m.master_numbers || 'None'}, Role: ${m.role || 'N/A'}${m.work_style_challenges ? `, Challenges: ${m.work_style_challenges}` : ''}`
 ).join('\n')}
 
 ${task ? `Task for teams: ${task}` : 'General purpose teams'}
@@ -59,8 +59,9 @@ Rules:
 1. Each team should have a balanced mix of archetypes (ideally 1 Visionary/Leader, 1 Strategist, 1 Creator, remaining Harmonizers)
 2. Prioritize people with Master Numbers (11, 22, 33) as they have higher potential
 3. Distribute Master Number holders across teams
-4. Within each team, assign specific roles: Team Leader, Analyst/Planner, Creative Lead, and Support/Coordinator
-5. Explain why each person fits their role based on their numerology
+4. Consider work style challenges - if someone prefers solo work, give them analytical/independent roles. Balance challenges across the team.
+5. Within each team, assign specific roles: Team Leader, Analyst/Planner, Creative Lead, and Support/Coordinator
+6. Explain why each person fits their role based on their numerology AND how their challenges are accommodated
 
 Return as JSON with this structure:
 {
