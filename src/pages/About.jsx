@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Users, Target, TrendingUp, Brain, Lightbulb, Heart, Trophy } from 'lucide-react';
-import TeamBuilder7A_Logo from '../components/TeamBuilder7A_Logo';
 
 export default function About() {
   return (
@@ -9,7 +8,7 @@ export default function About() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <TeamBuilder7A_Logo size="lg" />
+          <h1 className="text-4xl font-bold text-white">TeamBuilder7A</h1>
           <p className="text-xl text-gray-300 mt-4 italic">
             Stay Above the Threshold
           </p>
