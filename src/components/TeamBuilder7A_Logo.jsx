@@ -1,28 +1,21 @@
 import React from 'react';
-import { Users, Sparkles } from 'lucide-react';
 
-export default function TeamBuilder7A_Logo({ size = 'md', showText = true }) {
+export default function TeamBuilder7A_Logo({ size = 'md', showText = false }) {
   const sizes = {
-    sm: { icon: 'w-6 h-6', text: 'text-lg', container: 'gap-2' },
-    md: { icon: 'w-8 h-8', text: 'text-2xl', container: 'gap-3' },
-    lg: { icon: 'w-12 h-12', text: 'text-4xl', container: 'gap-4' }
+    sm: { height: 'h-8' },
+    md: { height: 'h-12' },
+    lg: { height: 'h-16' }
   };
   
   const s = sizes[size];
   
   return (
-    <div className={`flex items-center ${s.container}`}>
-      <div className="relative">
-        <Users className={`${s.icon} text-blue-400`} />
-        <Sparkles className={`${s.icon} text-amber-400 absolute -top-1 -right-1 w-4 h-4`} />
-      </div>
-      {showText && (
-        <div>
-          <span className={`${s.text} font-bold bg-gradient-to-r from-blue-400 to-amber-400 bg-clip-text text-transparent`}>
-            TeamBuilder7A
-          </span>
-        </div>
-      )}
+    <div className="flex items-center">
+      <img 
+        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695ca5137f399439dd98a642/81f88cbf2_image.png" 
+        alt="TeamBuilder7A" 
+        className={`${s.height} w-auto`}
+      />
     </div>
   );
 }

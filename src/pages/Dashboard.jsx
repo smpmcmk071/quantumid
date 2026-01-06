@@ -81,50 +81,50 @@ export default function Dashboard() {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="bg-slate-800 border-slate-700">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm">Teams</p>
                   <p className="text-3xl font-bold text-white">{stats.teams}</p>
                 </div>
-                <Users className="w-8 h-8 text-blue-400" />
+                <Users className="w-8 h-8 text-teal-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="bg-slate-800 border-slate-700">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm">Team Members</p>
                   <p className="text-3xl font-bold text-white">{stats.members}</p>
                 </div>
-                <Users className="w-8 h-8 text-green-400" />
+                <Users className="w-8 h-8 text-teal-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="bg-slate-800 border-slate-700">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm">Candidates</p>
                   <p className="text-3xl font-bold text-white">{stats.candidates}</p>
                 </div>
-                <UserPlus className="w-8 h-8 text-amber-400" />
+                <UserPlus className="w-8 h-8 text-teal-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="bg-slate-800 border-slate-700">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm">Open Jobs</p>
                   <p className="text-3xl font-bold text-white">{stats.jobs}</p>
                 </div>
-                <Briefcase className="w-8 h-8 text-purple-400" />
+                <Briefcase className="w-8 h-8 text-teal-400" />
               </div>
             </CardContent>
           </Card>
@@ -133,7 +133,7 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6">
           <Link to={createPageUrl('Teams')}>
-            <Card className="bg-gradient-to-br from-blue-500/20 to-blue-700/20 border-blue-500/30 hover:border-blue-400 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Users className="w-5 h-5" />
@@ -147,7 +147,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to={createPageUrl('Candidates')}>
-            <Card className="bg-gradient-to-br from-amber-500/20 to-amber-700/20 border-amber-500/30 hover:border-amber-400 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <UserPlus className="w-5 h-5" />
@@ -161,7 +161,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to={createPageUrl('Analyzer')}>
-            <Card className="bg-gradient-to-br from-purple-500/20 to-purple-700/20 border-purple-500/30 hover:border-purple-400 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Target className="w-5 h-5" />
