@@ -10,7 +10,7 @@ export default function Analyzer() {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [building, setBuilding] = useState(false);
-  const [teamSize, setTeamSize] = useState(5);
+  const [teamSize, setTeamSize] = useState(3);
   const [numberOfTeams, setNumberOfTeams] = useState(1);
   const [task, setTask] = useState('');
   const [result, setResult] = useState(null);
