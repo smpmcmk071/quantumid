@@ -61,10 +61,19 @@ export default function Teams() {
 
   const createTeam = async () => {
     if (!client || !newTeam.team_name) return;
-    await base44.entities.Team.create({ ...newTeam, client_id: client.id, is_active: true });
-    setNewTeam({ team_name: '', department: '', description: '' });
-    setShowAddTeam(false);
-    loadData();
+    try {
+      await base44.entities.Team.create({ 
+        ...newTeam, 
+        client_id: client.id, 
+        is_active: true 
+      });
+      setNewTeam({ team_name: '', department: '', description: '' });
+      setShowAddTeam(false);
+      await loadData();
+    } catch (error) {
+      console.error('Error creating team:', error);
+      alert('Failed to create team. Please try again.');
+    }
   };
 
   const addMember = async () => {
@@ -130,7 +139,7 @@ export default function Teams() {
           <h1 className="text-3xl font-bold text-white">Team Management</h1>
           <Dialog open={showAddTeam} onOpenChange={setShowAddTeam}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-teal-600 hover:bg-teal-700">
                 <Plus className="w-4 h-4 mr-2" />
                 New Team
               </Button>
@@ -141,7 +150,7 @@ export default function Teams() {
               </DialogHeader>
               <div className="space-y-4">
                 <Input
-                  placeholder="Team Name"
+                  placeholder="Team Name *"
                   value={newTeam.team_name}
                   onChange={(e) => setNewTeam({ ...newTeam, team_name: e.target.value })}
                   className="bg-slate-900 border-slate-700 text-white"
@@ -158,7 +167,11 @@ export default function Teams() {
                   onChange={(e) => setNewTeam({ ...newTeam, description: e.target.value })}
                   className="bg-slate-900 border-slate-700 text-white"
                 />
-                <Button onClick={createTeam} className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button 
+                  onClick={createTeam} 
+                  disabled={!newTeam.team_name}
+                  className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-50"
+                >
                   Create Team
                 </Button>
               </div>
@@ -168,7 +181,7 @@ export default function Teams() {
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Teams List */}
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+          <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
               <CardTitle className="text-white text-lg">Teams ({teams.length})</CardTitle>
             </CardHeader>
@@ -179,8 +192,8 @@ export default function Teams() {
                   onClick={() => setSelectedTeam(team)}
                   className={`p-3 rounded-lg cursor-pointer transition-colors ${
                     selectedTeam?.id === team.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white/5 text-gray-300 hover:bg-white/10'
+                      ? 'bg-teal-600 text-white'
+                      : 'bg-slate-900 text-gray-300 hover:bg-slate-700'
                   }`}
                 >
                   <p className="font-semibold">{team.team_name}</p>
@@ -193,7 +206,7 @@ export default function Teams() {
           {/* Team Members */}
           <div className="lg:col-span-2">
             {selectedTeam ? (
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className="bg-slate-800 border-slate-700">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
@@ -202,7 +215,7 @@ export default function Teams() {
                     </div>
                     <Dialog open={showAddMember} onOpenChange={setShowAddMember}>
                       <DialogTrigger asChild>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
                           <UserPlus className="w-4 h-4 mr-2" />
                           Add Member
                         </Button>
@@ -259,7 +272,7 @@ export default function Teams() {
                           <Button
                             onClick={addMember}
                             disabled={calculating || !newMember.full_name || !newMember.birth_date}
-                            className="w-full bg-green-600 hover:bg-green-700"
+                            className="w-full bg-teal-600 hover:bg-teal-700"
                           >
                             {calculating ? (
                               <>
@@ -278,7 +291,7 @@ export default function Teams() {
                 <CardContent>
                   <div className="space-y-3 max-h-[500px] overflow-y-auto">
                     {teamMembers.map(member => (
-                      <div key={member.id} className="p-4 bg-white/5 rounded-lg">
+                      <div key={member.id} className="p-4 bg-slate-900 rounded-lg">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 className="text-white font-semibold">{member.full_name}</h3>
@@ -307,7 +320,7 @@ export default function Teams() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="py-12 text-center">
                   <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                   <p className="text-gray-400">Select a team to view members</p>
