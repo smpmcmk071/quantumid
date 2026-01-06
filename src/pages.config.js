@@ -31,6 +31,7 @@ import Teams from './pages/Teams';
 import Analyzer from './pages/Analyzer';
 import JobPostings from './pages/JobPostings';
 import Reports from './pages/Reports';
+import Marketing from './pages/Marketing';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +69,7 @@ export const PAGES = {
     "Analyzer": Analyzer,
     "JobPostings": JobPostings,
     "Reports": Reports,
+    "Marketing": Marketing,
 }
 
 export const pagesConfig = {
