@@ -50,7 +50,8 @@ export default function Dashboard() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
             <TeamBuilder7A_Logo size="lg" />
-            <p className="text-gray-300 mt-4">HR Intelligence Powered by Numerology</p>
+            <p className="text-gray-300 mt-4">Stay Above the Threshold</p>
+            <p className="text-gray-400 text-sm">Expanding your threshold of actionable knowledge</p>
           </div>
           
           <Card className="bg-white/10 backdrop-blur-sm border-white/20">

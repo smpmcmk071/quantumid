@@ -119,7 +119,7 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} TeamBuilder7A. HR Intelligence Powered by Numerology.
+            © {new Date().getFullYear()} TeamBuilder7A. Stay Above the Threshold - Expanding your threshold of actionable knowledge.
           </p>
         </div>
       </footer>

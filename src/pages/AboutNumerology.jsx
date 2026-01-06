@@ -11,7 +11,10 @@ export default function AboutNumerology() {
         <div className="text-center mb-12">
           <TeamBuilder7A_Logo size="lg" />
           <p className="text-xl text-gray-300 mt-4 italic">
-            Build World-Class Teams Using Ancient Wisdom + Modern Science
+            Stay Above the Threshold
+          </p>
+          <p className="text-base text-gray-400 mt-2">
+            Expanding your threshold of actionable knowledge
           </p>
         </div>
 
