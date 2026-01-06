@@ -117,8 +117,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <TeamBuilder7A_Logo size="md" />
-          <h1 className="text-3xl font-bold text-white mt-4">{client.company_name}</h1>
+          <h1 className="text-3xl font-bold text-white">{client.company_name}</h1>
           <p className="text-gray-300">Welcome back, {user?.full_name || user?.email}</p>
         </div>
 
@@ -176,7 +175,7 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6">
           <Link to={createPageUrl('Teams')}>
-            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer h-full">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Users className="w-5 h-5" />
@@ -190,7 +189,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to={createPageUrl('Candidates')}>
-            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer h-full">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <UserPlus className="w-5 h-5" />
@@ -204,7 +203,7 @@ export default function Dashboard() {
           </Link>
 
           <Link to={createPageUrl('Analyzer')}>
-            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer">
+            <Card className="bg-slate-800 border-slate-700 hover:border-teal-500 transition-all cursor-pointer h-full">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Target className="w-5 h-5" />
