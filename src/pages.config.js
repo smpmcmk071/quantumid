@@ -29,6 +29,7 @@ import PersonalDashboard from './pages/PersonalDashboard';
 import StephenLegacy from './pages/StephenLegacy';
 import Teams from './pages/Teams';
 import Analyzer from './pages/Analyzer';
+import JobPostings from './pages/JobPostings';
 import __Layout from './Layout.jsx';
 
 
@@ -64,6 +65,7 @@ export const PAGES = {
     "StephenLegacy": StephenLegacy,
     "Teams": Teams,
     "Analyzer": Analyzer,
+    "JobPostings": JobPostings,
 }
 
 export const pagesConfig = {

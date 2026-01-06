@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { LayoutDashboard, Users, UserPlus, Target, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, Target, LogOut, Menu, X, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TeamBuilder7A_Logo from './components/TeamBuilder7A_Logo';
 
@@ -26,13 +26,14 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
     { name: 'Teams', page: 'Teams', icon: Users },
     { name: 'Candidates', page: 'Candidates', icon: UserPlus },
-    { name: 'Analyzer', page: 'Analyzer', icon: Target }
+    { name: 'Jobs', page: 'JobPostings', icon: Briefcase },
+    { name: 'Team Builder', page: 'Analyzer', icon: Target }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
       {/* Header */}
-      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
+      <header className="bg-slate-900/90 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('Dashboard')} className="flex items-center">
             <TeamBuilder7A_Logo size="sm" />
@@ -46,8 +47,8 @@ export default function Layout({ children, currentPageName }) {
                 to={createPageUrl(item.page)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   currentPageName === item.page 
-                    ? 'bg-blue-600 text-white' 
-                    : 'text-gray-300 hover:bg-white/10'
+                    ? 'bg-teal-600 text-white' 
+                    : 'text-gray-300 hover:bg-slate-700'
                 }`}
               >
                 <item.icon className="w-4 h-4" />
@@ -65,7 +66,7 @@ export default function Layout({ children, currentPageName }) {
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-gray-400 hover:text-white hover:bg-white/10"
+              className="text-gray-400 hover:text-white hover:bg-slate-700"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -83,7 +84,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Mobile Nav */}
         {menuOpen && (
-          <nav className="lg:hidden bg-black/50 backdrop-blur-sm border-t border-white/10 px-4 py-4 space-y-2">
+          <nav className="lg:hidden bg-slate-900/95 backdrop-blur-sm border-t border-slate-700 px-4 py-4 space-y-2">
             {navItems.map(item => (
               <Link
                 key={item.page}
@@ -91,7 +92,7 @@ export default function Layout({ children, currentPageName }) {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
                   currentPageName === item.page 
-                    ? 'bg-blue-600 text-white' 
+                    ? 'bg-teal-600 text-white' 
                     : 'text-gray-300'
                 }`}
               >
@@ -114,7 +115,7 @@ export default function Layout({ children, currentPageName }) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="bg-black/30 backdrop-blur-sm border-t border-white/10 py-6 mt-auto">
+      <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-sm">
             © {new Date().getFullYear()} TeamBuilder7A. HR Intelligence Powered by Numerology.

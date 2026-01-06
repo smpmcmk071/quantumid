@@ -23,6 +23,10 @@ export default function Candidates() {
     resume_text: '',
     status: 'new'
   });
+  const [jobs, setJobs] = useState([]);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [matchedJobs, setMatchedJobs] = useState([]);
+  const [matchingJobs, setMatchingJobs] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -37,9 +41,26 @@ export default function Candidates() {
       const c = clients[0];
       setClient(c);
       const cands = await base44.entities.Candidate.filter({ client_id: c.id });
+      const j = await base44.entities.JobPosting.filter({ client_id: c.id, status: 'open' });
       setCandidates(cands);
+      setJobs(j);
     }
     setLoading(false);
+  };
+
+  const matchJobsForCandidate = async (candidate) => {
+    setSelectedCandidate(candidate);
+    setMatchingJobs(true);
+    
+    const response = await base44.functions.invoke('matchJobsToCandidate', {
+      candidateId: candidate.id,
+      clientId: client.id
+    });
+    
+    if (response.data?.success) {
+      setMatchedJobs(response.data.data);
+    }
+    setMatchingJobs(false);
   };
 
   const parseResume = async () => {
@@ -139,20 +160,20 @@ export default function Candidates() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Candidates</h1>
           <Dialog open={showAddCandidate} onOpenChange={setShowAddCandidate}>
             <DialogTrigger asChild>
-              <Button className="bg-amber-600 hover:bg-amber-700">
+              <Button className="bg-teal-600 hover:bg-teal-700">
                 <UserPlus className="w-4 h-4 mr-2" />
                 Add Candidate
               </Button>
@@ -174,7 +195,7 @@ export default function Candidates() {
                     onClick={parseResume}
                     disabled={parsing || !newCandidate.resume_text}
                     size="sm"
-                    className="mt-2 bg-blue-600 hover:bg-blue-700"
+                    className="mt-2 bg-teal-600 hover:bg-teal-700"
                   >
                     {parsing ? (
                       <>
@@ -239,7 +260,7 @@ export default function Candidates() {
                 <Button
                   onClick={addCandidate}
                   disabled={calculating || !newCandidate.full_name || !newCandidate.birth_date}
-                  className="w-full bg-amber-600 hover:bg-amber-700"
+                  className="w-full bg-teal-600 hover:bg-teal-700"
                 >
                   {calculating ? (
                     <>
@@ -257,7 +278,7 @@ export default function Candidates() {
 
         <div className="grid gap-4">
           {candidates.map(candidate => (
-            <Card key={candidate.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+            <Card key={candidate.id} className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:border-teal-600 transition-colors cursor-pointer" onClick={() => matchJobsForCandidate(candidate)}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -323,7 +344,7 @@ export default function Candidates() {
           ))}
 
           {candidates.length === 0 && (
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
               <CardContent className="py-12 text-center">
                 <UserPlus className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-400">No candidates yet. Add your first candidate to get started.</p>
