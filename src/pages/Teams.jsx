@@ -89,45 +89,70 @@ export default function Teams() {
   };
 
   const addMember = async () => {
-    if (!selectedTeam || !newMember.full_name || !newMember.birth_date) return;
+    if (!selectedTeam || !newMember.full_name || !newMember.birth_date) {
+      alert('Please fill in name and birth date');
+      return;
+    }
     
     setCalculating(true);
     
-    // Calculate numerology
-    const response = await base44.functions.invoke('calculateNumerology', {
-      type: 'name',
-      name: newMember.full_name,
-      birthDate: newMember.birth_date
-    });
-
-    if (response.data?.success) {
-      const calc = response.data.data;
-      await base44.entities.TeamMember.create({
-        team_id: selectedTeam.id,
-        full_name: newMember.full_name,
-        email: newMember.email,
-        birth_date: newMember.birth_date,
-        role: newMember.role,
-        seniority: newMember.seniority,
-        life_path_western: calc.lifePathWestern || 0,
-        life_path_chaldean: calc.lifePathChaldean || 0,
-        expression_western: calc.expressionWestern || 0,
-        soul_urge_western: calc.soulUrgeWestern || 0,
-        personality_western: calc.personalityWestern || 0,
-        birthday_number: calc.birthdayNumber || 0,
-        master_numbers: calc.masterNumbers?.join(', ') || '',
-        element: calc.element || 'Earth',
-        strengths: calc.strengths || '',
-        weaknesses: calc.weaknesses || '',
-        work_style_challenges: newMember.work_style_challenges || ''
-      });
+    try {
+      console.log('Calculating numerology for:', newMember.full_name, newMember.birth_date);
       
-      setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid', work_style_challenges: '' });
-      setShowAddMember(false);
-      loadTeamMembers();
+      // Calculate numerology
+      const response = await base44.functions.invoke('calculateNumerology', {
+        type: 'name',
+        name: newMember.full_name,
+        birthDate: newMember.birth_date
+      });
+
+      console.log('Numerology response:', response.data);
+
+      if (response.data?.success) {
+        const calc = response.data.data;
+        
+        console.log('Creating team member with data:', {
+          team_id: selectedTeam.id,
+          full_name: newMember.full_name,
+          life_path_western: calc.lifePathWestern,
+          element: calc.element
+        });
+        
+        await base44.entities.TeamMember.create({
+          team_id: selectedTeam.id,
+          full_name: newMember.full_name,
+          email: newMember.email || '',
+          birth_date: newMember.birth_date,
+          role: newMember.role || '',
+          seniority: newMember.seniority,
+          life_path_western: calc.lifePathWestern || 0,
+          life_path_chaldean: calc.lifePathChaldean || 0,
+          expression_western: calc.expressionWestern || 0,
+          soul_urge_western: calc.soulUrgeWestern || 0,
+          personality_western: calc.personalityWestern || 0,
+          birthday_number: calc.birthdayNumber || 0,
+          master_numbers: calc.masterNumbers?.join(', ') || '',
+          element: calc.element || 'Earth',
+          strengths: calc.strengths || '',
+          weaknesses: calc.weaknesses || '',
+          work_style_challenges: newMember.work_style_challenges || ''
+        });
+        
+        console.log('Team member created successfully');
+        
+        setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid', work_style_challenges: '' });
+        setShowAddMember(false);
+        await loadTeamMembers();
+      } else {
+        console.error('Numerology calculation failed:', response.data);
+        alert('Failed to calculate profile: ' + (response.data?.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error adding member:', error);
+      alert('Error adding member: ' + (error.message || 'Unknown error'));
+    } finally {
+      setCalculating(false);
     }
-    
-    setCalculating(false);
   };
 
   const deleteMember = async (memberId) => {
