@@ -1,25 +1,25 @@
+import About from './pages/About';
+import Analyzer from './pages/Analyzer';
 import Candidates from './pages/Candidates';
 import Dashboard from './pages/Dashboard';
-import Teams from './pages/Teams';
-import Analyzer from './pages/Analyzer';
 import JobPostings from './pages/JobPostings';
-import Reports from './pages/Reports';
 import Marketing from './pages/Marketing';
 import MeetingPlanner from './pages/MeetingPlanner';
-import About from './pages/About';
+import Reports from './pages/Reports';
+import Teams from './pages/Teams';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "About": About,
+    "Analyzer": Analyzer,
     "Candidates": Candidates,
     "Dashboard": Dashboard,
-    "Teams": Teams,
-    "Analyzer": Analyzer,
     "JobPostings": JobPostings,
-    "Reports": Reports,
     "Marketing": Marketing,
     "MeetingPlanner": MeetingPlanner,
-    "About": About,
+    "Reports": Reports,
+    "Teams": Teams,
 }
 
 export const pagesConfig = {

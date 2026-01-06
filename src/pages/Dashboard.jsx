@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Users, Briefcase, UserPlus, TrendingUp, Building2, Target } from 'lucide-react';
@@ -11,6 +13,9 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [client, setClient] = useState(null);
   const [stats, setStats] = useState({ teams: 0, members: 0, candidates: 0, jobs: 0 });
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [companyName, setCompanyName] = useState('');
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -41,10 +46,31 @@ export default function Dashboard() {
         candidates: candidates.length,
         jobs: jobs.filter(j => j.status === 'open').length
       });
+    } else {
+      setShowOnboarding(true);
     }
   };
 
-  if (!client) {
+  const createClient = async () => {
+    if (!companyName?.trim() || !user) return;
+    
+    setCreating(true);
+    try {
+      await base44.entities.Client.create({
+        company_name: companyName.trim(),
+        admin_email: user.email,
+        subscription_tier: 'starter',
+        is_active: true
+      });
+      setShowOnboarding(false);
+      await loadDashboard();
+    } catch (error) {
+      alert('Error creating company: ' + error.message);
+    }
+    setCreating(false);
+  };
+
+  if (!client && user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
         <div className="max-w-3xl mx-auto">
@@ -54,16 +80,33 @@ export default function Dashboard() {
             <p className="text-gray-400 text-sm">A Product of Threshold7 Analytics</p>
           </div>
           
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardContent className="py-12 text-center">
-              <Building2 className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-white mb-4">Welcome to TeamBuilder7A</h2>
-              <p className="text-gray-300 mb-6">You don't have a client account yet. Contact support to set up your organization.</p>
-              <Button onClick={() => base44.auth.logout()} variant="outline" className="border-white/20 text-white">
-                Logout
-              </Button>
-            </CardContent>
-          </Card>
+          <Dialog open={showOnboarding} onOpenChange={setShowOnboarding}>
+            <DialogContent className="bg-slate-800 border-slate-700">
+              <DialogHeader>
+                <DialogTitle className="text-white text-center text-2xl">Welcome to TeamBuilder7A</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <Building2 className="w-16 h-16 text-teal-400 mx-auto mb-4" />
+                  <p className="text-gray-300 mb-4">Let's get you started! What's your company name?</p>
+                </div>
+                <Input
+                  placeholder="Company Name"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="bg-slate-900 border-slate-700 text-white"
+                  onKeyDown={(e) => e.key === 'Enter' && createClient()}
+                />
+                <Button 
+                  onClick={createClient} 
+                  disabled={!companyName?.trim() || creating}
+                  className="w-full bg-teal-600 hover:bg-teal-700"
+                >
+                  {creating ? 'Creating...' : 'Create Company'}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );
