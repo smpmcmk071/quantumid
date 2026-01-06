@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
       
       if (compatibleCount / totalMembers > 0.5) {
         teamFitScore += 15;
-        teamFitExplanation += `✓ Strong numerological compatibility with over half the team. `;
+        teamFitExplanation += `✓ Strong scientific compatibility with over half the team. `;
       }
       
       teamFitScore = Math.min(100, Math.max(0, teamFitScore));
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Calculate numerology score (0-100)
+    // Calculate science score (0-100)
     let numerologyScore = 60;
     let numerologyExplanation = '';
     
@@ -159,7 +159,7 @@ Experience: ${candidate.years_experience} years
 Overall Score: ${overallScore}/100
 Team Fit: ${teamFitScore}/100
 Job Fit: ${jobFitScore}/100
-Numerology: ${numerologyScore}/100
+Science Score: ${numerologyScore}/100
 
 Job: ${jobPosting?.job_title || 'N/A'}
 Team Size: ${teamMembers.length} members

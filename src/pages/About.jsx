@@ -28,12 +28,12 @@ export default function About() {
           </CardHeader>
           <CardContent className="space-y-4 text-gray-300">
             <p>
-              TeamBuilder7A combines PhD-level team building research with 4,000-year-old numerology to help HR professionals 
+              TeamBuilder7A combines PhD-level team building research with behavioral science to help HR professionals 
               build high-performing teams with scientific precision.
             </p>
             <p>
               We've analyzed decades of research from Patrick Lencioni, Meredith Belbin, Bruce Tuckman, and other team science 
-              pioneers, then mapped their findings to numerological archetypes for instant, accurate team composition analysis.
+              pioneers, then mapped their findings to scientific archetypes for instant, accurate team composition analysis.
             </p>
           </CardContent>
         </Card>
@@ -49,7 +49,7 @@ export default function About() {
           <CardContent className="space-y-6">
             <p className="text-gray-300 mb-4">
               Every high-performing team needs a balance of these four archetypes. Our AI analyzes your organization's 
-              numerology to build teams with optimal balance.
+              profiles to build teams with optimal balance.
             </p>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -114,8 +114,8 @@ export default function About() {
           </CardHeader>
           <CardContent className="space-y-4 text-gray-300">
             <p>
-              People with Master Numbers (11, 22, 33) in their numerology chart are identified as "High-Potential" 
-              because these numbers represent amplified spiritual and leadership capabilities.
+              People with Master Numbers (11, 22, 33) in their scientific profile are identified as "High-Potential" 
+              because these numbers represent amplified leadership and collaboration capabilities.
             </p>
             <div className="grid md:grid-cols-3 gap-3">
               <div className="p-3 bg-white/10 rounded-lg text-center">
@@ -161,7 +161,7 @@ export default function About() {
               </li>
               <li className="flex gap-3">
                 <span className="text-blue-400 font-bold">4.</span>
-                <span>AI assigns roles and explains why each person fits based on numerology + team science</span>
+                <span>AI assigns roles and explains why each person fits based on behavioral science + team research</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-blue-400 font-bold">5.</span>
