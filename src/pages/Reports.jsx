@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, TrendingUp, Users, Target, Zap } from 'lucide-react';
+import { Loader2, TrendingUp, Users, Target, Zap, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../utils';
 
 export default function Reports() {
   const [client, setClient] = useState(null);
@@ -11,6 +13,7 @@ export default function Reports() {
   const [orgReport, setOrgReport] = useState(null);
   const [memberMatrix, setMemberMatrix] = useState(null);
   const [archetypeBreakdown, setArchetypeBreakdown] = useState(null);
+  const [allMembers, setAllMembers] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -22,7 +25,14 @@ export default function Reports() {
     const clients = await base44.entities.Client.filter({ admin_email: user.email });
     
     if (clients.length > 0) {
-      setClient(clients[0]);
+      const c = clients[0];
+      setClient(c);
+      
+      // Load all team members
+      const teams = await base44.entities.Team.filter({ client_id: c.id });
+      const memberPromises = teams.map(t => base44.entities.TeamMember.filter({ team_id: t.id }));
+      const membersArrays = await Promise.all(memberPromises);
+      setAllMembers(membersArrays.flat());
     }
     setLoading(false);
   };
@@ -67,7 +77,7 @@ export default function Reports() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-6">Organization Reports</h1>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
@@ -121,6 +131,35 @@ export default function Reports() {
                   'Generate Matrix'
                 )}
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <User className="w-5 h-5 text-blue-400" />
+                Team Member Profiles
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 text-sm mb-4">
+                View detailed profiles, skills, and development goals for each team member.
+              </p>
+              <div className="max-h-32 overflow-y-auto space-y-2">
+                {allMembers.map(member => (
+                  <Link 
+                    key={member.id} 
+                    to={createPageUrl('MemberProfile') + '?id=' + member.id}
+                    className="block p-2 bg-slate-700/30 rounded hover:bg-slate-700/50 transition-colors"
+                  >
+                    <p className="text-white text-sm">{member.full_name}</p>
+                    <p className="text-gray-400 text-xs">{member.role}</p>
+                  </Link>
+                ))}
+                {allMembers.length === 0 && (
+                  <p className="text-gray-400 text-sm">No team members yet</p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
