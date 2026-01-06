@@ -60,19 +60,31 @@ export default function Teams() {
   };
 
   const createTeam = async () => {
-    if (!client || !newTeam.team_name) return;
+    if (!client) {
+      alert('No client found');
+      return;
+    }
+    if (!newTeam.team_name?.trim()) {
+      alert('Please enter a team name');
+      return;
+    }
+    
     try {
-      await base44.entities.Team.create({ 
-        ...newTeam, 
+      console.log('Creating team:', { ...newTeam, client_id: client.id });
+      const created = await base44.entities.Team.create({ 
+        team_name: newTeam.team_name.trim(),
+        department: newTeam.department?.trim() || '',
+        description: newTeam.description?.trim() || '',
         client_id: client.id, 
         is_active: true 
       });
+      console.log('Team created:', created);
       setNewTeam({ team_name: '', department: '', description: '' });
       setShowAddTeam(false);
       await loadData();
     } catch (error) {
       console.error('Error creating team:', error);
-      alert('Failed to create team. Please try again.');
+      alert('Error: ' + (error.message || 'Failed to create team'));
     }
   };
 
