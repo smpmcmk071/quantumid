@@ -134,7 +134,7 @@ export default function MemberProfile() {
               <h3 className="text-xl font-bold capitalize">{member.archetype_primary}</h3>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="p-3 bg-slate-700/30 rounded-lg">
                 <p className="text-gray-400 text-xs mb-1">Life Path</p>
                 <p className="text-teal-400 text-2xl font-bold">{member.life_path_western}</p>
@@ -142,10 +142,6 @@ export default function MemberProfile() {
               <div className="p-3 bg-slate-700/30 rounded-lg">
                 <p className="text-gray-400 text-xs mb-1">Expression</p>
                 <p className="text-purple-400 text-2xl font-bold">{member.expression_western}</p>
-              </div>
-              <div className="p-3 bg-slate-700/30 rounded-lg">
-                <p className="text-gray-400 text-xs mb-1">Element</p>
-                <p className="text-amber-400 text-2xl font-bold">{member.element}</p>
               </div>
             </div>
 

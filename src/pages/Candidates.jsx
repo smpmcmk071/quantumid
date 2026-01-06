@@ -100,6 +100,17 @@ export default function Candidates() {
 
     if (response.data?.success) {
       const calc = response.data.data;
+
+      // Extract correct values from nested response
+      const lifePathWestern = calc.lifePath?.reduced || 0;
+      const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
+      const expressionWestern = calc.expression?.reduced || 0;
+      const soulUrgeWestern = calc.soulUrge?.reduced || 0;
+      const personalityWestern = calc.personality?.reduced || 0;
+      const birthdayNumber = calc.birthday?.reduced || 0;
+      const masterNumbers = calc.masterNumbers?.join(', ') || '';
+      const element = calc.astrology?.element || 'Earth';
+
       await base44.entities.Candidate.create({
         client_id: client.id,
         full_name: newCandidate.full_name,
@@ -111,14 +122,14 @@ export default function Candidates() {
         education: newCandidate.education || '',
         previous_roles: newCandidate.previous_roles || '',
         status: newCandidate.status,
-        life_path_western: parseInt(calc.lifePathWestern) || 0,
-        life_path_chaldean: parseInt(calc.lifePathChaldean) || 0,
-        expression_western: parseInt(calc.expressionWestern) || 0,
-        soul_urge_western: parseInt(calc.soulUrgeWestern) || 0,
-        personality_western: parseInt(calc.personalityWestern) || 0,
-        birthday_number: parseInt(calc.birthdayNumber) || 0,
-        master_numbers: calc.masterNumbers?.join(', ') || '',
-        element: calc.element || 'Earth'
+        life_path_western: lifePathWestern,
+        life_path_chaldean: lifePathChaldean,
+        expression_western: expressionWestern,
+        soul_urge_western: soulUrgeWestern,
+        personality_western: personalityWestern,
+        birthday_number: birthdayNumber,
+        master_numbers: masterNumbers,
+        element: element
       });
       
       setNewCandidate({
@@ -297,7 +308,6 @@ export default function Candidates() {
                       <span className="text-amber-400">LP: {candidate.life_path_western}</span>
                       <span className="text-purple-400">Expr: {candidate.expression_western}</span>
                       <span className="text-pink-400">Soul: {candidate.soul_urge_western}</span>
-                      <span className="text-green-400">{candidate.element}</span>
                       {candidate.years_experience > 0 && (
                         <span className="text-blue-400">{candidate.years_experience} yrs exp</span>
                       )}

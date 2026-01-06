@@ -111,12 +111,17 @@ export default function Teams() {
       if (response.data?.success) {
         const calc = response.data.data;
         
-        console.log('Creating team member with data:', {
-          team_id: selectedTeam.id,
-          full_name: newMember.full_name,
-          life_path_western: calc.lifePathWestern,
-          element: calc.element
-        });
+        console.log('Numerology calc response:', calc);
+        
+        // Extract correct values from nested response
+        const lifePathWestern = calc.lifePath?.reduced || 0;
+        const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
+        const expressionWestern = calc.expression?.reduced || 0;
+        const soulUrgeWestern = calc.soulUrge?.reduced || 0;
+        const personalityWestern = calc.personality?.reduced || 0;
+        const birthdayNumber = calc.birthday?.reduced || 0;
+        const masterNumbers = calc.masterNumbers?.join(', ') || '';
+        const element = calc.astrology?.element || 'Earth';
         
         await base44.entities.TeamMember.create({
           team_id: selectedTeam.id,
@@ -125,16 +130,16 @@ export default function Teams() {
           birth_date: newMember.birth_date,
           role: newMember.role || '',
           seniority: newMember.seniority,
-          life_path_western: parseInt(calc.lifePathWestern) || 0,
-          life_path_chaldean: parseInt(calc.lifePathChaldean) || 0,
-          expression_western: parseInt(calc.expressionWestern) || 0,
-          soul_urge_western: parseInt(calc.soulUrgeWestern) || 0,
-          personality_western: parseInt(calc.personalityWestern) || 0,
-          birthday_number: parseInt(calc.birthdayNumber) || 0,
-          master_numbers: calc.masterNumbers?.join(', ') || '',
-          element: calc.element || 'Earth',
-          strengths: calc.strengths || '',
-          weaknesses: calc.weaknesses || '',
+          life_path_western: lifePathWestern,
+          life_path_chaldean: lifePathChaldean,
+          expression_western: expressionWestern,
+          soul_urge_western: soulUrgeWestern,
+          personality_western: personalityWestern,
+          birthday_number: birthdayNumber,
+          master_numbers: masterNumbers,
+          element: element,
+          strengths: '',
+          weaknesses: '',
           work_style_challenges: newMember.work_style_challenges || ''
         });
         
@@ -336,7 +341,6 @@ export default function Teams() {
                             <div className="flex gap-3 mt-2 text-sm">
                               <span className="text-amber-400">LP: {member.life_path_western}</span>
                               <span className="text-purple-400">Expr: {member.expression_western}</span>
-                              <span className="text-green-400">{member.element}</span>
                             </div>
                             {member.master_numbers && (
                               <p className="text-amber-300 text-xs mt-1">✨ Master: {member.master_numbers}</p>
