@@ -1,4 +1,3 @@
-import AboutNumerology from './pages/AboutNumerology';
 import Candidates from './pages/Candidates';
 import Dashboard from './pages/Dashboard';
 import Teams from './pages/Teams';
@@ -7,11 +6,11 @@ import JobPostings from './pages/JobPostings';
 import Reports from './pages/Reports';
 import Marketing from './pages/Marketing';
 import MeetingPlanner from './pages/MeetingPlanner';
+import About from './pages/About';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "AboutNumerology": AboutNumerology,
     "Candidates": Candidates,
     "Dashboard": Dashboard,
     "Teams": Teams,
@@ -20,10 +19,11 @@ export const PAGES = {
     "Reports": Reports,
     "Marketing": Marketing,
     "MeetingPlanner": MeetingPlanner,
+    "About": About,
 }
 
 export const pagesConfig = {
-    mainPage: "AboutNumerology",
+    mainPage: "Candidates",
     Pages: PAGES,
     Layout: __Layout,
 };

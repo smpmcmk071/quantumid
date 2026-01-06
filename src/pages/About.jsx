@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Users, Target, TrendingUp, Brain, Lightbulb, Heart, Trophy } from 'lucide-react';
 import TeamBuilder7A_Logo from '../components/TeamBuilder7A_Logo';
 
-export default function AboutNumerology() {
+export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
