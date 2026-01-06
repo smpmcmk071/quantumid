@@ -1,65 +1,67 @@
-import MaherLegacy from './pages/MaherLegacy';
-import Home from './pages/Home';
-import KyleLegacy from './pages/KyleLegacy';
-import MelanieLegacy from './pages/MelanieLegacy';
-import StephenLegacy from './pages/StephenLegacy';
-import AmyLegacy from './pages/AmyLegacy';
-import ParentsLegacy from './pages/ParentsLegacy';
-import MarketingPage from './pages/MarketingPage';
-import Landing from './pages/Landing';
-import FamilyTree from './pages/FamilyTree';
-import GrandparentsLegacy from './pages/GrandparentsLegacy';
-import BrothersLegacy from './pages/BrothersLegacy';
-import ChristianLegacy from './pages/ChristianLegacy';
-import AdminNumerology from './pages/AdminNumerology';
-import AddFamilyMember from './pages/AddFamilyMember';
-import CalendarEvents from './pages/CalendarEvents';
-import PersonalDashboard from './pages/PersonalDashboard';
-import Community from './pages/Community';
-import NumerologyBlackjack from './pages/NumerologyBlackjack';
-import NumerologyBattle from './pages/NumerologyBattle';
-import MaherHistory from './pages/MaherHistory';
-import GenealogyResearch from './pages/GenealogyResearch';
 import AboutNumerology from './pages/AboutNumerology';
-import NumerologyWar from './pages/NumerologyWar';
-import Games from './pages/Games';
+import AddFamilyMember from './pages/AddFamilyMember';
+import AdminNumerology from './pages/AdminNumerology';
+import AmyLegacy from './pages/AmyLegacy';
+import BrothersLegacy from './pages/BrothersLegacy';
+import CalendarEvents from './pages/CalendarEvents';
+import ChristianLegacy from './pages/ChristianLegacy';
+import Community from './pages/Community';
 import FamilyLegacy from './pages/FamilyLegacy';
+import FamilyTree from './pages/FamilyTree';
+import Games from './pages/Games';
+import GenealogyResearch from './pages/GenealogyResearch';
+import GrandparentsLegacy from './pages/GrandparentsLegacy';
+import Home from './pages/Home';
 import JoinFamily from './pages/JoinFamily';
+import KyleLegacy from './pages/KyleLegacy';
+import Landing from './pages/Landing';
+import MaherHistory from './pages/MaherHistory';
+import MaherLegacy from './pages/MaherLegacy';
+import MarketingPage from './pages/MarketingPage';
+import MelanieLegacy from './pages/MelanieLegacy';
+import NumerologyBattle from './pages/NumerologyBattle';
+import NumerologyBlackjack from './pages/NumerologyBlackjack';
+import NumerologyWar from './pages/NumerologyWar';
+import ParentsLegacy from './pages/ParentsLegacy';
+import PersonalDashboard from './pages/PersonalDashboard';
+import StephenLegacy from './pages/StephenLegacy';
+import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "MaherLegacy": MaherLegacy,
-    "Home": Home,
-    "KyleLegacy": KyleLegacy,
-    "MelanieLegacy": MelanieLegacy,
-    "StephenLegacy": StephenLegacy,
-    "AmyLegacy": AmyLegacy,
-    "ParentsLegacy": ParentsLegacy,
-    "MarketingPage": MarketingPage,
-    "Landing": Landing,
-    "FamilyTree": FamilyTree,
-    "GrandparentsLegacy": GrandparentsLegacy,
-    "BrothersLegacy": BrothersLegacy,
-    "ChristianLegacy": ChristianLegacy,
-    "AdminNumerology": AdminNumerology,
-    "AddFamilyMember": AddFamilyMember,
-    "CalendarEvents": CalendarEvents,
-    "PersonalDashboard": PersonalDashboard,
-    "Community": Community,
-    "NumerologyBlackjack": NumerologyBlackjack,
-    "NumerologyBattle": NumerologyBattle,
-    "MaherHistory": MaherHistory,
-    "GenealogyResearch": GenealogyResearch,
     "AboutNumerology": AboutNumerology,
-    "NumerologyWar": NumerologyWar,
-    "Games": Games,
+    "AddFamilyMember": AddFamilyMember,
+    "AdminNumerology": AdminNumerology,
+    "AmyLegacy": AmyLegacy,
+    "BrothersLegacy": BrothersLegacy,
+    "CalendarEvents": CalendarEvents,
+    "ChristianLegacy": ChristianLegacy,
+    "Community": Community,
     "FamilyLegacy": FamilyLegacy,
+    "FamilyTree": FamilyTree,
+    "Games": Games,
+    "GenealogyResearch": GenealogyResearch,
+    "GrandparentsLegacy": GrandparentsLegacy,
+    "Home": Home,
     "JoinFamily": JoinFamily,
+    "KyleLegacy": KyleLegacy,
+    "Landing": Landing,
+    "MaherHistory": MaherHistory,
+    "MaherLegacy": MaherLegacy,
+    "MarketingPage": MarketingPage,
+    "MelanieLegacy": MelanieLegacy,
+    "NumerologyBattle": NumerologyBattle,
+    "NumerologyBlackjack": NumerologyBlackjack,
+    "NumerologyWar": NumerologyWar,
+    "ParentsLegacy": ParentsLegacy,
+    "PersonalDashboard": PersonalDashboard,
+    "StephenLegacy": StephenLegacy,
+    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
-    mainPage: "PersonalDashboard",
+    mainPage: "AboutNumerology",
     Pages: PAGES,
     Layout: __Layout,
 };

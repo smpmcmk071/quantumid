@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { Home, Users, Calendar, Settings, LogOut, Menu, X, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, Target, LogOut, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import TeamBuilder7A_Logo from './components/TeamBuilder7A_Logo';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -22,57 +23,51 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const navItems = [
-            { name: 'Home', page: 'Home', icon: Home },
-            { name: 'Dashboard', page: 'PersonalDashboard', icon: Sparkles },
-            { name: 'Family Legacy', page: 'FamilyLegacy', icon: Users },
-            { name: 'Games', page: 'Games', icon: Sparkles },
-            { name: 'Community', page: 'Community', icon: Users },
-            { name: 'Add Member', page: 'AddFamilyMember', icon: Users },
-            { name: 'Join Family', page: 'JoinFamily', icon: Users },
-            { name: 'Cosmic Calendar', page: 'CalendarEvents', icon: Calendar },
-            { name: 'About', page: 'AboutNumerology', icon: Sparkles },
-            { name: 'Admin', page: 'AdminNumerology', icon: Settings },
-          ];
+    { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
+    { name: 'Teams', page: 'Teams', icon: Users },
+    { name: 'Candidates', page: 'Candidates', icon: UserPlus },
+    { name: 'Analyzer', page: 'Analyzer', icon: Target }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Header */}
       <header className="bg-black/30 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to={createPageUrl('Home')} className="flex items-center gap-2">
-                            <span className="text-white font-bold text-sm">7day11.com</span>
-                          </Link>
+          <Link to={createPageUrl('Dashboard')} className="flex items-center">
+            <TeamBuilder7A_Logo size="sm" />
+          </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-2">
             {navItems.map(item => (
               <Link
                 key={item.page}
                 to={createPageUrl(item.page)}
-                className={`flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors text-xs ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   currentPageName === item.page 
-                    ? 'bg-amber-600 text-white' 
+                    ? 'bg-blue-600 text-white' 
                     : 'text-gray-300 hover:bg-white/10'
                 }`}
               >
-                <item.icon className="w-3 h-3" />
+                <item.icon className="w-4 h-4" />
                 {item.name}
               </Link>
             ))}
           </nav>
 
           {/* User & Logout */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-3">
             {user && (
-              <span className="text-gray-300 text-xs">{user.full_name || user.email}</span>
+              <span className="text-gray-300 text-sm">{user.full_name || user.email}</span>
             )}
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="text-gray-400 hover:text-white hover:bg-white/10 text-xs px-2 py-1"
+              className="text-gray-400 hover:text-white hover:bg-white/10"
             >
-              <LogOut className="w-3 h-3 mr-1" />
+              <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
           </div>
@@ -94,21 +89,21 @@ export default function Layout({ children, currentPageName }) {
                 key={item.page}
                 to={createPageUrl(item.page)}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
                   currentPageName === item.page 
-                    ? 'bg-amber-600 text-white' 
+                    ? 'bg-blue-600 text-white' 
                     : 'text-gray-300'
                 }`}
               >
-                <item.icon className="w-4 h-4" />
+                <item.icon className="w-5 h-5" />
                 {item.name}
               </Link>
             ))}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-2 text-red-400 w-full"
+              className="flex items-center gap-3 px-4 py-3 text-red-400 w-full"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-5 h-5" />
               Logout
             </button>
           </nav>
@@ -119,13 +114,13 @@ export default function Layout({ children, currentPageName }) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="bg-black/30 backdrop-blur-sm border-t border-white/10 py-4 mt-auto">
+      <footer className="bg-black/30 backdrop-blur-sm border-t border-white/10 py-6 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} 7day11.com. All Rights Reserved.
+            © {new Date().getFullYear()} TeamBuilder7A. HR Intelligence Powered by Numerology.
           </p>
         </div>
       </footer>
-      </div>
-      );
-      }
+    </div>
+  );
+}
