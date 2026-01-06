@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2 } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare } from 'lucide-react';
+import ArchetypeTest from '../components/candidates/ArchetypeTest';
+import CandidateComparison from '../components/candidates/CandidateComparison';
 
 export default function Candidates() {
   const [client, setClient] = useState(null);
@@ -27,6 +29,10 @@ export default function Candidates() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [matchedJobs, setMatchedJobs] = useState([]);
   const [matchingJobs, setMatchingJobs] = useState(false);
+  const [showArchetypeTest, setShowArchetypeTest] = useState(false);
+  const [testingCandidate, setTestingCandidate] = useState(null);
+  const [showComparison, setShowComparison] = useState(false);
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -42,8 +48,10 @@ export default function Candidates() {
       setClient(c);
       const cands = await base44.entities.Candidate.filter({ client_id: c.id });
       const j = await base44.entities.JobPosting.filter({ client_id: c.id, status: 'open' });
+      const t = await base44.entities.Team.filter({ client_id: c.id });
       setCandidates(cands);
       setJobs(j);
+      setTeams(t);
     }
     setLoading(false);
   };
@@ -152,6 +160,24 @@ export default function Candidates() {
     loadData();
   };
 
+  const startArchetypeTest = (candidate) => {
+    setTestingCandidate(candidate);
+    setShowArchetypeTest(true);
+  };
+
+  const handleTestComplete = async (results) => {
+    if (!testingCandidate) return;
+    
+    await base44.entities.Candidate.update(testingCandidate.id, {
+      archetype_primary: results.primary,
+      archetype_secondary: results.secondary
+    });
+    
+    setShowArchetypeTest(false);
+    setTestingCandidate(null);
+    loadData();
+  };
+
   const updateStatus = async (candidateId, status) => {
     await base44.entities.Candidate.update(candidateId, { status });
     loadData();
@@ -182,13 +208,25 @@ export default function Candidates() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Candidates</h1>
-          <Dialog open={showAddCandidate} onOpenChange={setShowAddCandidate}>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowComparison(true)}
+              variant="outline"
+              className="border-slate-700 text-gray-300"
+              disabled={candidates.length < 2}
+            >
+              <GitCompare className="w-4 h-4 mr-2" />
+              Compare
+            </Button>
+            <Dialog open={showAddCandidate} onOpenChange={setShowAddCandidate}>
             <DialogTrigger asChild>
               <Button className="bg-teal-600 hover:bg-teal-700">
                 <UserPlus className="w-4 h-4 mr-2" />
                 Add Candidate
               </Button>
             </DialogTrigger>
+            </Dialog>
+            </div>
             <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-white">Add New Candidate</DialogTitle>
@@ -303,7 +341,30 @@ export default function Candidates() {
                     {candidate.email && (
                       <p className="text-gray-400 text-sm">{candidate.email}</p>
                     )}
-                    
+
+                    {candidate.archetype_primary && (
+                      <div className="flex gap-2 mt-2">
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          candidate.archetype_primary === 'visionary' ? 'bg-purple-500/20 text-purple-300' :
+                          candidate.archetype_primary === 'strategist' ? 'bg-blue-500/20 text-blue-300' :
+                          candidate.archetype_primary === 'creator' ? 'bg-amber-500/20 text-amber-300' :
+                          'bg-green-500/20 text-green-300'
+                        }`}>
+                          {candidate.archetype_primary}
+                        </span>
+                        {candidate.archetype_secondary && (
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            candidate.archetype_secondary === 'visionary' ? 'bg-purple-500/10 text-purple-400' :
+                            candidate.archetype_secondary === 'strategist' ? 'bg-blue-500/10 text-blue-400' :
+                            candidate.archetype_secondary === 'creator' ? 'bg-amber-500/10 text-amber-400' :
+                            'bg-green-500/10 text-green-400'
+                          }`}>
+                            {candidate.archetype_secondary}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     <div className="flex gap-4 mt-3 text-sm">
                       <span className="text-amber-400">LP: {candidate.life_path_western}</span>
                       <span className="text-purple-400">Expr: {candidate.expression_western}</span>
@@ -326,6 +387,19 @@ export default function Candidates() {
                   </div>
                   
                   <div className="flex gap-2">
+                    {!candidate.archetype_primary && (
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startArchetypeTest(candidate);
+                        }}
+                        className="bg-purple-600 hover:bg-purple-700 h-8"
+                      >
+                        <FlaskConical className="w-3 h-3 mr-1" />
+                        Test
+                      </Button>
+                    )}
                     <Select value={candidate.status} onValueChange={(v) => updateStatus(candidate.id, v)}>
                       <SelectTrigger className="bg-slate-900 border-slate-700 text-white w-32 h-8 text-xs">
                         <SelectValue />
@@ -342,7 +416,10 @@ export default function Candidates() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => deleteCandidate(candidate.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteCandidate(candidate.id);
+                      }}
                       className="text-red-400 hover:text-red-300"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -358,11 +435,59 @@ export default function Candidates() {
               <CardContent className="py-12 text-center">
                 <UserPlus className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                 <p className="text-gray-400">No candidates yet. Add your first candidate to get started.</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+                </CardContent>
+                </Card>
+                )}
+                </div>
+
+                {/* Archetype Test Dialog */}
+                {showArchetypeTest && testingCandidate && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
+                <div className="max-w-2xl mx-auto my-8">
+                <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">
+                      Archetype Assessment: {testingCandidate.full_name}
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setShowArchetypeTest(false);
+                        setTestingCandidate(null);
+                      }}
+                    >
+                      <X className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Answer these questions to determine the candidate's primary team archetype
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <ArchetypeTest
+                    candidateName={testingCandidate.full_name}
+                    onComplete={handleTestComplete}
+                  />
+                </CardContent>
+                </Card>
+                </div>
+                </div>
+                )}
+
+                {/* Candidate Comparison */}
+                {showComparison && (
+                <CandidateComparison
+                candidates={candidates}
+                jobs={jobs}
+                teams={teams}
+                onClose={() => setShowComparison(false)}
+                />
+                )}
+                </div>
+                </div>
+                );
+                }
+
+                import { X } from 'lucide-react';
