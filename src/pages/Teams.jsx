@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Plus, Loader2, UserPlus, Trash2 } from 'lucide-react';
+import { Users, Plus, Loader2, UserPlus, Trash2, Pencil } from 'lucide-react';
 
 export default function Teams() {
   const [client, setClient] = useState(null);
@@ -17,6 +17,7 @@ export default function Teams() {
   const [showAddTeam, setShowAddTeam] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
   const [calculating, setCalculating] = useState(false);
+  const [editingMember, setEditingMember] = useState(null);
 
   const [newTeam, setNewTeam] = useState({ team_name: '', department: '', description: '' });
   const [newMember, setNewMember] = useState({
@@ -93,84 +94,86 @@ export default function Teams() {
       alert('Please fill in name and birth date');
       return;
     }
-    
+
     setCalculating(true);
-    
+
     try {
-      console.log('Calculating numerology for:', newMember.full_name, newMember.birth_date);
-      
-      // Calculate numerology
-      const response = await base44.functions.invoke('calculateNumerology', {
-        type: 'name',
-        name: newMember.full_name,
-        birthDate: newMember.birth_date
-      });
-
-      console.log('Numerology response:', response.data);
-
-      if (response.data?.success) {
-        const calc = response.data.data;
-        
-        console.log('Full calc response:', JSON.stringify(calc, null, 2));
-        console.log('lifePath object:', calc.lifePath);
-        console.log('expression object:', calc.expression);
-        
-        // Extract correct values from nested response
-        const lifePathWestern = calc.lifePath?.reduced || 0;
-        const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
-        const expressionWestern = calc.expression?.reduced || 0;
-        const soulUrgeWestern = calc.soulUrge?.reduced || 0;
-        const personalityWestern = calc.personality?.reduced || 0;
-        const birthdayNumber = calc.birthday?.reduced || 0;
-        const masterNumbers = calc.masterNumbers?.join(', ') || '';
-        const element = calc.astrology?.element || 'Earth';
-
-        console.log('Extracted values:', {
-          lifePathWestern,
-          lifePathChaldean,
-          expressionWestern,
-          soulUrgeWestern,
-          personalityWestern,
-          birthdayNumber,
-          masterNumbers,
-          element
-        });
-
-        await base44.entities.TeamMember.create({
-          team_id: selectedTeam.id,
+      if (editingMember) {
+        // Update existing member
+        await base44.entities.TeamMember.update(editingMember.id, {
           full_name: newMember.full_name,
           email: newMember.email || '',
           birth_date: newMember.birth_date,
           role: newMember.role || '',
           seniority: newMember.seniority,
-          life_path_western: lifePathWestern,
-          life_path_chaldean: lifePathChaldean,
-          expression_western: expressionWestern,
-          soul_urge_western: soulUrgeWestern,
-          personality_western: personalityWestern,
-          birthday_number: birthdayNumber,
-          master_numbers: masterNumbers,
-          element: element,
-          strengths: '',
-          weaknesses: '',
           work_style_challenges: newMember.work_style_challenges || ''
         });
-        
-        console.log('Team member created successfully');
-        
-        setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid', work_style_challenges: '' });
-        setShowAddMember(false);
-        await loadTeamMembers();
+        setEditingMember(null);
       } else {
-        console.error('Numerology calculation failed:', response.data);
-        alert('Failed to calculate profile: ' + (response.data?.error || 'Unknown error'));
+        // Calculate numerology for new member
+        const response = await base44.functions.invoke('calculateNumerology', {
+          type: 'name',
+          name: newMember.full_name,
+          birthDate: newMember.birth_date
+        });
+
+        if (response.data?.success) {
+          const calc = response.data.data;
+          const lifePathWestern = calc.lifePath?.reduced || 0;
+          const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
+          const expressionWestern = calc.expression?.reduced || 0;
+          const soulUrgeWestern = calc.soulUrge?.reduced || 0;
+          const personalityWestern = calc.personality?.reduced || 0;
+          const birthdayNumber = calc.birthday?.reduced || 0;
+          const masterNumbers = calc.masterNumbers?.join(', ') || '';
+          const element = calc.astrology?.element || 'Earth';
+
+          await base44.entities.TeamMember.create({
+            team_id: selectedTeam.id,
+            full_name: newMember.full_name,
+            email: newMember.email || '',
+            birth_date: newMember.birth_date,
+            role: newMember.role || '',
+            seniority: newMember.seniority,
+            life_path_western: lifePathWestern,
+            life_path_chaldean: lifePathChaldean,
+            expression_western: expressionWestern,
+            soul_urge_western: soulUrgeWestern,
+            personality_western: personalityWestern,
+            birthday_number: birthdayNumber,
+            master_numbers: masterNumbers,
+            element: element,
+            strengths: '',
+            weaknesses: '',
+            work_style_challenges: newMember.work_style_challenges || ''
+          });
+        } else {
+          alert('Failed to calculate profile: ' + (response.data?.error || 'Unknown error'));
+          return;
+        }
       }
+
+      setNewMember({ full_name: '', email: '', birth_date: '', role: '', seniority: 'mid', work_style_challenges: '' });
+      setShowAddMember(false);
+      await loadTeamMembers();
     } catch (error) {
-      console.error('Error adding member:', error);
-      alert('Error adding member: ' + (error.message || 'Unknown error'));
+      alert('Error: ' + (error.message || 'Unknown error'));
     } finally {
       setCalculating(false);
     }
+  };
+
+  const editMember = (member) => {
+    setEditingMember(member);
+    setNewMember({
+      full_name: member.full_name,
+      email: member.email || '',
+      birth_date: member.birth_date,
+      role: member.role || '',
+      seniority: member.seniority,
+      work_style_challenges: member.work_style_challenges || ''
+    });
+    setShowAddMember(true);
   };
 
   const deleteMember = async (memberId) => {
@@ -277,7 +280,7 @@ export default function Teams() {
                       </DialogTrigger>
                       <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
                         <DialogHeader className="pb-2">
-                          <DialogTitle className="text-white text-base">Add Team Member</DialogTitle>
+                          <DialogTitle className="text-white text-base">{editingMember ? 'Edit' : 'Add'} Team Member</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-2">
                           <Input
@@ -332,10 +335,10 @@ export default function Teams() {
                             {calculating ? (
                               <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Calculating Profile...
+                                {editingMember ? 'Updating...' : 'Calculating...'}
                               </>
                             ) : (
-                              'Add Member'
+                              editingMember ? 'Update Member' : 'Add Member'
                             )}
                           </Button>
                         </div>
@@ -359,14 +362,24 @@ export default function Teams() {
                               <p className="text-amber-300 text-xs mt-0.5">✨ {member.master_numbers}</p>
                             )}
                           </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => deleteMember(member.id)}
-                            className="text-red-400 hover:text-red-300 h-6 w-6 p-0"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => editMember(member)}
+                              className="text-blue-400 hover:text-blue-300 h-6 w-6 p-0"
+                            >
+                              <Pencil className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => deleteMember(member.id)}
+                              className="text-red-400 hover:text-red-300 h-6 w-6 p-0"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
