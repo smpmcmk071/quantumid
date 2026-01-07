@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Plus, Loader2, UserPlus, Trash2, Pencil, FlaskConical, X } from 'lucide-react';
+import { Users, Plus, Loader2, UserPlus, Trash2, Pencil, FlaskConical, X, Mail } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 
 export default function Teams() {
@@ -222,6 +222,20 @@ export default function Teams() {
     loadTeamMembers();
   };
 
+  const inviteMember = async (member) => {
+    if (!member.email) {
+      alert('Team member must have an email address to be invited');
+      return;
+    }
+    
+    try {
+      await base44.users.inviteUser(member.email, 'user');
+      alert(`Invitation sent to ${member.email}!\nThey can log in and complete their archetype test on "My Profile".`);
+    } catch (error) {
+      alert('Error sending invitation: ' + error.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 flex items-center justify-center">
@@ -403,15 +417,17 @@ export default function Teams() {
                             )}
                           </div>
                           <div className="flex gap-1">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => startArchetypeTest(member)}
-                              className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
-                              title="Archetype Test"
-                            >
-                              <FlaskConical className="w-3 h-3" />
-                            </Button>
+                            {member.email && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => inviteMember(member)}
+                                className="text-teal-400 hover:text-teal-300 h-6 w-6 p-0"
+                                title="Invite to take test"
+                              >
+                                <Mail className="w-3 h-3" />
+                              </Button>
+                            )}
                             <Button
                               size="sm"
                               variant="ghost"

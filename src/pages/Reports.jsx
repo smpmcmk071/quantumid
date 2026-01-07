@@ -15,6 +15,7 @@ export default function Reports() {
   const [memberMatrix, setMemberMatrix] = useState(null);
   const [archetypeBreakdown, setArchetypeBreakdown] = useState(null);
   const [allMembers, setAllMembers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -34,6 +35,10 @@ export default function Reports() {
       const memberPromises = teams.map(t => base44.entities.TeamMember.filter({ team_id: t.id }));
       const membersArrays = await Promise.all(memberPromises);
       setAllMembers(membersArrays.flat());
+      
+      // Load all users
+      const users = await base44.entities.User.list();
+      setAllUsers(users);
     }
     setLoading(false);
   };
@@ -184,38 +189,57 @@ export default function Reports() {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <User className="w-5 h-5 text-blue-400" />
-                Team Member Profiles
+                User Archetype Results
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-300 text-sm mb-4">
-                View detailed profiles, skills, and development goals for each team member.
+                View archetype test results for all users who have logged in and completed their assessment.
               </p>
-              <div className="max-h-32 overflow-y-auto space-y-2">
-                {allMembers.map(member => (
-                  <Link 
-                    key={member.id} 
-                    to={createPageUrl('MemberProfile') + '?id=' + member.id}
-                    className="block p-2 bg-slate-700/30 rounded hover:bg-slate-700/50 transition-colors"
+              <div className="max-h-64 overflow-y-auto space-y-2">
+                {allUsers.filter(u => u.archetype_primary).map(user => (
+                  <div 
+                    key={user.id} 
+                    className="block p-3 bg-slate-700/30 rounded border border-slate-600"
                   >
-                    <p className="text-white text-sm">{member.full_name}</p>
-                    <p className="text-gray-400 text-xs">{member.role}</p>
-                    {member.archetype_primary && (
-                      <div className="flex gap-1 mt-1">
-                        <span className="px-1.5 py-0.5 rounded text-xs bg-purple-500/20 text-purple-300">
-                          Test: {member.archetype_primary}
+                    <p className="text-white text-sm font-medium">{user.full_name}</p>
+                    <p className="text-gray-400 text-xs mb-2">{user.email}</p>
+                    {user.archetype_primary && (
+                      <div className="flex gap-2 flex-wrap">
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          user.archetype_primary === 'visionary' ? 'bg-purple-500/20 text-purple-300' :
+                          user.archetype_primary === 'strategist' ? 'bg-blue-500/20 text-blue-300' :
+                          user.archetype_primary === 'creator' ? 'bg-amber-500/20 text-amber-300' :
+                          'bg-green-500/20 text-green-300'
+                        }`}>
+                          Test: {user.archetype_primary}
                         </span>
-                        {member.archetype_primary_calculated && member.archetype_primary !== member.archetype_primary_calculated && (
-                          <span className="px-1.5 py-0.5 rounded text-xs bg-blue-500/20 text-blue-300">
-                            Calc: {member.archetype_primary_calculated}
+                        {user.archetype_secondary && (
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            user.archetype_secondary === 'visionary' ? 'bg-purple-500/10 text-purple-400' :
+                            user.archetype_secondary === 'strategist' ? 'bg-blue-500/10 text-blue-400' :
+                            user.archetype_secondary === 'creator' ? 'bg-amber-500/10 text-amber-400' :
+                            'bg-green-500/10 text-green-400'
+                          }`}>
+                            {user.archetype_secondary}
+                          </span>
+                        )}
+                        {user.archetype_primary_calculated && (
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            user.archetype_primary_calculated === 'visionary' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' :
+                            user.archetype_primary_calculated === 'strategist' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' :
+                            user.archetype_primary_calculated === 'creator' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
+                            'bg-green-500/10 text-green-400 border border-green-500/30'
+                          }`}>
+                            Calc: {user.archetype_primary_calculated}
                           </span>
                         )}
                       </div>
                     )}
-                  </Link>
+                  </div>
                 ))}
-                {allMembers.length === 0 && (
-                  <p className="text-gray-400 text-sm">No team members yet</p>
+                {allUsers.filter(u => u.archetype_primary).length === 0 && (
+                  <p className="text-gray-400 text-sm">No users have completed the archetype test yet</p>
                 )}
               </div>
             </CardContent>

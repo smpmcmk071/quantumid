@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 
@@ -210,6 +210,20 @@ export default function Candidates() {
     if (!confirm('Delete this candidate?')) return;
     await base44.entities.Candidate.delete(candidateId);
     loadData();
+  };
+
+  const inviteCandidate = async (candidate) => {
+    if (!candidate.email) {
+      alert('Candidate must have an email address to be invited');
+      return;
+    }
+    
+    try {
+      await base44.users.inviteUser(candidate.email, 'user');
+      alert(`Invitation sent to ${candidate.email}!\nThey can log in and complete their archetype test on "My Profile".`);
+    } catch (error) {
+      alert('Error sending invitation: ' + error.message);
+    }
   };
 
   const startArchetypeTest = (candidate) => {
@@ -447,17 +461,18 @@ export default function Candidates() {
                   </div>
                   
                   <div className="flex gap-2">
-                    {!candidate.archetype_primary && (
+                    {candidate.email && (
                       <Button
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          startArchetypeTest(candidate);
+                          inviteCandidate(candidate);
                         }}
-                        className="bg-purple-600 hover:bg-purple-700 h-8"
+                        className="bg-teal-600 hover:bg-teal-700 h-8"
+                        title="Invite to take archetype test"
                       >
-                        <FlaskConical className="w-3 h-3 mr-1" />
-                        Test
+                        <Mail className="w-3 h-3 mr-1" />
+                        Invite
                       </Button>
                     )}
                     <Select value={candidate.status} onValueChange={(v) => updateStatus(candidate.id, v)}>

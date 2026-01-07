@@ -22,7 +22,9 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout('/');
   };
 
-  const navItems = [
+  const isAdmin = user?.role === 'admin';
+
+  const navItems = isAdmin ? [
     { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
     { name: 'My Profile', page: 'MyProfile', icon: User },
     { name: 'Teams', page: 'Teams', icon: Users },
@@ -31,6 +33,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Team Builder', page: 'Analyzer', icon: Target },
     { name: 'Meeting Planner', page: 'MeetingPlanner', icon: LayoutDashboard },
     { name: 'Reports', page: 'Reports', icon: TrendingUp }
+  ] : [
+    { name: 'My Profile', page: 'MyProfile', icon: User }
   ];
 
   return (
