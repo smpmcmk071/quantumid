@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 
@@ -35,6 +35,12 @@ export default function Candidates() {
   const [teams, setTeams] = useState([]);
   const [editingCandidate, setEditingCandidate] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showAddToTeam, setShowAddToTeam] = useState(false);
+  const [selectedCandidateForTeam, setSelectedCandidateForTeam] = useState(null);
+  const [selectedTeamId, setSelectedTeamId] = useState('');
+  const [memberRole, setMemberRole] = useState('');
+  const [memberSeniority, setMemberSeniority] = useState('mid');
+  const [addingToTeam, setAddingToTeam] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -254,6 +260,60 @@ export default function Candidates() {
     setShowEditDialog(false);
     setEditingCandidate(null);
     loadData();
+  };
+
+  const startAddToTeam = (candidate) => {
+    setSelectedCandidateForTeam(candidate);
+    setMemberRole(candidate.previous_roles?.split(',')[0] || '');
+    setShowAddToTeam(true);
+  };
+
+  const addCandidateToTeam = async () => {
+    if (!selectedTeamId || !memberRole) {
+      alert('Please select a team and enter a role');
+      return;
+    }
+
+    setAddingToTeam(true);
+
+    try {
+      await base44.entities.TeamMember.create({
+        team_id: selectedTeamId,
+        full_name: selectedCandidateForTeam.full_name,
+        email: selectedCandidateForTeam.email,
+        birth_date: selectedCandidateForTeam.birth_date,
+        role: memberRole,
+        seniority: memberSeniority,
+        life_path_western: selectedCandidateForTeam.life_path_western,
+        life_path_chaldean: selectedCandidateForTeam.life_path_chaldean,
+        expression_western: selectedCandidateForTeam.expression_western,
+        soul_urge_western: selectedCandidateForTeam.soul_urge_western,
+        personality_western: selectedCandidateForTeam.personality_western,
+        birthday_number: selectedCandidateForTeam.birthday_number,
+        master_numbers: selectedCandidateForTeam.master_numbers,
+        element: selectedCandidateForTeam.element,
+        chinese_zodiac: selectedCandidateForTeam.chinese_zodiac,
+        chinese_animal: selectedCandidateForTeam.chinese_animal,
+        sun_sign: selectedCandidateForTeam.sun_sign,
+        archetype_primary: selectedCandidateForTeam.archetype_primary,
+        archetype_secondary: selectedCandidateForTeam.archetype_secondary,
+        skills: selectedCandidateForTeam.extracted_skills || ''
+      });
+
+      // Update candidate status to hired
+      await base44.entities.Candidate.update(selectedCandidateForTeam.id, { status: 'hired' });
+
+      setShowAddToTeam(false);
+      setSelectedCandidateForTeam(null);
+      setSelectedTeamId('');
+      setMemberRole('');
+      alert('Candidate successfully added to team!');
+      loadData();
+    } catch (error) {
+      alert('Error adding to team: ' + error.message);
+    } finally {
+      setAddingToTeam(false);
+    }
   };
 
   const startArchetypeTest = (candidate) => {
@@ -643,6 +703,69 @@ export default function Candidates() {
                   className="w-full bg-teal-600 hover:bg-teal-700"
                 >
                   Save Changes
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Add to Team Dialog */}
+        {showAddToTeam && selectedCandidateForTeam && (
+          <Dialog open={showAddToTeam} onOpenChange={setShowAddToTeam}>
+            <DialogContent className="bg-slate-800 border-slate-700">
+              <DialogHeader>
+                <DialogTitle className="text-white">Add {selectedCandidateForTeam.full_name} to Team</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-gray-300 text-sm mb-2 block">Select Team</label>
+                  <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+                    <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                      <SelectValue placeholder="Choose team..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.map(team => (
+                        <SelectItem key={team.id} value={team.id}>
+                          {team.team_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Input
+                  placeholder="Role/Position *"
+                  value={memberRole}
+                  onChange={(e) => setMemberRole(e.target.value)}
+                  className="bg-slate-900 border-slate-700 text-white"
+                />
+                <Select value={memberSeniority} onValueChange={setMemberSeniority}>
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="junior">Junior</SelectItem>
+                    <SelectItem value="mid">Mid-Level</SelectItem>
+                    <SelectItem value="senior">Senior</SelectItem>
+                    <SelectItem value="lead">Lead</SelectItem>
+                    <SelectItem value="manager">Manager</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={addCandidateToTeam}
+                  disabled={!selectedTeamId || !memberRole || addingToTeam}
+                  className="w-full bg-teal-600 hover:bg-teal-700"
+                >
+                  {addingToTeam ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Adding to Team...
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-4 h-4 mr-2" />
+                      Add to Team
+                    </>
+                  )}
                 </Button>
               </div>
             </DialogContent>
