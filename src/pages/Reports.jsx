@@ -16,6 +16,7 @@ export default function Reports() {
   const [archetypeBreakdown, setArchetypeBreakdown] = useState(null);
   const [allMembers, setAllMembers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [allCandidates, setAllCandidates] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -35,6 +36,10 @@ export default function Reports() {
       const memberPromises = teams.map(t => base44.entities.TeamMember.filter({ team_id: t.id }));
       const membersArrays = await Promise.all(memberPromises);
       setAllMembers(membersArrays.flat());
+      
+      // Load all candidates
+      const candidates = await base44.entities.Candidate.filter({ client_id: c.id });
+      setAllCandidates(candidates);
       
       // Load all users
       const users = await base44.entities.User.list();
@@ -245,6 +250,123 @@ export default function Reports() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Team Members List */}
+        <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Users className="w-5 h-5 text-teal-400" />
+              Team Members ({allMembers.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {allMembers.map(member => (
+                <div 
+                  key={member.id} 
+                  className="p-3 bg-slate-700/30 rounded border border-slate-600 hover:border-teal-500 transition-colors"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-white font-medium">{member.full_name}</p>
+                      <p className="text-gray-400 text-sm">{member.role} • {member.seniority}</p>
+                      <div className="flex gap-3 mt-2 text-xs">
+                        <span className="text-amber-400">LP: {member.life_path_western}</span>
+                        <span className="text-purple-400">Expr: {member.expression_western}</span>
+                        <span className="text-blue-400">{member.element}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 items-end">
+                      {member.archetype_primary && (
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          member.archetype_primary === 'visionary' ? 'bg-purple-500/20 text-purple-300' :
+                          member.archetype_primary === 'strategist' ? 'bg-blue-500/20 text-blue-300' :
+                          member.archetype_primary === 'creator' ? 'bg-amber-500/20 text-amber-300' :
+                          'bg-green-500/20 text-green-300'
+                        }`}>
+                          {member.archetype_primary}
+                        </span>
+                      )}
+                      {member.potential_level === 'High-Potential' && (
+                        <span className="px-2 py-1 rounded text-xs bg-yellow-500/20 text-yellow-300">
+                          ✨ High-Potential
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Candidates List */}
+        <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Target className="w-5 h-5 text-blue-400" />
+              Candidates ({allCandidates.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {allCandidates.map(candidate => (
+                <div 
+                  key={candidate.id} 
+                  className="p-3 bg-slate-700/30 rounded border border-slate-600 hover:border-blue-500 transition-colors"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="text-white font-medium">{candidate.full_name}</p>
+                      <p className="text-gray-400 text-sm">{candidate.email}</p>
+                      <div className="flex gap-3 mt-2 text-xs">
+                        <span className="text-amber-400">LP: {candidate.life_path_western}</span>
+                        <span className="text-purple-400">Expr: {candidate.expression_western}</span>
+                        <span className="text-blue-400">{candidate.element}</span>
+                        {candidate.years_experience > 0 && (
+                          <span className="text-teal-400">{candidate.years_experience} yrs exp</span>
+                        )}
+                      </div>
+                      {candidate.extracted_skills && (
+                        <p className="text-gray-500 text-xs mt-1">Skills: {candidate.extracted_skills}</p>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-1 items-end">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                        candidate.status === 'new' ? 'bg-blue-500/20 text-blue-300' :
+                        candidate.status === 'screening' ? 'bg-yellow-500/20 text-yellow-300' :
+                        candidate.status === 'interviewing' ? 'bg-purple-500/20 text-purple-300' :
+                        candidate.status === 'offer' ? 'bg-green-500/20 text-green-300' :
+                        candidate.status === 'hired' ? 'bg-green-700/20 text-green-400' :
+                        'bg-red-500/20 text-red-300'
+                      }`}>
+                        {candidate.status}
+                      </span>
+                      {candidate.archetype_primary && (
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          candidate.archetype_primary === 'visionary' ? 'bg-purple-500/20 text-purple-300' :
+                          candidate.archetype_primary === 'strategist' ? 'bg-blue-500/20 text-blue-300' :
+                          candidate.archetype_primary === 'creator' ? 'bg-amber-500/20 text-amber-300' :
+                          'bg-green-500/20 text-green-300'
+                        }`}>
+                          {candidate.archetype_primary}
+                        </span>
+                      )}
+                      {candidate.potential_level === 'High-Potential' && (
+                        <span className="px-2 py-1 rounded text-xs bg-yellow-500/20 text-yellow-300">
+                          ✨ High-Potential
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {allCandidates.length === 0 && (
+                <p className="text-gray-400 text-sm text-center py-4">No candidates added yet</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Organization Report */}
         {orgReport && (
