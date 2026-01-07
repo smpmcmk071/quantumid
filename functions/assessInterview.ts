@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { encrypt } from './encryptionUtils.js';
 
 Deno.serve(async (req) => {
   try {
@@ -58,10 +59,14 @@ Provide:
       }
     });
 
-    // Update candidate with interview data
+    // Encrypt sensitive data before storing
+    const encryptedResponses = await encrypt(interviewResponses);
+    const encryptedAssessment = await encrypt(JSON.stringify(assessment));
+    
+    // Update candidate with encrypted interview data
     await base44.entities.Candidate.update(candidateId, {
-      interview_responses: interviewResponses,
-      interview_assessment: JSON.stringify(assessment),
+      interview_responses: encryptedResponses,
+      interview_assessment: encryptedAssessment,
       interview_score: assessment.overall_score,
       interview_summary: assessment.summary
     });

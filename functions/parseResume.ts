@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { encrypt } from './encryptionUtils.js';
 
 Deno.serve(async (req) => {
   try {
@@ -9,7 +10,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { resumeText } = await req.json();
+    const { resumeText, encrypt: shouldEncrypt = true } = await req.json();
     
     if (!resumeText) {
       return Response.json({ error: 'Resume text required' }, { status: 400 });
