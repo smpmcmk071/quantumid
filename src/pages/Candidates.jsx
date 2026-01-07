@@ -322,7 +322,11 @@ export default function Candidates() {
   };
 
   const startEditCandidate = (candidate) => {
-    setEditingCandidate({ ...candidate });
+    setEditingCandidate({ 
+      ...candidate,
+      resume_text: candidate.resume_text || '',
+      extracted_skills: candidate.extracted_skills || ''
+    });
     setShowEditDialog(true);
   };
 
@@ -332,12 +336,74 @@ export default function Candidates() {
     await base44.entities.Candidate.update(editingCandidate.id, {
       email: editingCandidate.email,
       full_name: editingCandidate.full_name,
-      birth_date: editingCandidate.birth_date
+      birth_date: editingCandidate.birth_date,
+      resume_text: editingCandidate.resume_text || '',
+      extracted_skills: editingCandidate.extracted_skills || ''
     });
     
     setShowEditDialog(false);
     setEditingCandidate(null);
     loadData();
+  };
+
+  const parseResumeForEdit = async () => {
+    if (!editingCandidate?.resume_text) return;
+    
+    setParsing(true);
+    const response = await base44.functions.invoke('parseResume', {
+      resumeText: editingCandidate.resume_text
+    });
+    
+    if (response.data?.success) {
+      const data = response.data.data;
+      setEditingCandidate({
+        ...editingCandidate,
+        full_name: data.full_name || editingCandidate.full_name,
+        email: data.email || editingCandidate.email,
+        extracted_skills: data.extracted_skills || editingCandidate.extracted_skills
+      });
+    }
+    setParsing(false);
+  };
+
+  const handleEditResumeFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingFile(true);
+    
+    try {
+      const uploadResponse = await base44.integrations.Core.UploadFile({ file });
+      const fileUrl = uploadResponse.file_url;
+      
+      const extractResponse = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url: fileUrl,
+        json_schema: {
+          type: 'object',
+          properties: {
+            full_name: { type: 'string' },
+            email: { type: 'string' },
+            skills: { type: 'array', items: { type: 'string' } },
+            resume_text: { type: 'string' }
+          }
+        }
+      });
+      
+      if (extractResponse.status === 'success' && extractResponse.output) {
+        const data = extractResponse.output;
+        setEditingCandidate({
+          ...editingCandidate,
+          full_name: data.full_name || editingCandidate.full_name,
+          email: data.email || editingCandidate.email,
+          resume_text: data.resume_text || editingCandidate.resume_text,
+          extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || editingCandidate.extracted_skills
+        });
+      }
+    } catch (error) {
+      alert('Error processing file: ' + error.message);
+    } finally {
+      setUploadingFile(false);
+    }
   };
 
   const startAddToTeam = (candidate) => {
@@ -862,33 +928,94 @@ export default function Candidates() {
         {/* Edit Candidate Dialog */}
         {showEditDialog && editingCandidate && (
           <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-            <DialogContent className="bg-slate-800 border-slate-700">
+            <DialogContent className="bg-slate-800 border-slate-700 max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-white">Edit Candidate</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-3">
+                <div>
+                  <label className="text-gray-300 text-xs mb-1 block">Resume Upload</label>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt"
+                    onChange={handleEditResumeFileUpload}
+                    disabled={uploadingFile}
+                    className="block w-full text-sm text-gray-300 bg-slate-900 border border-slate-700 rounded px-3 py-2 cursor-pointer hover:bg-slate-800"
+                  />
+                  {uploadingFile && (
+                    <p className="text-xs text-teal-400 mt-1 flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Processing file...
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-700"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-slate-800 px-2 text-gray-400">OR paste text</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-gray-300 text-xs mb-1 block">Resume Text</label>
+                  <Textarea
+                    placeholder="Paste resume text here..."
+                    value={editingCandidate.resume_text || ''}
+                    onChange={(e) => setEditingCandidate({ ...editingCandidate, resume_text: e.target.value })}
+                    className="bg-slate-900 border-slate-700 text-white text-sm h-24"
+                  />
+                  <Button
+                    onClick={parseResumeForEdit}
+                    disabled={parsing || !editingCandidate.resume_text}
+                    size="sm"
+                    className="mt-1 bg-teal-600 hover:bg-teal-700 h-7 text-xs"
+                  >
+                    {parsing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Parsing...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        Parse Resume with AI
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {editingCandidate.extracted_skills && (
+                  <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
+                    <p className="text-green-300 text-xs font-medium">✓ AI Extracted Skills</p>
+                    <p className="text-gray-300 text-xs mt-0.5">{editingCandidate.extracted_skills}</p>
+                  </div>
+                )}
+
                 <Input
                   placeholder="Full Name"
                   value={editingCandidate.full_name}
                   onChange={(e) => setEditingCandidate({ ...editingCandidate, full_name: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white"
+                  className="bg-slate-900 border-slate-700 text-white text-sm h-8"
                 />
                 <Input
                   placeholder="Email"
                   type="email"
                   value={editingCandidate.email || ''}
                   onChange={(e) => setEditingCandidate({ ...editingCandidate, email: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white"
+                  className="bg-slate-900 border-slate-700 text-white text-sm h-8"
                 />
                 <Input
                   type="date"
                   value={editingCandidate.birth_date}
                   onChange={(e) => setEditingCandidate({ ...editingCandidate, birth_date: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white"
+                  className="bg-slate-900 border-slate-700 text-white text-sm h-8"
                 />
                 <Button
                   onClick={saveEditCandidate}
-                  className="w-full bg-teal-600 hover:bg-teal-700"
+                  className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm"
                 >
                   Save Changes
                 </Button>
