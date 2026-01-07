@@ -152,7 +152,10 @@ export default function Candidates() {
   };
 
   const addCandidate = async () => {
-    if (!client || !newCandidate.full_name || !newCandidate.birth_date) return;
+    if (!client || !newCandidate.full_name || !newCandidate.birth_date || !newCandidate.email) {
+      alert('Please fill in Name, Email, and Birth Date');
+      return;
+    }
     
     setCalculating(true);
     
@@ -411,7 +414,7 @@ export default function Candidates() {
 
                 <Button
                   onClick={addCandidate}
-                  disabled={calculating || !newCandidate.full_name || !newCandidate.birth_date}
+                  disabled={calculating || !newCandidate.full_name || !newCandidate.birth_date || !newCandidate.email}
                   className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm mt-2"
                 >
                   {calculating ? (

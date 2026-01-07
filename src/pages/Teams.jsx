@@ -106,8 +106,8 @@ export default function Teams() {
   };
 
   const addMember = async () => {
-    if (!selectedTeam || !newMember.full_name || !newMember.birth_date) {
-      alert('Please fill in name and birth date');
+    if (!selectedTeam || !newMember.full_name || !newMember.birth_date || !newMember.email) {
+      alert('Please fill in Name, Email, and Birth Date');
       return;
     }
 
@@ -389,7 +389,7 @@ export default function Teams() {
                           </Select>
                           <Button
                             onClick={addMember}
-                            disabled={calculating || !newMember.full_name || !newMember.birth_date}
+                            disabled={calculating || !newMember.full_name || !newMember.birth_date || !newMember.email}
                             className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm mt-2"
                           >
                             {calculating ? (
