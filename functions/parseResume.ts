@@ -18,32 +18,41 @@ Deno.serve(async (req) => {
 
     // Use AI to extract structured data from resume
     const response = await base44.integrations.Core.InvokeLLM({
-      prompt: `Extract the following information from this resume. Return as JSON.
+      prompt: `You are parsing a resume. Extract ONLY the information that is explicitly present. DO NOT MAKE UP OR GUESS ANY DATA.
 
 Resume:
 ${resumeText}
 
-Extract:
-- full_name (string) - ONLY if a clear person's name is present (e.g., "John Smith", "Jane Doe"). Do NOT extract job titles, descriptions, or company names as names. If no clear name found, return empty string.
-- email (string) - ONLY if an email address is found. If no email, return empty string.
-- skills (array of strings - technical and soft skills mentioned)
-- years_experience (number - IMPORTANT: if text says "4+" or "over 4 years" extract as number 4, if "10+ years" extract as 10, etc. Extract the base number only.)
-- education (string - highest degree and institution)
-- previous_roles (array of objects with: title, company, duration)
+Extract ONLY if explicitly found:
+- full_name: A person's actual name (e.g., "Sarah Johnson", "Michael Chen"). 
+  ❌ WRONG: "An enthusiastic designer", "Senior Developer", "Designer", "Anonymous Designer"
+  ✅ CORRECT: Only extract if you see "Name: John Smith" or similar clear name indicators
+  If NO PERSON NAME is found, return null.
 
-CRITICAL RULES:
-1. For full_name: ONLY extract actual person names like "John Smith". Do NOT extract "An enthusiastic designer" or job titles.
-2. For years_experience: Convert "4+", "over 4 years", "4 years of experience" to just the number 4.
-3. If a field is not clearly found, return empty string/array, NOT a guess.
+- email: An email address (e.g., "john@example.com"). If none found, return null.
+
+- skills: Array of technical/soft skills mentioned (e.g., ["design", "communication", "project management"])
+
+- years_experience: Extract the NUMBER ONLY from phrases like "4+ years", "over 4 years" → 4
+  If it says "4+" return 4. If "10+ years" return 10.
+
+- education: Highest degree and institution if mentioned
+
+- previous_roles: Job titles and companies if mentioned
+
+STRICT RULES:
+1. If resume says "An enthusiastic designer..." - that's a DESCRIPTION, NOT a name. Return null for full_name.
+2. Only extract full_name if you see format like "Name: [First Last]" or at the top like a heading.
+3. If uncertain about any field, return null/empty rather than guessing.
 
 Return format:
 {
-  "full_name": "",
-  "email": "",
+  "full_name": null,
+  "email": null,
   "skills": [],
   "years_experience": 0,
-  "education": "",
-  "previous_roles": [{"title": "", "company": "", "duration": ""}]
+  "education": null,
+  "previous_roles": []
 }`,
       response_json_schema: {
         type: 'object',
@@ -68,18 +77,38 @@ Return format:
       }
     });
 
-    // Only include fields that were actually found (not empty)
+    // Validate and filter extracted data - only include what's actually found
     const extractedData = {};
     
-    if (response.full_name?.trim()) extractedData.full_name = response.full_name.trim();
-    if (response.email?.trim()) extractedData.email = response.email.trim();
+    // Validate full_name - reject job titles/descriptions
+    const invalidNames = ['designer', 'developer', 'engineer', 'manager', 'enthusiastic', 'anonymous', 'candidate'];
+    const nameText = response.full_name?.toLowerCase() || '';
+    const isValidName = response.full_name?.trim() && 
+                        !invalidNames.some(invalid => nameText.includes(invalid)) &&
+                        response.full_name.split(' ').length >= 2 && // At least first and last name
+                        response.full_name.split(' ').length <= 4;   // Not a long description
+    
+    if (isValidName) {
+      extractedData.full_name = response.full_name.trim();
+    }
+    
+    // Email must be valid format
+    if (response.email?.trim() && response.email.includes('@')) {
+      extractedData.email = response.email.trim();
+    }
+    
     if (response.skills && response.skills.length > 0) {
       extractedData.extracted_skills = response.skills.join(', ');
     }
+    
     if (response.years_experience && response.years_experience > 0) {
       extractedData.years_experience = response.years_experience;
     }
-    if (response.education?.trim()) extractedData.education = response.education.trim();
+    
+    if (response.education?.trim()) {
+      extractedData.education = response.education.trim();
+    }
+    
     if (response.previous_roles && response.previous_roles.length > 0) {
       extractedData.previous_roles = response.previous_roles
         .map(r => `${r.title} at ${r.company} (${r.duration})`)
