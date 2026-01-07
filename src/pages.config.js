@@ -8,6 +8,7 @@ import MeetingPlanner from './pages/MeetingPlanner';
 import MemberProfile from './pages/MemberProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
+import MyProfile from './pages/MyProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +23,7 @@ export const PAGES = {
     "MemberProfile": MemberProfile,
     "Reports": Reports,
     "Teams": Teams,
+    "MyProfile": MyProfile,
 }
 
 export const pagesConfig = {

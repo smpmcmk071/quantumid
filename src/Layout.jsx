@@ -24,6 +24,7 @@ export default function Layout({ children, currentPageName }) {
 
   const navItems = [
     { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
+    { name: 'My Profile', page: 'MyProfile', icon: User },
     { name: 'Teams', page: 'Teams', icon: Users },
     { name: 'Candidates', page: 'Candidates', icon: UserPlus },
     { name: 'Jobs', page: 'JobPostings', icon: Briefcase },

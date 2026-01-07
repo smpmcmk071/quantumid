@@ -57,7 +57,20 @@ export default function Teams() {
   const loadTeamMembers = async () => {
     if (!selectedTeam) return;
     const members = await base44.entities.TeamMember.filter({ team_id: selectedTeam.id });
-    setTeamMembers(members);
+    
+    // Auto-classify members without archetypes
+    for (const member of members) {
+      if (!member.archetype_primary && member.life_path_western) {
+        await base44.functions.invoke('classifyArchetype', {
+          personId: member.id,
+          entityType: 'TeamMember'
+        });
+      }
+    }
+    
+    // Reload after classification
+    const updatedMembers = await base44.entities.TeamMember.filter({ team_id: selectedTeam.id });
+    setTeamMembers(updatedMembers);
   };
 
   const createTeam = async () => {

@@ -47,9 +47,21 @@ export default function Candidates() {
       const c = clients[0];
       setClient(c);
       const cands = await base44.entities.Candidate.filter({ client_id: c.id });
+      
+      // Auto-classify candidates without archetypes
+      for (const candidate of cands) {
+        if (!candidate.archetype_primary && candidate.life_path_western) {
+          await base44.functions.invoke('classifyArchetype', {
+            personId: candidate.id,
+            entityType: 'Candidate'
+          });
+        }
+      }
+      
+      const updatedCands = await base44.entities.Candidate.filter({ client_id: c.id });
       const j = await base44.entities.JobPosting.filter({ client_id: c.id, status: 'open' });
       const t = await base44.entities.Team.filter({ client_id: c.id });
-      setCandidates(cands);
+      setCandidates(updatedCands);
       setJobs(j);
       setTeams(t);
     }

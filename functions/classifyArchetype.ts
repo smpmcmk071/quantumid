@@ -85,9 +85,16 @@ Deno.serve(async (req) => {
     }
 
     // Fetch person data
-    const person = entityType === 'TeamMember' 
-      ? await base44.entities.TeamMember.get(personId)
-      : await base44.entities.Candidate.get(personId);
+    let person;
+    if (entityType === 'TeamMember') {
+      person = await base44.entities.TeamMember.get(personId);
+    } else if (entityType === 'Candidate') {
+      person = await base44.entities.Candidate.get(personId);
+    } else if (entityType === 'User') {
+      person = await base44.asServiceRole.entities.User.get(personId);
+    } else {
+      return Response.json({ error: 'Invalid entity type' }, { status: 400 });
+    }
 
     const classification = classifyPerson(
       person.life_path_western,
@@ -104,8 +111,11 @@ Deno.serve(async (req) => {
 
     if (entityType === 'TeamMember') {
       await base44.entities.TeamMember.update(personId, updateData);
-    } else {
+    } else if (entityType === 'Candidate') {
       await base44.entities.Candidate.update(personId, updateData);
+    } else if (entityType === 'User') {
+      // For users, we don't update directly, return data for caller to handle
+      // (User entity updates must go through auth.updateMe)
     }
 
     return Response.json({
