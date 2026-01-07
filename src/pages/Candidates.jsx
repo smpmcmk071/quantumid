@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users, Target } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users, Target, ClipboardCheck } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
+import InterviewAssessment from '../components/candidates/InterviewAssessment';
 
 export default function Candidates() {
   const [client, setClient] = useState(null);
@@ -46,6 +47,8 @@ export default function Candidates() {
   const [compatibilityTeamId, setCompatibilityTeamId] = useState('');
   const [compatibilityJobId, setCompatibilityJobId] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
+  const [showInterviewAssessment, setShowInterviewAssessment] = useState(false);
+  const [assessingCandidate, setAssessingCandidate] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -540,7 +543,19 @@ export default function Candidates() {
                       <span className={`text-sm font-mono ${candidate.email ? 'text-teal-300' : 'text-red-400'}`}>
                         {candidate.email || '❌ NO EMAIL SAVED'}
                       </span>
-                    </div>
+                      </div>
+
+                      {candidate.interview_score && (
+                      <div className="mt-2 p-2 bg-purple-500/10 rounded border border-purple-500/20">
+                        <div className="flex items-center justify-between">
+                          <span className="text-purple-300 text-xs font-medium">Interview Score</span>
+                          <span className="text-purple-400 text-lg font-bold">{candidate.interview_score}/100</span>
+                        </div>
+                        {candidate.interview_summary && (
+                          <p className="text-gray-400 text-xs mt-1">{candidate.interview_summary}</p>
+                        )}
+                      </div>
+                      )}
                     
                     <div className="text-gray-500 text-xs">
                       Birth Date: <span className="text-gray-400">{candidate.birth_date || 'N/A'}</span>
@@ -613,6 +628,19 @@ export default function Candidates() {
                         Invite
                       </Button>
                     )}
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAssessingCandidate(candidate);
+                        setShowInterviewAssessment(true);
+                      }}
+                      className="bg-indigo-600 hover:bg-indigo-700 h-8"
+                      title="Interview assessment"
+                    >
+                      <ClipboardCheck className="w-3 h-3 mr-1" />
+                      Interview
+                    </Button>
                     <Button
                       size="sm"
                       onClick={(e) => {
@@ -825,6 +853,46 @@ export default function Candidates() {
               </div>
             </DialogContent>
           </Dialog>
+        )}
+
+        {/* Interview Assessment Dialog */}
+        {showInterviewAssessment && assessingCandidate && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
+            <div className="max-w-3xl mx-auto my-8">
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">
+                      Interview Assessment: {assessingCandidate.full_name}
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setShowInterviewAssessment(false);
+                        setAssessingCandidate(null);
+                      }}
+                    >
+                      <X className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Paste interview responses and get AI-powered assessment
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <InterviewAssessment
+                    candidate={assessingCandidate}
+                    onComplete={() => {
+                      loadData();
+                      setShowInterviewAssessment(false);
+                      setAssessingCandidate(null);
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         )}
 
         {/* Compatibility Analysis Dialog */}
