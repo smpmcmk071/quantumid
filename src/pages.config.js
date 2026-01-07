@@ -10,6 +10,7 @@ import MemberProfile from './pages/MemberProfile';
 import MyProfile from './pages/MyProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
+import BirthdayInsights from './pages/BirthdayInsights';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "Reports": Reports,
     "Teams": Teams,
+    "BirthdayInsights": BirthdayInsights,
 }
 
 export const pagesConfig = {
