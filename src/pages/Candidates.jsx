@@ -173,6 +173,12 @@ export default function Candidates() {
     
     setCalculating(true);
     
+    // Encrypt resume text before storing
+    const encryptResponse = await base44.functions.invoke('encryptData', {
+      data: newCandidate.resume_text
+    });
+    const encryptedResume = encryptResponse.data?.encrypted || newCandidate.resume_text;
+    
     // Calculate numerology
     const response = await base44.functions.invoke('calculateNumerology', {
       type: 'name',
@@ -198,7 +204,7 @@ export default function Candidates() {
         full_name: newCandidate.full_name,
         email: newCandidate.email,
         birth_date: newCandidate.birth_date,
-        resume_text: newCandidate.resume_text,
+        resume_text: encryptedResume,
         extracted_skills: newCandidate.extracted_skills || '',
         years_experience: newCandidate.years_experience || 0,
         education: newCandidate.education || '',
