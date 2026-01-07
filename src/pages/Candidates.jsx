@@ -219,7 +219,11 @@ export default function Candidates() {
   };
 
   const addCandidate = async () => {
-    if (!client || !newCandidate.full_name || !newCandidate.birth_date || !newCandidate.email) {
+    const trimmedName = newCandidate.full_name?.trim();
+    const trimmedEmail = newCandidate.email?.trim();
+    const trimmedBirthDate = newCandidate.birth_date?.trim();
+
+    if (!client || !trimmedName || !trimmedBirthDate || !trimmedEmail) {
       alert('Please fill in Name, Email, and Birth Date');
       return;
     }
@@ -235,8 +239,8 @@ export default function Candidates() {
     // Calculate numerology
     const response = await base44.functions.invoke('calculateNumerology', {
       type: 'name',
-      name: newCandidate.full_name,
-      birthDate: newCandidate.birth_date
+      name: trimmedName,
+      birthDate: trimmedBirthDate
     });
 
     if (response.data?.success) {
@@ -254,9 +258,9 @@ export default function Candidates() {
 
       await base44.entities.Candidate.create({
         client_id: client.id,
-        full_name: newCandidate.full_name,
-        email: newCandidate.email,
-        birth_date: newCandidate.birth_date,
+        full_name: trimmedName,
+        email: trimmedEmail,
+        birth_date: trimmedBirthDate,
         resume_text: encryptedResume,
         extracted_skills: newCandidate.extracted_skills || '',
         years_experience: newCandidate.years_experience || 0,
@@ -550,6 +554,9 @@ export default function Candidates() {
                   value={newCandidate.full_name}
                   onChange={(e) => setNewCandidate({ ...newCandidate, full_name: e.target.value })}
                   className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
                 />
                 <div>
                   <label className="text-gray-300 text-xs mb-0.5 block">Email *</label>
@@ -559,6 +566,9 @@ export default function Candidates() {
                     value={newCandidate.email}
                     onChange={(e) => setNewCandidate({ ...newCandidate, email: e.target.value })}
                     className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                    autoComplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
                   />
                 </div>
                 <div>
@@ -568,6 +578,9 @@ export default function Candidates() {
                     value={newCandidate.birth_date}
                     onChange={(e) => setNewCandidate({ ...newCandidate, birth_date: e.target.value })}
                     className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                    autoComplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
                   />
                 </div>
                 <Select value={newCandidate.status} onValueChange={(v) => setNewCandidate({ ...newCandidate, status: v })}>
