@@ -58,12 +58,17 @@ ${membersWithArchetype.map((m, i) =>
 ${task ? `Task for teams: ${task}` : 'General purpose teams'}
 
 Rules:
-1. CRITICAL: Each team must have EXACTLY ${teamSize} members total
+1. CRITICAL: Each team must have EXACTLY ${teamSize} members total - DO NOT ADD EXTRA PEOPLE
 2. Each team should have a balanced mix of archetypes when possible
 3. Prioritize people with Master Numbers (11, 22, 33) as they have higher potential
 4. Distribute Master Number holders across teams
 5. Consider work style challenges - if someone prefers solo work, give them analytical/independent roles
-6. Assign specific roles within each team based on the archetype and life path
+6. Assign specific roles within each team based on team size and archetype:
+   - Every team needs a Team Leader (visionary/high life path)
+   - For 2+ people: add Analyst/Planner (strategist)
+   - For 3+ people: add Creative Lead (creator)
+   - For 4+ people: add Support/Coordinator (harmonizer)
+   - Use roles that fit the actual team size, don't create roles for people that don't exist
 7. Explain why each person fits their role based on their numerology AND how their challenges are accommodated
 
 Return as JSON with this structure:
