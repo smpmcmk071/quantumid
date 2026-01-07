@@ -37,10 +37,11 @@ Deno.serve(async (req) => {
       );
 
       // Extract Universal Day and Personal Days
-      const universalDay = calcs[0]?.data?.data?.universalDayNumber?.reduced || 0;
+      const firstCalc = calcs[0]?.data?.data;
+      const universalDay = firstCalc?.dayNumbers?.universalDay || 0;
       const personalDays = calcs.map((c, i) => ({
         name: members[i].full_name,
-        personalDay: c?.data?.data?.personalDayNumber?.reduced || 0,
+        personalDay: c?.data?.data?.dayNumbers?.personalDay || 0,
         lifePath: members[i].life_path_western
       }));
 
