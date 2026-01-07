@@ -123,7 +123,8 @@ export default function Teams() {
         const personalityWestern = calc.personality?.reduced || 0;
         const birthdayNumber = calc.birthday?.reduced || 0;
         const masterNumbers = calc.masterNumbers?.join(', ') || '';
-        
+        const element = calc.astrology?.element || 'Earth';
+
         console.log('Extracted values:', {
           lifePathWestern,
           lifePathChaldean,
@@ -131,9 +132,10 @@ export default function Teams() {
           soulUrgeWestern,
           personalityWestern,
           birthdayNumber,
-          masterNumbers
+          masterNumbers,
+          element
         });
-        
+
         await base44.entities.TeamMember.create({
           team_id: selectedTeam.id,
           full_name: newMember.full_name,
