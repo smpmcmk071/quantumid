@@ -12,6 +12,8 @@ export default function MyProfile() {
   const [showTest, setShowTest] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [birthDate, setBirthDate] = useState('');
+  const [linkedRecord, setLinkedRecord] = useState(null);
+  const [recordType, setRecordType] = useState(null);
 
   useEffect(() => {
     loadProfile();
@@ -21,7 +23,26 @@ export default function MyProfile() {
     setLoading(true);
     const u = await base44.auth.me();
     setUser(u);
-    setBirthDate(u.birth_date || '');
+    
+    // Try to find linked Candidate or TeamMember by email
+    const candidates = await base44.entities.Candidate.filter({ email: u.email });
+    if (candidates.length > 0) {
+      const candidate = candidates[0];
+      setLinkedRecord(candidate);
+      setRecordType('Candidate');
+      setBirthDate(candidate.birth_date || u.birth_date || '');
+    } else {
+      const teamMembers = await base44.entities.TeamMember.filter({ email: u.email });
+      if (teamMembers.length > 0) {
+        const member = teamMembers[0];
+        setLinkedRecord(member);
+        setRecordType('TeamMember');
+        setBirthDate(member.birth_date || u.birth_date || '');
+      } else {
+        setBirthDate(u.birth_date || '');
+      }
+    }
+    
     setLoading(false);
   };
 
@@ -71,11 +92,26 @@ export default function MyProfile() {
   };
 
   const handleTestComplete = async (results) => {
+    // Save to User entity
     await base44.auth.updateMe({
-      archetype_primary_test: results.primary,
-      archetype_secondary_test: results.secondary,
-      archetype_test_scores: JSON.stringify(results.scores)
+      archetype_primary: results.primary,
+      archetype_secondary: results.secondary
     });
+
+    // Also save to linked Candidate or TeamMember record
+    if (linkedRecord && recordType) {
+      if (recordType === 'Candidate') {
+        await base44.entities.Candidate.update(linkedRecord.id, {
+          archetype_primary: results.primary,
+          archetype_secondary: results.secondary
+        });
+      } else if (recordType === 'TeamMember') {
+        await base44.entities.TeamMember.update(linkedRecord.id, {
+          archetype_primary: results.primary,
+          archetype_secondary: results.secondary
+        });
+      }
+    }
 
     setShowTest(false);
     loadProfile();
@@ -99,28 +135,37 @@ export default function MyProfile() {
     );
   }
 
-  const testArchetype = user.archetype_primary_test;
-  const calculatedArchetype = user.archetype_primary_calculated;
-  const archetypesMatch = testArchetype && calculatedArchetype && testArchetype === calculatedArchetype;
+  const testArchetype = user.archetype_primary || linkedRecord?.archetype_primary;
+  const hasCompletedTest = !!testArchetype;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <User className="w-8 h-8 text-teal-400" />
-          <h1 className="text-3xl font-bold text-white">My Profile</h1>
+          <h1 className="text-3xl font-bold text-white">Welcome, {user.full_name}</h1>
         </div>
+
+        {linkedRecord && (
+          <Card className="bg-teal-500/10 border-teal-500 mb-6">
+            <CardContent className="p-4">
+              <p className="text-teal-300">
+                ✓ We found your {recordType === 'Candidate' ? 'candidate' : 'team member'} record. Please verify your information below and complete your archetype assessment.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Basic Info */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
           <CardHeader>
-            <CardTitle className="text-white">Personal Information</CardTitle>
+            <CardTitle className="text-white">Your Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <label className="text-gray-300 text-sm mb-2 block">Full Name</label>
               <Input
-                value={user.full_name}
+                value={linkedRecord?.full_name || user.full_name}
                 disabled
                 className="bg-slate-900 border-slate-700 text-white"
               />
@@ -135,130 +180,75 @@ export default function MyProfile() {
             </div>
             <div>
               <label className="text-gray-300 text-sm mb-2 block">Birth Date</label>
-              <div className="flex gap-2">
+              <Input
+                type="date"
+                value={birthDate}
+                disabled
+                className="bg-slate-900 border-slate-700 text-white"
+              />
+              <p className="text-gray-400 text-xs mt-1">This was provided by your organization</p>
+            </div>
+            {linkedRecord?.role && (
+              <div>
+                <label className="text-gray-300 text-sm mb-2 block">Role</label>
                 <Input
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
+                  value={linkedRecord.role}
+                  disabled
                   className="bg-slate-900 border-slate-700 text-white"
                 />
-                <Button
-                  onClick={calculateNumerology}
-                  disabled={calculating || !birthDate}
-                  className="bg-teal-600 hover:bg-teal-700"
-                >
-                  {calculating ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    'Calculate'
-                  )}
-                </Button>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Numerology */}
-        {user.life_path_western && (
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
-            <CardHeader>
-              <CardTitle className="text-white">Numerology Profile</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <p className="text-gray-400 text-sm">Life Path</p>
-                  <p className="text-2xl font-bold text-amber-400">{user.life_path_western}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Expression</p>
-                  <p className="text-2xl font-bold text-purple-400">{user.expression_western}</p>
-                </div>
-                {user.master_numbers && (
-                  <div>
-                    <p className="text-gray-400 text-sm">Master Numbers</p>
-                    <p className="text-xl font-bold text-amber-300">✨ {user.master_numbers}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Archetype Analysis */}
+        {/* Archetype Assessment */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
           <CardHeader>
-            <CardTitle className="text-white">Team Archetype Analysis</CardTitle>
+            <CardTitle className="text-white">Team Archetype Assessment</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {!testArchetype && (
-              <Button
-                onClick={() => setShowTest(true)}
-                className="w-full bg-purple-600 hover:bg-purple-700"
-              >
-                <FlaskConical className="w-4 h-4 mr-2" />
-                Take Archetype Assessment
-              </Button>
-            )}
-
-            {testArchetype && calculatedArchetype && (
+            {!hasCompletedTest ? (
               <>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Card className="bg-slate-900/50 border-slate-700">
-                    <CardHeader>
-                      <CardTitle className="text-white text-sm">Self-Assessment Result</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className={`text-2xl font-bold capitalize ${getArchetypeColor(testArchetype)}`}>
+                <p className="text-gray-300 text-sm mb-4">
+                  Complete this quick assessment to discover your team archetype. This helps your organization understand how you work best and where you'll thrive.
+                </p>
+                <Button
+                  onClick={() => setShowTest(true)}
+                  className="w-full bg-purple-600 hover:bg-purple-700 h-12 text-lg"
+                >
+                  <FlaskConical className="w-5 h-5 mr-2" />
+                  Start Assessment
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="p-6 bg-green-500/10 border-2 border-green-500 rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <CheckCircle2 className="w-8 h-8 text-green-400" />
+                    <h3 className="text-xl font-bold text-green-300">Assessment Complete!</h3>
+                  </div>
+                  <p className="text-gray-300 mb-4">Your archetype has been determined:</p>
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <p className="text-gray-400 text-sm mb-1">Primary Archetype</p>
+                      <p className={`text-3xl font-bold capitalize ${getArchetypeColor(testArchetype)}`}>
                         {testArchetype}
                       </p>
-                      {user.archetype_secondary_test && (
-                        <p className={`text-sm capitalize ${getArchetypeColor(user.archetype_secondary_test)}`}>
-                          Secondary: {user.archetype_secondary_test}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-slate-900/50 border-slate-700">
-                    <CardHeader>
-                      <CardTitle className="text-white text-sm">Numerology-Based Result</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className={`text-2xl font-bold capitalize ${getArchetypeColor(calculatedArchetype)}`}>
-                        {calculatedArchetype}
-                      </p>
-                      {user.archetype_secondary_calculated && (
-                        <p className={`text-sm capitalize ${getArchetypeColor(user.archetype_secondary_calculated)}`}>
-                          Secondary: {user.archetype_secondary_calculated}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Match Analysis */}
-                <Card className={`border-2 ${archetypesMatch ? 'border-green-500 bg-green-500/10' : 'border-amber-500 bg-amber-500/10'}`}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      {archetypesMatch ? (
-                        <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                      ) : (
-                        <AlertCircle className="w-6 h-6 text-amber-400 flex-shrink-0 mt-1" />
-                      )}
+                    </div>
+                    {(user.archetype_secondary || linkedRecord?.archetype_secondary) && (
                       <div>
-                        <h3 className={`font-semibold mb-1 ${archetypesMatch ? 'text-green-300' : 'text-amber-300'}`}>
-                          {archetypesMatch ? 'Perfect Match!' : 'Different Results'}
-                        </h3>
-                        <p className="text-gray-300 text-sm">
-                          {archetypesMatch
-                            ? 'Your self-assessment aligns perfectly with your numerology profile. This indicates strong self-awareness and authentic expression of your natural strengths.'
-                            : `Your self-assessment shows you as a ${testArchetype}, while your numerology indicates ${calculatedArchetype}. This could mean you've adapted your natural tendencies to fit your environment, or you're expressing different aspects of yourself. Both results are valid - numerology shows your innate nature, while the test reveals how you currently operate.`}
+                        <p className="text-gray-400 text-sm mb-1">Secondary</p>
+                        <p className={`text-xl font-semibold capitalize ${getArchetypeColor(user.archetype_secondary || linkedRecord?.archetype_secondary)}`}>
+                          {user.archetype_secondary || linkedRecord?.archetype_secondary}
                         </p>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    )}
+                  </div>
+                </div>
+                
+                <p className="text-gray-400 text-sm text-center">
+                  Your results have been saved. You can close this page or retake the assessment below.
+                </p>
 
                 <Button
                   onClick={() => setShowTest(true)}
