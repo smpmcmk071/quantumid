@@ -24,17 +24,19 @@ export default function MyProfile() {
     const u = await base44.auth.me();
     setUser(u);
     
-    // Try to find linked Candidate or TeamMember by email
-    const candidates = await base44.entities.Candidate.filter({ email: u.email });
-    if (candidates.length > 0) {
-      const candidate = candidates[0];
+    // Try to find linked Candidate or TeamMember by email (case-insensitive)
+    const allCandidates = await base44.entities.Candidate.list();
+    const candidate = allCandidates.find(c => c.email?.toLowerCase() === u.email.toLowerCase());
+    
+    if (candidate) {
       setLinkedRecord(candidate);
       setRecordType('Candidate');
       setBirthDate(candidate.birth_date || u.birth_date || '');
     } else {
-      const teamMembers = await base44.entities.TeamMember.filter({ email: u.email });
-      if (teamMembers.length > 0) {
-        const member = teamMembers[0];
+      const allMembers = await base44.entities.TeamMember.list();
+      const member = allMembers.find(m => m.email?.toLowerCase() === u.email.toLowerCase());
+      
+      if (member) {
         setLinkedRecord(member);
         setRecordType('TeamMember');
         setBirthDate(member.birth_date || u.birth_date || '');
