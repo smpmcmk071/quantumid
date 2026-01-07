@@ -46,7 +46,9 @@ Deno.serve(async (req) => {
     });
 
     // Build prompt for AI team builder
-    const prompt = `You are a PhD-level team building expert. Build ${numberOfTeams} optimal teams of ${teamSize} people each.
+    const prompt = `You are a PhD-level team building expert. Build ${numberOfTeams} optimal teams of EXACTLY ${teamSize} people each.
+
+CRITICAL: Each team must have EXACTLY ${teamSize} members, no more, no less.
 
 Available people:
 ${membersWithArchetype.map((m, i) => 
@@ -56,12 +58,13 @@ ${membersWithArchetype.map((m, i) =>
 ${task ? `Task for teams: ${task}` : 'General purpose teams'}
 
 Rules:
-1. Each team should have a balanced mix of archetypes (ideally 1 Visionary/Leader, 1 Strategist, 1 Creator, remaining Harmonizers)
-2. Prioritize people with Master Numbers (11, 22, 33) as they have higher potential
-3. Distribute Master Number holders across teams
-4. Consider work style challenges - if someone prefers solo work, give them analytical/independent roles. Balance challenges across the team.
-5. Within each team, assign specific roles: Team Leader, Analyst/Planner, Creative Lead, and Support/Coordinator
-6. Explain why each person fits their role based on their numerology AND how their challenges are accommodated
+1. CRITICAL: Each team must have EXACTLY ${teamSize} members total
+2. Each team should have a balanced mix of archetypes when possible
+3. Prioritize people with Master Numbers (11, 22, 33) as they have higher potential
+4. Distribute Master Number holders across teams
+5. Consider work style challenges - if someone prefers solo work, give them analytical/independent roles
+6. Assign specific roles within each team based on the archetype and life path
+7. Explain why each person fits their role based on their numerology AND how their challenges are accommodated
 
 Return as JSON with this structure:
 {
