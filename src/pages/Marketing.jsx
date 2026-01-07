@@ -1,235 +1,225 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Sparkles, Users, Target, TrendingUp, Zap, Shield, Clock } from 'lucide-react';
-import TeamBuilder7A_Logo from '../components/TeamBuilder7A_Logo';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, Target, TrendingUp, Sparkles, ChevronRight } from 'lucide-react';
 
 export default function Marketing() {
-  const plans = [
-    {
-      name: 'Starter',
-      price: '$199',
-      period: '/month',
-      description: 'Perfect for small teams getting started',
-      features: [
-        'Up to 3 teams',
-        'Up to 50 total team members',
-        'AI-powered team building',
-        'Numerology analysis',
-        'Candidate matching (10/month)',
-        'Basic reports',
-        'Email support'
-      ],
-      cta: 'Start Free Trial',
-      popular: false
-    },
-    {
-      name: 'Professional',
-      price: '$499',
-      period: '/month',
-      description: 'For growing organizations',
-      features: [
-        'Up to 10 teams',
-        'Up to 200 total team members',
-        'AI-powered team building',
-        'Advanced numerology insights',
-        'Unlimited candidate matching',
-        'Job posting & ranking',
-        'Advanced reports & analytics',
-        'Priority email support',
-        'Onboarding assistance'
-      ],
-      cta: 'Start Free Trial',
-      popular: true
-    },
-    {
-      name: 'Enterprise',
-      price: 'Custom',
-      period: '',
-      description: 'For large organizations',
-      features: [
-        'Unlimited teams',
-        'Unlimited team members',
-        'AI-powered team building',
-        'Full numerology suite',
-        'Unlimited candidate matching',
-        'Job posting & ranking',
-        'Custom reports & analytics',
-        'Dedicated account manager',
-        'White-label options',
-        'API access',
-        'Custom integrations'
-      ],
-      cta: 'Contact Sales',
-      popular: false
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
-        <div className="text-center mb-16">
-          <TeamBuilder7A_Logo size="lg" />
-          <h1 className="text-4xl md:text-6xl font-bold text-white mt-8 mb-4">
-            Build High-Performing Teams
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-2">
-            Using 4,000 Years of Numerology + Modern Team Science
-          </p>
-          <p className="text-lg text-teal-400 font-semibold">
-            Stay Above the Threshold
-          </p>
-          <p className="text-gray-400 mt-2">A Product of Threshold7 Analytics</p>
-        </div>
-
-        {/* Value Props */}
-        <div className="grid md:grid-cols-3 gap-6 mb-20">
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardContent className="pt-6 text-center">
-              <Target className="w-12 h-12 text-teal-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">AI-Powered Matching</h3>
-              <p className="text-gray-300">Match candidates to teams and roles with 95%+ accuracy using numerology + skills</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardContent className="pt-6 text-center">
-              <Zap className="w-12 h-12 text-amber-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Instant Team Building</h3>
-              <p className="text-gray-300">Create balanced teams in seconds - just say the size and number</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardContent className="pt-6 text-center">
-              <TrendingUp className="w-12 h-12 text-green-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Proven Results</h3>
-              <p className="text-gray-300">Based on 50+ years of team science research + ancient wisdom</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Pricing Section */}
-        <div className="mb-16">
-          <h2 className="text-4xl font-bold text-white text-center mb-4">
-            Simple, Transparent Pricing
-          </h2>
-          <p className="text-gray-300 text-center mb-12">
-            All plans include 14-day free trial. No credit card required.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {plans.map((plan, idx) => (
-              <Card 
-                key={idx}
-                className={`relative ${
-                  plan.popular 
-                    ? 'bg-gradient-to-br from-teal-500/20 to-blue-500/20 border-teal-400/50 shadow-xl scale-105' 
-                    : 'bg-white/10 backdrop-blur-sm border-white/20'
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-teal-500 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                      <Sparkles className="w-4 h-4" />
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                
-                <CardHeader>
-                  <CardTitle className="text-2xl text-white">{plan.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold text-white">{plan.price}</span>
-                    <span className="text-gray-400">{plan.period}</span>
-                  </div>
-                  <p className="text-gray-400 text-sm mt-2">{plan.description}</p>
-                </CardHeader>
-
-                <CardContent>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-gray-300">
-                        <Check className="w-5 h-5 text-teal-400 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button 
-                    className={`w-full ${
-                      plan.popular 
-                        ? 'bg-teal-500 hover:bg-teal-600' 
-                        : 'bg-slate-700 hover:bg-slate-600'
-                    }`}
-                  >
-                    {plan.cta}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+      <div className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 py-20 sm:py-32">
+          <div className="text-center">
+            <h1 className="text-5xl sm:text-7xl font-bold text-white mb-6">
+              Build High-Performing Teams
+              <span className="block text-teal-400 mt-2">with Science</span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+              TeamBuilder7A combines numerology, behavioral science, and AI to help HR professionals 
+              create perfectly balanced teams that exceed performance thresholds.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Button className="bg-teal-600 hover:bg-teal-700 text-lg px-8 py-6">
+                Get Started Free
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button variant="outline" className="border-slate-700 text-white hover:bg-slate-800 text-lg px-8 py-6">
+                Watch Demo
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Why TeamBuilder7A */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/30 mb-16">
-          <CardHeader>
-            <CardTitle className="text-3xl text-white text-center">
-              Why TeamBuilder7A?
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6 text-gray-300">
-              <div className="flex gap-3">
-                <Shield className="w-6 h-6 text-teal-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-white mb-1">Science-Backed</h4>
-                  <p>Built on research from Lencioni, Belbin, Tuckman, and 4,000 years of numerology</p>
-                </div>
-              </div>
+      {/* Features Grid */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold text-white text-center mb-16">
+          Everything You Need to Build Elite Teams
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Feature 1 */}
+          <div>
+            <Card className="bg-slate-800/50 border-slate-700 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <Users className="w-6 h-6 text-teal-400" />
+                  Team Archetype Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-300 mb-4">
+                  Discover each team member's natural archetype: Visionary, Strategist, Creator, or Harmonizer. 
+                  Build balanced teams that complement each other's strengths.
+                </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop" 
+                  alt="Team collaboration"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="flex gap-3">
-                <Clock className="w-6 h-6 text-teal-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-white mb-1">Save 100+ Hours/Year</h4>
-                  <p>Eliminate trial-and-error team building. Get it right the first time.</p>
-                </div>
-              </div>
+          {/* Feature 2 */}
+          <div>
+            <Card className="bg-slate-800/50 border-slate-700 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <Target className="w-6 h-6 text-purple-400" />
+                  Candidate Compatibility Scoring
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-300 mb-4">
+                  AI-powered compatibility analysis matches candidates to teams and roles. 
+                  See team fit, job fit, and numerology scores in seconds.
+                </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&fit=crop" 
+                  alt="Data analysis"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="flex gap-3">
-                <Users className="w-6 h-6 text-teal-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-white mb-1">4 Core Archetypes</h4>
-                  <p>Every team needs Visionaries, Strategists, Creators, and Harmonizers - we ensure balance</p>
-                </div>
-              </div>
+          {/* Feature 3 */}
+          <div>
+            <Card className="bg-slate-800/50 border-slate-700 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <TrendingUp className="w-6 h-6 text-amber-400" />
+                  Numerology Insights
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-300 mb-4">
+                  Calculate Life Path, Expression, and Soul Urge numbers automatically. 
+                  Identify high-potential individuals with Master Numbers (11, 22, 33).
+                </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop" 
+                  alt="Analytics dashboard"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="flex gap-3">
-                <Target className="w-6 h-6 text-teal-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-white mb-1">AI-Powered Insights</h4>
-                  <p>Every recommendation comes with detailed reasoning - know exactly why each person fits</p>
-                </div>
-              </div>
+          {/* Feature 4 */}
+          <div>
+            <Card className="bg-slate-800/50 border-slate-700 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-3">
+                  <Sparkles className="w-6 h-6 text-blue-400" />
+                  AI-Powered Team Builder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-300 mb-4">
+                  Let AI assemble optimal teams based on your requirements. 
+                  Get detailed reasoning for each member's role assignment.
+                </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=250&fit=crop" 
+                  alt="Team meeting"
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="bg-slate-800/30 py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-5xl font-bold text-teal-400 mb-2">4</p>
+              <p className="text-gray-300">Core Team Archetypes</p>
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-5xl font-bold text-purple-400 mb-2">100%</p>
+              <p className="text-gray-300">AI-Powered Analysis</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold text-amber-400 mb-2">∞</p>
+              <p className="text-gray-300">Team Combinations</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* CTA */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Build Better Teams?
+      {/* How It Works */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <h2 className="text-4xl font-bold text-white text-center mb-16">
+          How It Works
+        </h2>
+        
+        <div className="grid md:grid-cols-3 gap-8">
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                1
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Add Your Team</h3>
+              <p className="text-gray-300">
+                Import team members and candidates with their birth dates. Our system calculates their numerological profile automatically.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                2
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Archetype Assessment</h3>
+              <p className="text-gray-300">
+                Team members complete a quick assessment to determine their primary and secondary archetypes.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                3
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Build & Analyze</h3>
+              <p className="text-gray-300">
+                Use AI to build optimal teams, analyze compatibility, and get detailed insights on team dynamics.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-teal-600 to-blue-600 py-20">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Build High-Performing Teams?
           </h2>
-          <p className="text-gray-300 mb-8">
-            Start your 14-day free trial today. No credit card required.
+          <p className="text-xl text-white/90 mb-10">
+            Join forward-thinking HR professionals who use science and AI to build exceptional teams.
           </p>
-          <Button className="bg-teal-500 hover:bg-teal-600 text-lg px-8 py-6">
+          <Button className="bg-white text-teal-600 hover:bg-gray-100 text-lg px-10 py-6 font-semibold">
             Start Free Trial
+            <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
-          <p className="text-gray-400 text-sm mt-4">
-            Questions? Email <a href="mailto:7day11com@gmail.com" className="text-teal-400 underline">7day11com@gmail.com</a>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="bg-slate-900 py-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-gray-400">
+            © {new Date().getFullYear()} TeamBuilder7A - A Product of Threshold7 Analytics
           </p>
+          <p className="text-teal-400 mt-2 font-semibold">Stay Above the Threshold.</p>
         </div>
       </div>
     </div>
