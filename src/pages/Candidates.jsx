@@ -325,7 +325,10 @@ export default function Candidates() {
     setEditingCandidate({ 
       ...candidate,
       resume_text: candidate.resume_text || '',
-      extracted_skills: candidate.extracted_skills || ''
+      extracted_skills: candidate.extracted_skills || '',
+      years_experience: candidate.years_experience || 0,
+      education: candidate.education || '',
+      previous_roles: candidate.previous_roles || ''
     });
     setShowEditDialog(true);
   };
@@ -338,7 +341,10 @@ export default function Candidates() {
       full_name: editingCandidate.full_name,
       birth_date: editingCandidate.birth_date,
       resume_text: editingCandidate.resume_text || '',
-      extracted_skills: editingCandidate.extracted_skills || ''
+      extracted_skills: editingCandidate.extracted_skills || '',
+      years_experience: editingCandidate.years_experience || 0,
+      education: editingCandidate.education || '',
+      previous_roles: editingCandidate.previous_roles || ''
     });
     
     setShowEditDialog(false);
@@ -360,7 +366,10 @@ export default function Candidates() {
         ...editingCandidate,
         full_name: data.full_name || editingCandidate.full_name,
         email: data.email || editingCandidate.email,
-        extracted_skills: data.extracted_skills || editingCandidate.extracted_skills
+        extracted_skills: data.extracted_skills || editingCandidate.extracted_skills,
+        years_experience: data.years_experience || editingCandidate.years_experience,
+        education: data.education || editingCandidate.education,
+        previous_roles: data.previous_roles || editingCandidate.previous_roles
       });
     }
     setParsing(false);
@@ -396,7 +405,10 @@ export default function Candidates() {
           full_name: data.full_name || editingCandidate.full_name,
           email: data.email || editingCandidate.email,
           resume_text: data.resume_text || editingCandidate.resume_text,
-          extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || editingCandidate.extracted_skills
+          extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || editingCandidate.extracted_skills,
+          years_experience: data.years_experience || editingCandidate.years_experience,
+          education: data.education || editingCandidate.education,
+          previous_roles: data.previous_roles || editingCandidate.previous_roles
         });
       }
     } catch (error) {
