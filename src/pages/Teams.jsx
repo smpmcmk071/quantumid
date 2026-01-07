@@ -242,7 +242,8 @@ export default function Teams() {
           birth_date: newMember.birth_date,
           role: newMember.role || '',
           seniority: newMember.seniority,
-          work_style_challenges: newMember.work_style_challenges || ''
+          work_style_challenges: newMember.work_style_challenges || '',
+          skills: newMember.skills || ''
         });
         setEditingMember(null);
       } else {
@@ -318,8 +319,10 @@ export default function Teams() {
       birth_date: member.birth_date,
       role: member.role || '',
       seniority: member.seniority,
-      work_style_challenges: member.work_style_challenges || ''
+      work_style_challenges: member.work_style_challenges || '',
+      skills: member.skills || ''
     });
+    setResumeText('');
     setShowAddMember(true);
   };
 
@@ -462,10 +465,9 @@ export default function Teams() {
                          <DialogTitle className="text-white text-base">{editingMember ? 'Edit' : 'Add'} Team Member</DialogTitle>
                        </DialogHeader>
                        <div className="space-y-3">
-                         {!editingMember && (
-                           <>
-                             <div>
-                               <label className="text-gray-300 text-xs mb-1 block">Resume Upload</label>
+                         {/* Resume Upload - Available for both new and editing */}
+                         <div>
+                           <label className="text-gray-300 text-xs mb-1 block">Resume Upload</label>
                                <input
                                  type="file"
                                  accept=".pdf,.doc,.docx,.txt"
@@ -515,19 +517,16 @@ export default function Teams() {
                                      Parse Resume with AI
                                    </>
                                  )}
-                               </Button>
-                             </div>
-                           </>
-                         )}
+                                 </Button>
+                                 </div>
 
-                         {!editingMember && newMember.skills && (
+                                 {newMember.skills && (
                            <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
                              <p className="text-green-300 text-xs font-medium">✓ AI Extracted Skills</p>
                              <p className="text-gray-300 text-xs mt-0.5">{newMember.skills}</p>
                            </div>
-                         )}
 
-                         {!editingMember && candidates.length > 0 && (
+                           {!editingMember && candidates.length > 0 && (
                            <>
                              <div className="relative">
                                <div className="absolute inset-0 flex items-center">
