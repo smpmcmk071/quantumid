@@ -128,7 +128,7 @@ export default function Teams() {
           const masterNumbers = calc.masterNumbers?.join(', ') || '';
           const element = calc.astrology?.element || 'Earth';
 
-          await base44.entities.TeamMember.create({
+          const createdMember = await base44.entities.TeamMember.create({
             team_id: selectedTeam.id,
             full_name: newMember.full_name,
             email: newMember.email || '',
@@ -146,6 +146,12 @@ export default function Teams() {
             strengths: '',
             weaknesses: '',
             work_style_challenges: newMember.work_style_challenges || ''
+          });
+
+          // Auto-classify archetype
+          await base44.functions.invoke('classifyArchetype', {
+            personId: createdMember.id,
+            entityType: 'TeamMember'
           });
         } else {
           alert('Failed to calculate profile: ' + (response.data?.error || 'Unknown error'));
