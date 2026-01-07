@@ -10,6 +10,7 @@ export default function Reports() {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [classifying, setClassifying] = useState(false);
   const [orgReport, setOrgReport] = useState(null);
   const [memberMatrix, setMemberMatrix] = useState(null);
   const [archetypeBreakdown, setArchetypeBreakdown] = useState(null);
@@ -64,6 +65,32 @@ export default function Reports() {
     setGenerating(false);
   };
 
+  const generateAllArchetypes = async () => {
+    setClassifying(true);
+    
+    // Find members without archetypes
+    const membersToClassify = allMembers.filter(m => !m.archetype_primary && m.life_path_western);
+    
+    if (membersToClassify.length === 0) {
+      alert('All members already have archetypes!');
+      setClassifying(false);
+      return;
+    }
+
+    // Classify each member
+    for (const member of membersToClassify) {
+      await base44.functions.invoke('classifyArchetype', {
+        personId: member.id,
+        entityType: 'TeamMember'
+      });
+    }
+    
+    // Reload data
+    await loadData();
+    setClassifying(false);
+    alert(`Generated archetypes for ${membersToClassify.length} members!`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 flex items-center justify-center">
@@ -75,7 +102,26 @@ export default function Reports() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-6">Organization Reports</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-white">Organization Reports</h1>
+          <Button
+            onClick={generateAllArchetypes}
+            disabled={classifying}
+            className="bg-amber-600 hover:bg-amber-700"
+          >
+            {classifying ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Zap className="w-4 h-4 mr-2" />
+                Generate All Archetypes
+              </>
+            )}
+          </Button>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
