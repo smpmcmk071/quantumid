@@ -521,12 +521,13 @@ export default function Teams() {
                                  </div>
 
                                  {newMember.skills && (
-                           <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
-                             <p className="text-green-300 text-xs font-medium">✓ AI Extracted Skills</p>
-                             <p className="text-gray-300 text-xs mt-0.5">{newMember.skills}</p>
-                           </div>
+                                   <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
+                                     <p className="text-green-300 text-xs font-medium">✓ AI Extracted Skills</p>
+                                     <p className="text-gray-300 text-xs mt-0.5">{newMember.skills}</p>
+                                   </div>
+                                 )}
 
-                           {!editingMember && candidates.length > 0 && (
+                                 {!editingMember && candidates.length > 0 && (
                            <>
                              <div className="relative">
                                <div className="absolute inset-0 flex items-center">
