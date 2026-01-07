@@ -219,13 +219,14 @@ export default function Candidates() {
   };
 
   const addCandidate = async () => {
-    if (!client) {
-      alert('No client found. Please refresh the page.');
+    if (!newCandidate.full_name || !newCandidate.email || !newCandidate.birth_date) {
+      alert('Please fill in Name, Email, and Birth Date');
       return;
     }
 
-    if (!newCandidate.full_name || !newCandidate.email || !newCandidate.birth_date) {
-      alert('Please fill in Name, Email, and Birth Date');
+    // If no client (external user creating their own profile), create without client_id
+    if (!client) {
+      alert('Admin features not available for external users');
       return;
     }
     
