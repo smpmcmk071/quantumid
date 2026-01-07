@@ -146,12 +146,30 @@ export default function MyProfile() {
           <h1 className="text-3xl font-bold text-white">Welcome, {user.full_name}</h1>
         </div>
 
-        {linkedRecord && (
+        {linkedRecord ? (
           <Card className="bg-teal-500/10 border-teal-500 mb-6">
             <CardContent className="p-4">
               <p className="text-teal-300">
                 ✓ We found your {recordType === 'Candidate' ? 'candidate' : 'team member'} record. Please verify your information below and complete your archetype assessment.
               </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-red-500/10 border-red-500 mb-6">
+            <CardContent className="p-4">
+              <div className="space-y-2">
+                <p className="text-red-300 font-semibold">⚠️ No Record Found</p>
+                <p className="text-gray-300 text-sm">
+                  We couldn't find a candidate or team member record matching your email ({user.email}).
+                </p>
+                <p className="text-gray-300 text-sm">
+                  Please contact your administrator and verify:
+                </p>
+                <ul className="text-gray-400 text-xs ml-4 list-disc">
+                  <li>Your email was entered correctly when you were added as a candidate/team member</li>
+                  <li>You're signing in with the exact same email address</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -207,7 +225,13 @@ export default function MyProfile() {
             <CardTitle className="text-white">Team Archetype Assessment</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {!hasCompletedTest ? (
+            {!linkedRecord ? (
+              <div className="text-center py-8">
+                <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+                <p className="text-gray-300">Cannot complete assessment until your record is found.</p>
+                <p className="text-gray-400 text-sm mt-2">Please contact your administrator.</p>
+              </div>
+            ) : !hasCompletedTest ? (
               <>
                 <p className="text-gray-300 text-sm mb-4">
                   Complete this quick assessment to discover your team archetype. This helps your organization understand how you work best and where you'll thrive.
