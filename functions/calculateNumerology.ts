@@ -633,6 +633,15 @@ function calculateSunSign(birthDate) {
   const date = new Date(birthDate);
   const month = date.getMonth() + 1;
   const day = date.getDate();
+  const year = date.getFullYear();
+  
+  // Chinese Zodiac
+  const chineseAnimals = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+  const chineseElements = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
+  const yearOffset = (year - 1924) % 12;
+  const elementOffset = Math.floor((year - 1924) % 10 / 2);
+  const chineseAnimal = chineseAnimals[yearOffset];
+  const chineseElement = chineseElements[elementOffset];
   
   const signs = [
     { sign: 'Capricorn', element: 'Earth', modality: 'Cardinal', ruler: 'Saturn', start: [12, 22], end: [1, 19] },
@@ -666,7 +675,12 @@ function calculateSunSign(birthDate) {
     }
   }
   
-  return signs[0]; // Default to Capricorn
+  const signData = signs[0]; // Default to Capricorn
+  return {
+    ...signData,
+    chineseAnimal,
+    chineseElement
+  };
 }
 
 function estimateAscendant(birthTime) {
@@ -1361,7 +1375,11 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
       dominantModality: dominantTraits.dominantModality,
       elementBreakdown: dominantTraits.elementBreakdown,
       modalityBreakdown: dominantTraits.modalityBreakdown,
-      bigThree: `${sunSignData.sign}/${moonSign}/${ascendantData.sign}`
+      bigThree: `${sunSignData.sign}/${moonSign}/${ascendantData.sign}`,
+      chineseZodiac: `${sunSignData.chineseElement} ${sunSignData.chineseAnimal}`,
+      chineseAnimal: sunSignData.chineseAnimal,
+      chineseElement: sunSignData.chineseElement,
+      sign: sunSignData.sign
     };
   }
   
