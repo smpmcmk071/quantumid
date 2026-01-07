@@ -64,9 +64,49 @@ export default function Candidates() {
       setCandidates(updatedCands);
       setJobs(j);
       setTeams(t);
-    }
-    setLoading(false);
-  };
+      }
+      setLoading(false);
+      };
+
+      const generateSampleCandidates = async () => {
+      if (!client) return;
+
+      const samples = [
+      { full_name: 'Sarah Johnson', birth_date: '1992-03-15', email: 'sarah.j@example.com', extracted_skills: 'React, Node.js, Python, Leadership', years_experience: 5 },
+      { full_name: 'Michael Chen', birth_date: '1988-11-22', email: 'mchen@example.com', extracted_skills: 'Java, AWS, Docker, Kubernetes', years_experience: 8 },
+      { full_name: 'Emily Rodriguez', birth_date: '1995-07-08', email: 'emily.r@example.com', extracted_skills: 'UI/UX, Figma, Product Design, Research', years_experience: 3 }
+      ];
+
+      setLoading(true);
+
+      for (const sample of samples) {
+      const response = await base44.functions.invoke('calculateNumerology', {
+        type: 'name',
+        name: sample.full_name,
+        birthDate: sample.birth_date
+      });
+
+      if (response.data?.success) {
+        const calc = response.data.data;
+        await base44.entities.Candidate.create({
+          client_id: client.id,
+          ...sample,
+          resume_text: `Experienced professional with ${sample.years_experience} years in the field.`,
+          status: 'new',
+          life_path_western: calc.lifePath?.reduced || 0,
+          life_path_chaldean: calc.lifePathChaldean?.reduced || 0,
+          expression_western: calc.expression?.reduced || 0,
+          soul_urge_western: calc.soulUrge?.reduced || 0,
+          personality_western: calc.personality?.reduced || 0,
+          birthday_number: calc.birthday?.reduced || 0,
+          master_numbers: calc.masterNumbers?.join(', ') || '',
+          element: calc.astrology?.element || 'Earth'
+        });
+      }
+      }
+
+      await loadData();
+      };
 
   const matchJobsForCandidate = async (candidate) => {
     setSelectedCandidate(candidate);
@@ -221,6 +261,15 @@ export default function Candidates() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Candidates</h1>
           <div className="flex gap-2">
+            <Button
+              onClick={generateSampleCandidates}
+              variant="outline"
+              className="border-slate-700 text-gray-300"
+              disabled={loading}
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Add 3 Sample Candidates
+            </Button>
             <Button
               onClick={() => setShowComparison(true)}
               variant="outline"
