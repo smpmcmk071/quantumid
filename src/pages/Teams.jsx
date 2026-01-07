@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Plus, Loader2, UserPlus, Trash2, Pencil } from 'lucide-react';
+import { Users, Plus, Loader2, UserPlus, Trash2, Pencil, FlaskConical, X } from 'lucide-react';
+import ArchetypeTest from '../components/candidates/ArchetypeTest';
 
 export default function Teams() {
   const [client, setClient] = useState(null);
@@ -18,6 +19,8 @@ export default function Teams() {
   const [showAddMember, setShowAddMember] = useState(false);
   const [calculating, setCalculating] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
+  const [showArchetypeTest, setShowArchetypeTest] = useState(false);
+  const [testingMember, setTestingMember] = useState(null);
 
   const [newTeam, setNewTeam] = useState({ team_name: '', department: '', description: '' });
   const [newMember, setNewMember] = useState({
@@ -198,6 +201,24 @@ export default function Teams() {
   const deleteMember = async (memberId) => {
     if (!confirm('Remove this team member?')) return;
     await base44.entities.TeamMember.delete(memberId);
+    loadTeamMembers();
+  };
+
+  const startArchetypeTest = (member) => {
+    setTestingMember(member);
+    setShowArchetypeTest(true);
+  };
+
+  const handleTestComplete = async (results) => {
+    if (!testingMember) return;
+    
+    await base44.entities.TeamMember.update(testingMember.id, {
+      archetype_primary: results.primary,
+      archetype_secondary: results.secondary
+    });
+    
+    setShowArchetypeTest(false);
+    setTestingMember(null);
     loadTeamMembers();
   };
 
@@ -385,6 +406,15 @@ export default function Teams() {
                             <Button
                               size="sm"
                               variant="ghost"
+                              onClick={() => startArchetypeTest(member)}
+                              className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
+                              title="Archetype Test"
+                            >
+                              <FlaskConical className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
                               onClick={() => editMember(member)}
                               className="text-blue-400 hover:text-blue-300 h-6 w-6 p-0"
                             >
@@ -415,7 +445,43 @@ export default function Teams() {
             )}
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
+        </div>
+
+        {/* Archetype Test Dialog */}
+        {showArchetypeTest && testingMember && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
+          <div className="max-w-2xl mx-auto my-8">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white">
+                    Archetype Assessment: {testingMember.full_name}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setShowArchetypeTest(false);
+                      setTestingMember(null);
+                    }}
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+                <p className="text-gray-400 text-sm mt-2">
+                  Answer these questions to determine the team member's archetype
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ArchetypeTest
+                  candidateName={testingMember.full_name}
+                  onComplete={handleTestComplete}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        )}
+        </div>
+        );
+        }
