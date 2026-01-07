@@ -25,7 +25,11 @@ export default function Candidates() {
     email: '',
     birth_date: '',
     resume_text: '',
-    status: 'new'
+    status: 'new',
+    extracted_skills: '',
+    years_experience: 0,
+    education: '',
+    previous_roles: ''
   });
   const [jobs, setJobs] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -277,7 +281,11 @@ export default function Candidates() {
         email: '',
         birth_date: '',
         resume_text: '',
-        status: 'new'
+        status: 'new',
+        extracted_skills: '',
+        years_experience: 0,
+        education: '',
+        previous_roles: ''
       });
       setShowAddCandidate(false);
       loadData();
