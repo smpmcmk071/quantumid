@@ -200,6 +200,18 @@ export default function Reports() {
                   >
                     <p className="text-white text-sm">{member.full_name}</p>
                     <p className="text-gray-400 text-xs">{member.role}</p>
+                    {member.archetype_primary && (
+                      <div className="flex gap-1 mt-1">
+                        <span className="px-1.5 py-0.5 rounded text-xs bg-purple-500/20 text-purple-300">
+                          Test: {member.archetype_primary}
+                        </span>
+                        {member.archetype_primary_calculated && member.archetype_primary !== member.archetype_primary_calculated && (
+                          <span className="px-1.5 py-0.5 rounded text-xs bg-blue-500/20 text-blue-300">
+                            Calc: {member.archetype_primary_calculated}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </Link>
                 ))}
                 {allMembers.length === 0 && (
