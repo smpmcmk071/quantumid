@@ -225,24 +225,24 @@ export default function Candidates() {
                 Add Candidate
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-white">Add New Candidate</DialogTitle>
+            <DialogContent className="bg-slate-800 border-slate-700 max-w-lg max-h-[90vh] overflow-y-auto">
+              <DialogHeader className="pb-2">
+                <DialogTitle className="text-white text-base">Add New Candidate</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <div>
-                  <label className="text-gray-300 text-sm mb-1 block">Resume (paste text)</label>
+                  <label className="text-gray-300 text-xs mb-0.5 block">Resume (paste text)</label>
                   <Textarea
                     placeholder="Paste resume text here for AI parsing..."
                     value={newCandidate.resume_text}
                     onChange={(e) => setNewCandidate({ ...newCandidate, resume_text: e.target.value })}
-                    className="bg-slate-900 border-slate-700 text-white h-32"
+                    className="bg-slate-900 border-slate-700 text-white text-sm h-24"
                   />
                   <Button
                     onClick={parseResume}
                     disabled={parsing || !newCandidate.resume_text}
                     size="sm"
-                    className="mt-2 bg-teal-600 hover:bg-teal-700"
+                    className="mt-1 bg-teal-600 hover:bg-teal-700 h-7 text-xs"
                   >
                     {parsing ? (
                       <>
@@ -262,26 +262,26 @@ export default function Candidates() {
                   placeholder="Full Name *"
                   value={newCandidate.full_name}
                   onChange={(e) => setNewCandidate({ ...newCandidate, full_name: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white"
+                  className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                 />
                 <Input
                   placeholder="Email"
                   type="email"
                   value={newCandidate.email}
                   onChange={(e) => setNewCandidate({ ...newCandidate, email: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white"
+                  className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                 />
                 <div>
-                  <label className="text-gray-300 text-sm mb-1 block">Birth Date * (Required for analysis)</label>
+                  <label className="text-gray-300 text-xs mb-0.5 block">Birth Date *</label>
                   <Input
                     type="date"
                     value={newCandidate.birth_date}
                     onChange={(e) => setNewCandidate({ ...newCandidate, birth_date: e.target.value })}
-                    className="bg-slate-900 border-slate-700 text-white"
+                    className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                   />
                 </div>
                 <Select value={newCandidate.status} onValueChange={(v) => setNewCandidate({ ...newCandidate, status: v })}>
-                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white h-8 text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -295,11 +295,11 @@ export default function Candidates() {
                 </Select>
 
                 {newCandidate.extracted_skills && (
-                  <div className="p-3 bg-green-500/10 rounded border border-green-500/20">
-                    <p className="text-green-300 text-sm font-medium mb-1">✓ AI Extracted Data:</p>
-                    <p className="text-gray-300 text-xs">Skills: {newCandidate.extracted_skills}</p>
+                  <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
+                    <p className="text-green-300 text-xs font-medium">✓ AI Extracted</p>
+                    <p className="text-gray-300 text-xs mt-0.5">{newCandidate.extracted_skills}</p>
                     {newCandidate.years_experience > 0 && (
-                      <p className="text-gray-300 text-xs">Experience: {newCandidate.years_experience} years</p>
+                      <p className="text-gray-300 text-xs">{newCandidate.years_experience} yrs exp</p>
                     )}
                   </div>
                 )}
@@ -307,7 +307,7 @@ export default function Candidates() {
                 <Button
                   onClick={addCandidate}
                   disabled={calculating || !newCandidate.full_name || !newCandidate.birth_date}
-                  className="w-full bg-teal-600 hover:bg-teal-700"
+                  className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm mt-2"
                 >
                   {calculating ? (
                     <>
@@ -324,10 +324,10 @@ export default function Candidates() {
           </div>
         </div>
 
-        <div className="grid gap-4">
+        <div className="grid gap-2">
           {candidates.map(candidate => (
             <Card key={candidate.id} className="bg-slate-800/50 backdrop-blur-sm border-slate-700 hover:border-teal-600 transition-colors cursor-pointer" onClick={() => matchJobsForCandidate(candidate)}>
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

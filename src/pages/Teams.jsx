@@ -275,45 +275,45 @@ export default function Teams() {
                           Add Member
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="bg-slate-800 border-slate-700">
-                        <DialogHeader>
-                          <DialogTitle className="text-white">Add Team Member</DialogTitle>
+                      <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+                        <DialogHeader className="pb-2">
+                          <DialogTitle className="text-white text-base">Add Team Member</DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4">
+                        <div className="space-y-2">
                           <Input
                             placeholder="Full Name *"
                             value={newMember.full_name}
                             onChange={(e) => setNewMember({ ...newMember, full_name: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white"
+                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
                           <Input
                             placeholder="Email"
                             type="email"
                             value={newMember.email}
                             onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white"
+                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
                           <Input
                             type="date"
                             placeholder="Birth Date *"
                             value={newMember.birth_date}
                             onChange={(e) => setNewMember({ ...newMember, birth_date: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white"
+                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
                           <Input
                             placeholder="Role"
                             value={newMember.role}
                             onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white"
+                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
                           <Input
-                            placeholder="Work Style Challenges (e.g., prefers solo work, needs structure)"
+                            placeholder="Work Style Challenges"
                             value={newMember.work_style_challenges || ''}
                             onChange={(e) => setNewMember({ ...newMember, work_style_challenges: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white"
+                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
                           <Select value={newMember.seniority} onValueChange={(v) => setNewMember({ ...newMember, seniority: v })}>
-                            <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                            <SelectTrigger className="bg-slate-900 border-slate-700 text-white h-8 text-sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -327,7 +327,7 @@ export default function Teams() {
                           <Button
                             onClick={addMember}
                             disabled={calculating || !newMember.full_name || !newMember.birth_date}
-                            className="w-full bg-teal-600 hover:bg-teal-700"
+                            className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm mt-2"
                           >
                             {calculating ? (
                               <>
@@ -344,28 +344,28 @@ export default function Teams() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                  <div className="space-y-1.5 max-h-[500px] overflow-y-auto">
                     {teamMembers.map(member => (
-                      <div key={member.id} className="p-4 bg-slate-900 rounded-lg">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="text-white font-semibold">{member.full_name}</h3>
-                            <p className="text-gray-400 text-sm">{member.role} • {member.seniority}</p>
-                            <div className="flex gap-3 mt-2 text-sm">
+                      <div key={member.id} className="p-2 bg-slate-900 rounded border border-slate-700 hover:border-slate-600 transition-colors">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-white font-medium text-sm">{member.full_name}</h3>
+                            <p className="text-gray-400 text-xs">{member.role} • {member.seniority}</p>
+                            <div className="flex gap-2 mt-1 text-xs">
                               <span className="text-amber-400">LP: {member.life_path_western}</span>
                               <span className="text-purple-400">Expr: {member.expression_western}</span>
                             </div>
                             {member.master_numbers && (
-                              <p className="text-amber-300 text-xs mt-1">✨ Master: {member.master_numbers}</p>
+                              <p className="text-amber-300 text-xs mt-0.5">✨ {member.master_numbers}</p>
                             )}
                           </div>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => deleteMember(member.id)}
-                            className="text-red-400 hover:text-red-300"
+                            className="text-red-400 hover:text-red-300 h-6 w-6 p-0"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
