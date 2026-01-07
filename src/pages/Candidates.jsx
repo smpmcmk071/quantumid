@@ -18,6 +18,7 @@ export default function Candidates() {
   const [showAddCandidate, setShowAddCandidate] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [calculating, setCalculating] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   const [newCandidate, setNewCandidate] = useState({
     full_name: '',
@@ -140,6 +141,54 @@ export default function Candidates() {
       setMatchedJobs(response.data.data);
     }
     setMatchingJobs(false);
+  };
+
+  const handleResumeFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingFile(true);
+    
+    try {
+      // Upload file
+      const uploadResponse = await base44.integrations.Core.UploadFile({ file });
+      const fileUrl = uploadResponse.file_url;
+      
+      // Extract data from file
+      const extractResponse = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url: fileUrl,
+        json_schema: {
+          type: 'object',
+          properties: {
+            full_name: { type: 'string' },
+            email: { type: 'string' },
+            skills: { type: 'array', items: { type: 'string' } },
+            years_experience: { type: 'number' },
+            education: { type: 'string' },
+            previous_roles: { type: 'string' },
+            resume_text: { type: 'string' }
+          }
+        }
+      });
+      
+      if (extractResponse.status === 'success' && extractResponse.output) {
+        const data = extractResponse.output;
+        setNewCandidate({
+          ...newCandidate,
+          full_name: data.full_name || newCandidate.full_name,
+          email: data.email || newCandidate.email,
+          resume_text: data.resume_text || newCandidate.resume_text,
+          extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || '',
+          years_experience: data.years_experience || 0,
+          education: data.education || '',
+          previous_roles: data.previous_roles || ''
+        });
+      }
+    } catch (error) {
+      alert('Error processing file: ' + error.message);
+    } finally {
+      setUploadingFile(false);
+    }
   };
 
   const parseResume = async () => {
@@ -434,6 +483,32 @@ export default function Candidates() {
                 <DialogTitle className="text-white text-base">Add New Candidate</DialogTitle>
               </DialogHeader>
               <div className="space-y-2">
+                <div>
+                  <label className="text-gray-300 text-xs mb-0.5 block">Resume Upload</label>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt"
+                    onChange={handleResumeFileUpload}
+                    disabled={uploadingFile}
+                    className="block w-full text-sm text-gray-300 bg-slate-900 border border-slate-700 rounded px-3 py-2 cursor-pointer hover:bg-slate-800"
+                  />
+                  {uploadingFile && (
+                    <p className="text-xs text-teal-400 mt-1 flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Processing file...
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-700"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-slate-800 px-2 text-gray-400">OR paste text</span>
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-gray-300 text-xs mb-0.5 block">Resume (paste text)</label>
                   <Textarea
