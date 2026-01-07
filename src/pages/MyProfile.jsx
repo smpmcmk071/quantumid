@@ -47,17 +47,22 @@ export default function MyProfile() {
         master_numbers: calc.masterNumbers?.join(', ') || ''
       });
 
-      // Auto-classify based on numerology
-      const classifyResponse = await base44.functions.invoke('classifyArchetype', {
-        personId: user.id,
-        entityType: 'User'
-      });
+      // Reload user to get updated data with fresh ID
+      const updatedUser = await base44.auth.me();
 
-      if (classifyResponse.data?.success) {
-        await base44.auth.updateMe({
-          archetype_primary_calculated: classifyResponse.data.data.primary,
-          archetype_secondary_calculated: classifyResponse.data.data.secondary
+      // Auto-classify based on numerology
+      if (updatedUser.id && updatedUser.life_path_western) {
+        const classifyResponse = await base44.functions.invoke('classifyArchetype', {
+          personId: updatedUser.id,
+          entityType: 'User'
         });
+
+        if (classifyResponse.data?.success) {
+          await base44.auth.updateMe({
+            archetype_primary_calculated: classifyResponse.data.data.primary,
+            archetype_secondary_calculated: classifyResponse.data.data.secondary
+          });
+        }
       }
 
       loadProfile();
