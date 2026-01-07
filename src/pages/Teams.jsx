@@ -160,6 +160,67 @@ export default function Teams() {
     }
   };
 
+  const handleResumeFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingFile(true);
+    
+    try {
+      const uploadResponse = await base44.integrations.Core.UploadFile({ file });
+      const fileUrl = uploadResponse.file_url;
+      
+      const extractResponse = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url: fileUrl,
+        json_schema: {
+          type: 'object',
+          properties: {
+            full_name: { type: 'string' },
+            email: { type: 'string' },
+            skills: { type: 'array', items: { type: 'string' } },
+            role: { type: 'string' }
+          }
+        }
+      });
+      
+      if (extractResponse.status === 'success' && extractResponse.output) {
+        const data = extractResponse.output;
+        setNewMember({
+          ...newMember,
+          full_name: data.full_name || newMember.full_name,
+          email: data.email || newMember.email,
+          role: data.role || newMember.role,
+          skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || ''
+        });
+      }
+    } catch (error) {
+      alert('Error processing file: ' + error.message);
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
+  const parseResume = async () => {
+    if (!resumeText) return;
+    
+    setParsingResume(true);
+    const response = await base44.functions.invoke('parseResume', {
+      resumeText: resumeText
+    });
+    
+    if (response.data?.success) {
+      const data = response.data.data;
+      setNewMember({
+        ...newMember,
+        full_name: data.full_name || newMember.full_name,
+        email: data.email || newMember.email,
+        role: data.previous_roles?.split(',')[0] || newMember.role,
+        skills: data.extracted_skills || ''
+      });
+    }
+    setParsingResume(false);
+  };
+
   const addMember = async () => {
     if (!selectedTeam || !newMember.full_name || !newMember.birth_date || !newMember.email) {
       alert('Please fill in Name, Email, and Birth Date');
