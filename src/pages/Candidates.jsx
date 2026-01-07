@@ -183,7 +183,7 @@ export default function Candidates() {
           email: data.email || newCandidate.email,
           resume_text: data.resume_text || newCandidate.resume_text,
           extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || '',
-          years_experience: data.years_experience || 0,
+          years_experience: parseInt(data.years_experience) || 0,
           education: data.education || '',
           previous_roles: data.previous_roles || ''
         });
@@ -210,7 +210,7 @@ export default function Candidates() {
         full_name: data.full_name || newCandidate.full_name,
         email: data.email || newCandidate.email,
         extracted_skills: data.extracted_skills,
-        years_experience: data.years_experience,
+        years_experience: parseInt(data.years_experience) || 0,
         education: data.education,
         previous_roles: data.previous_roles
       });
@@ -367,7 +367,7 @@ export default function Candidates() {
         full_name: data.full_name || editingCandidate.full_name,
         email: data.email || editingCandidate.email,
         extracted_skills: data.extracted_skills || editingCandidate.extracted_skills,
-        years_experience: data.years_experience || editingCandidate.years_experience,
+        years_experience: parseInt(data.years_experience) || editingCandidate.years_experience,
         education: data.education || editingCandidate.education,
         previous_roles: data.previous_roles || editingCandidate.previous_roles
       });
@@ -406,7 +406,7 @@ export default function Candidates() {
           email: data.email || editingCandidate.email,
           resume_text: data.resume_text || editingCandidate.resume_text,
           extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || editingCandidate.extracted_skills,
-          years_experience: data.years_experience || editingCandidate.years_experience,
+          years_experience: parseInt(data.years_experience) || editingCandidate.years_experience,
           education: data.education || editingCandidate.education,
           previous_roles: data.previous_roles || editingCandidate.previous_roles
         });
