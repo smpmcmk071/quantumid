@@ -24,14 +24,17 @@ Resume:
 ${resumeText}
 
 Extract:
-- full_name (string) - REQUIRED, do not leave empty
-- email (string, if found) - REQUIRED, do not leave empty
-- skills (array of strings - technical and soft skills)
-- years_experience (number - IMPORTANT: if text says "4+" or "4 years" extract as number 4, if "10+ years" extract as 10, etc. Extract the base number only.)
+- full_name (string) - ONLY if a clear person's name is present (e.g., "John Smith", "Jane Doe"). Do NOT extract job titles, descriptions, or company names as names. If no clear name found, return empty string.
+- email (string) - ONLY if an email address is found. If no email, return empty string.
+- skills (array of strings - technical and soft skills mentioned)
+- years_experience (number - IMPORTANT: if text says "4+" or "over 4 years" extract as number 4, if "10+ years" extract as 10, etc. Extract the base number only.)
 - education (string - highest degree and institution)
 - previous_roles (array of objects with: title, company, duration)
 
-CRITICAL: For years_experience, convert phrases like "4+", "over 4 years", "4 years of experience" to just the number 4.
+CRITICAL RULES:
+1. For full_name: ONLY extract actual person names like "John Smith". Do NOT extract "An enthusiastic designer" or job titles.
+2. For years_experience: Convert "4+", "over 4 years", "4 years of experience" to just the number 4.
+3. If a field is not clearly found, return empty string/array, NOT a guess.
 
 Return format:
 {
