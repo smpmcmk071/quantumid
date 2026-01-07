@@ -27,28 +27,29 @@ export default function CandidateComparison({ candidates, jobs, teams, onClose }
   const [comparison, setComparison] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const compareEnabled = candidate1 && candidate2 && selectedJob && selectedTeam;
+  const compareEnabled = candidate1 && candidate2;
 
   const runComparison = async () => {
     if (!compareEnabled) return;
     
     setLoading(true);
     
-    // Calculate team fit scores
-    const teamMembers = await base44.entities.TeamMember.filter({ team_id: selectedTeam });
+    let teamFit1 = 50, teamFit2 = 50;
+    if (selectedTeam) {
+      const teamMembers = await base44.entities.TeamMember.filter({ team_id: selectedTeam.id });
+      teamFit1 = calculateTeamFit(candidate1, teamMembers);
+      teamFit2 = calculateTeamFit(candidate2, teamMembers);
+    }
     
-    const teamFit1 = calculateTeamFit(candidate1, teamMembers);
-    const teamFit2 = calculateTeamFit(candidate2, teamMembers);
+    let jobFit1 = 50, jobFit2 = 50;
+    if (selectedJob) {
+      jobFit1 = calculateJobFit(candidate1, selectedJob);
+      jobFit2 = calculateJobFit(candidate2, selectedJob);
+    }
     
-    // Calculate job fit scores
-    const jobFit1 = calculateJobFit(candidate1, selectedJob);
-    const jobFit2 = calculateJobFit(candidate2, selectedJob);
-    
-    // Numerology tiebreaker
     const numeroScore1 = calculateNumerologyScore(candidate1);
     const numeroScore2 = calculateNumerologyScore(candidate2);
     
-    // Overall scores
     const total1 = (teamFit1 * 0.4) + (jobFit1 * 0.4) + (numeroScore1 * 0.2);
     const total2 = (teamFit2 * 0.4) + (jobFit2 * 0.4) + (numeroScore2 * 0.2);
     
@@ -75,17 +76,16 @@ export default function CandidateComparison({ candidates, jobs, teams, onClose }
   };
 
   const calculateTeamFit = (candidate, teamMembers) => {
-    if (!candidate.archetype_primary || teamMembers.length === 0) return 50;
+    const defaultArchetype = candidate.archetype_primary || 'visionary';
+    if (teamMembers.length === 0) return 50;
     
-    // Count archetype distribution
     const distribution = teamMembers.reduce((acc, member) => {
-      if (member.archetype_primary) {
-        acc[member.archetype_primary] = (acc[member.archetype_primary] || 0) + 1;
-      }
+      const arch = member.archetype_primary || 'visionary';
+      acc[arch] = (acc[arch] || 0) + 1;
       return acc;
     }, {});
     
-    const currentCount = distribution[candidate.archetype_primary] || 0;
+    const currentCount = distribution[defaultArchetype] || 0;
     const teamSize = teamMembers.length;
     
     // Balance score: prefer archetypes that are underrepresented
@@ -295,22 +295,24 @@ export default function CandidateComparison({ candidates, jobs, teams, onClose }
                 </SelectContent>
               </Select>
 
-              <Select value={selectedJob?.id} onValueChange={(id) => setSelectedJob(jobs.find(j => j.id === id))}>
+              <Select value={selectedJob?.id || 'none'} onValueChange={(id) => setSelectedJob(id === 'none' ? null : jobs.find(j => j.id === id))}>
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
-                  <SelectValue placeholder="Select Job" />
+                  <SelectValue placeholder="Job (Optional)" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
                   {jobs.map(j => (
                     <SelectItem key={j.id} value={j.id}>{j.job_title}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
-              <Select value={selectedTeam?.id} onValueChange={(id) => setSelectedTeam(teams.find(t => t.id === id))}>
+              <Select value={selectedTeam?.id || 'none'} onValueChange={(id) => setSelectedTeam(id === 'none' ? null : teams.find(t => t.id === id))}>
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
-                  <SelectValue placeholder="Select Team" />
+                  <SelectValue placeholder="Team (Optional)" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
                   {teams.map(t => (
                     <SelectItem key={t.id} value={t.id}>{t.team_name}</SelectItem>
                   ))}
