@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { User, Loader2, FlaskConical, CheckCircle2, AlertCircle } from 'lucide-react';
+import { User, Loader2, FlaskConical, CheckCircle2, AlertCircle, Link2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 
 export default function MyProfile() {
@@ -14,6 +15,12 @@ export default function MyProfile() {
   const [birthDate, setBirthDate] = useState('');
   const [linkedRecord, setLinkedRecord] = useState(null);
   const [recordType, setRecordType] = useState(null);
+  const [allCandidates, setAllCandidates] = useState([]);
+  const [allMembers, setAllMembers] = useState([]);
+  const [selectedProfileId, setSelectedProfileId] = useState('');
+  const [selectedProfileType, setSelectedProfileType] = useState('');
+  const [confirmBirthDate, setConfirmBirthDate] = useState('');
+  const [linking, setLinking] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -25,27 +32,70 @@ export default function MyProfile() {
     setUser(u);
     
     // Try to find linked Candidate or TeamMember by email (case-insensitive)
-    const allCandidates = await base44.entities.Candidate.list();
-    const candidate = allCandidates.find(c => c.email?.toLowerCase() === u.email.toLowerCase());
+    const candidates = await base44.entities.Candidate.list();
+    const candidate = candidates.find(c => c.email?.toLowerCase() === u.email.toLowerCase());
     
     if (candidate) {
       setLinkedRecord(candidate);
       setRecordType('Candidate');
       setBirthDate(candidate.birth_date || u.birth_date || '');
     } else {
-      const allMembers = await base44.entities.TeamMember.list();
-      const member = allMembers.find(m => m.email?.toLowerCase() === u.email.toLowerCase());
+      const members = await base44.entities.TeamMember.list();
+      const member = members.find(m => m.email?.toLowerCase() === u.email.toLowerCase());
       
       if (member) {
         setLinkedRecord(member);
         setRecordType('TeamMember');
         setBirthDate(member.birth_date || u.birth_date || '');
       } else {
+        // No match found - store all for manual selection
+        setAllCandidates(candidates);
+        setAllMembers(members);
         setBirthDate(u.birth_date || '');
       }
     }
     
     setLoading(false);
+  };
+
+  const linkProfile = async () => {
+    if (!selectedProfileId || !selectedProfileType || !confirmBirthDate) {
+      alert('Please select your profile and confirm your birth date');
+      return;
+    }
+
+    setLinking(true);
+
+    try {
+      const selectedRecord = selectedProfileType === 'Candidate' 
+        ? allCandidates.find(c => c.id === selectedProfileId)
+        : allMembers.find(m => m.id === selectedProfileId);
+
+      if (!selectedRecord) {
+        alert('Profile not found');
+        return;
+      }
+
+      if (selectedRecord.birth_date !== confirmBirthDate) {
+        alert('Birth date does not match. Please verify your information.');
+        setLinking(false);
+        return;
+      }
+
+      // Update the record with user's email
+      if (selectedProfileType === 'Candidate') {
+        await base44.entities.Candidate.update(selectedProfileId, { email: user.email });
+      } else {
+        await base44.entities.TeamMember.update(selectedProfileId, { email: user.email });
+      }
+
+      // Reload profile
+      await loadProfile();
+    } catch (error) {
+      alert('Error linking profile: ' + error.message);
+    } finally {
+      setLinking(false);
+    }
   };
 
   const calculateNumerology = async () => {
@@ -157,21 +207,79 @@ export default function MyProfile() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="bg-red-500/10 border-red-500 mb-6">
-            <CardContent className="p-4">
-              <div className="space-y-2">
-                <p className="text-red-300 font-semibold">⚠️ No Record Found</p>
-                <p className="text-gray-300 text-sm">
-                  We couldn't find a candidate or team member record matching your email ({user.email}).
-                </p>
-                <p className="text-gray-300 text-sm">
-                  Please contact your administrator and verify:
-                </p>
-                <ul className="text-gray-400 text-xs ml-4 list-disc">
-                  <li>Your email was entered correctly when you were added as a candidate/team member</li>
-                  <li>You're signing in with the exact same email address</li>
-                </ul>
+          <Card className="bg-amber-500/10 border-amber-500 mb-6">
+            <CardHeader>
+              <CardTitle className="text-amber-300 flex items-center gap-2">
+                <Link2 className="w-5 h-5" />
+                Link Your Profile
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-gray-300 text-sm">
+                We couldn't auto-match your email. Please select your profile below and confirm your birth date to link your account.
+              </p>
+
+              <div>
+                <label className="text-gray-300 text-sm mb-2 block">Select Your Profile Type</label>
+                <Select value={selectedProfileType} onValueChange={setSelectedProfileType}>
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                    <SelectValue placeholder="Choose..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Candidate">Candidate</SelectItem>
+                    <SelectItem value="TeamMember">Team Member</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
+              {selectedProfileType && (
+                <div>
+                  <label className="text-gray-300 text-sm mb-2 block">Select Your Name</label>
+                  <Select value={selectedProfileId} onValueChange={setSelectedProfileId}>
+                    <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                      <SelectValue placeholder="Choose your name..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(selectedProfileType === 'Candidate' ? allCandidates : allMembers).map(record => (
+                        <SelectItem key={record.id} value={record.id}>
+                          {record.full_name} {record.birth_date ? `(${record.birth_date})` : ''}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {selectedProfileId && (
+                <div>
+                  <label className="text-gray-300 text-sm mb-2 block">Confirm Your Birth Date</label>
+                  <Input
+                    type="date"
+                    value={confirmBirthDate}
+                    onChange={(e) => setConfirmBirthDate(e.target.value)}
+                    className="bg-slate-900 border-slate-700 text-white"
+                  />
+                  <p className="text-gray-400 text-xs mt-1">Enter your birth date to verify your identity</p>
+                </div>
+              )}
+
+              <Button
+                onClick={linkProfile}
+                disabled={!selectedProfileId || !confirmBirthDate || linking}
+                className="w-full bg-teal-600 hover:bg-teal-700"
+              >
+                {linking ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Linking Profile...
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="w-4 h-4 mr-2" />
+                    Link My Profile
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
         )}
