@@ -29,19 +29,19 @@ Deno.serve(async (req) => {
       const calcs = await Promise.all(
         members.map(m => 
           base44.functions.invoke('calculateNumerology', {
-            type: 'date',
+            type: 'dayNumbers',
             date: dateStr,
-            birthDate: m.birth_date
+            lifePath: m.life_path_western
           })
         )
       );
 
       // Extract Universal Day and Personal Days
       const firstCalc = calcs[0]?.data?.data;
-      const universalDay = firstCalc?.dayNumbers?.universalDay || 0;
+      const universalDay = firstCalc?.universalDay || 0;
       const personalDays = calcs.map((c, i) => ({
         name: members[i].full_name,
-        personalDay: c?.data?.data?.dayNumbers?.personalDay || 0,
+        personalDay: c?.data?.data?.personalDay || 0,
         lifePath: members[i].life_path_western
       }));
 
