@@ -21,6 +21,8 @@ export default function Teams() {
   const [editingMember, setEditingMember] = useState(null);
   const [showArchetypeTest, setShowArchetypeTest] = useState(false);
   const [testingMember, setTestingMember] = useState(null);
+  const [candidates, setCandidates] = useState([]);
+  const [selectedCandidateId, setSelectedCandidateId] = useState('');
 
   const [newTeam, setNewTeam] = useState({ team_name: '', department: '', description: '' });
   const [newMember, setNewMember] = useState({
@@ -51,7 +53,9 @@ export default function Teams() {
       const c = clients[0];
       setClient(c);
       const t = await base44.entities.Team.filter({ client_id: c.id });
+      const cands = await base44.entities.Candidate.filter({ client_id: c.id });
       setTeams(t);
+      setCandidates(cands);
       if (t.length > 0) setSelectedTeam(t[0]);
     }
     setLoading(false);
@@ -102,6 +106,57 @@ export default function Teams() {
     } catch (error) {
       console.error('Error creating team:', error);
       alert('Error: ' + (error.message || 'Failed to create team'));
+    }
+  };
+
+  const addFromCandidate = async () => {
+    if (!selectedCandidateId || !selectedTeam) return;
+
+    setCalculating(true);
+    try {
+      const candidate = candidates.find(c => c.id === selectedCandidateId);
+      if (!candidate) {
+        alert('Candidate not found');
+        return;
+      }
+
+      await base44.entities.TeamMember.create({
+        team_id: selectedTeam.id,
+        full_name: candidate.full_name,
+        email: candidate.email || '',
+        birth_date: candidate.birth_date,
+        role: candidate.previous_roles?.split(',')[0]?.trim() || '',
+        seniority: 'mid',
+        life_path_western: candidate.life_path_western,
+        life_path_chaldean: candidate.life_path_chaldean,
+        expression_western: candidate.expression_western,
+        soul_urge_western: candidate.soul_urge_western,
+        personality_western: candidate.personality_western,
+        birthday_number: candidate.birthday_number,
+        master_numbers: candidate.master_numbers,
+        element: candidate.element,
+        chinese_zodiac: candidate.chinese_zodiac,
+        chinese_animal: candidate.chinese_animal,
+        sun_sign: candidate.sun_sign,
+        archetype_primary: candidate.archetype_primary,
+        archetype_secondary: candidate.archetype_secondary,
+        skills: candidate.extracted_skills || '',
+        strengths: '',
+        weaknesses: '',
+        work_style_challenges: ''
+      });
+
+      // Update candidate status to hired
+      await base44.entities.Candidate.update(selectedCandidateId, { status: 'hired' });
+
+      setSelectedCandidateId('');
+      setShowAddMember(false);
+      await loadData();
+      await loadTeamMembers();
+    } catch (error) {
+      alert('Error adding candidate: ' + error.message);
+    } finally {
+      setCalculating(false);
     }
   };
 
@@ -335,45 +390,101 @@ export default function Teams() {
                           Add Member
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
-                        <DialogHeader className="pb-2">
-                          <DialogTitle className="text-white text-base">{editingMember ? 'Edit' : 'Add'} Team Member</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-2">
-                          <Input
-                            placeholder="Full Name *"
-                            value={newMember.full_name}
-                            onChange={(e) => setNewMember({ ...newMember, full_name: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                          />
-                          <div>
-                            <label className="text-gray-300 text-xs mb-0.5 block">Email *</label>
-                            <Input
-                              placeholder="Email (required to invite)"
-                              type="email"
-                              value={newMember.email}
-                              onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
-                              className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                            />
-                          </div>
-                          <Input
-                            type="date"
-                            placeholder="Birth Date *"
-                            value={newMember.birth_date}
-                            onChange={(e) => setNewMember({ ...newMember, birth_date: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                          />
+                      <DialogContent className="bg-slate-800 border-slate-700 max-w-md max-h-[90vh] overflow-y-auto">
+                       <DialogHeader className="pb-2">
+                         <DialogTitle className="text-white text-base">{editingMember ? 'Edit' : 'Add'} Team Member</DialogTitle>
+                       </DialogHeader>
+                       <div className="space-y-3">
+                         {!editingMember && candidates.length > 0 && (
+                           <>
+                             <div>
+                               <label className="text-gray-300 text-xs mb-1 block">Select from Candidates</label>
+                               <Select value={selectedCandidateId} onValueChange={setSelectedCandidateId}>
+                                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white h-9 text-sm">
+                                   <SelectValue placeholder="Choose candidate..." />
+                                 </SelectTrigger>
+                                 <SelectContent className="max-h-60">
+                                   {candidates.map(candidate => (
+                                     <SelectItem key={candidate.id} value={candidate.id}>
+                                       {candidate.full_name} - {candidate.status} 
+                                       {candidate.years_experience > 0 && ` (${candidate.years_experience}y exp)`}
+                                     </SelectItem>
+                                   ))}
+                                 </SelectContent>
+                               </Select>
+                               {selectedCandidateId && (
+                                 <Button
+                                   onClick={addFromCandidate}
+                                   disabled={calculating}
+                                   className="w-full bg-teal-600 hover:bg-teal-700 h-8 text-sm mt-2"
+                                 >
+                                   {calculating ? (
+                                     <>
+                                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                       Adding...
+                                     </>
+                                   ) : (
+                                     'Add Selected Candidate'
+                                   )}
+                                 </Button>
+                               )}
+                             </div>
+
+                             <div className="relative">
+                               <div className="absolute inset-0 flex items-center">
+                                 <div className="w-full border-t border-slate-700"></div>
+                               </div>
+                               <div className="relative flex justify-center text-xs">
+                                 <span className="bg-slate-800 px-2 text-gray-400">OR create new member</span>
+                               </div>
+                             </div>
+                           </>
+                         )}
+
+                         <Input
+                           placeholder="Full Name *"
+                           value={newMember.full_name}
+                           onChange={(e) => setNewMember({ ...newMember, full_name: e.target.value })}
+                           className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                           autoComplete="off"
+                           data-1p-ignore
+                         />
+                         <div>
+                           <label className="text-gray-300 text-xs mb-0.5 block">Email *</label>
+                           <Input
+                             placeholder="Email (required to invite)"
+                             type="email"
+                             value={newMember.email}
+                             onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+                             className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                             autoComplete="off"
+                             data-1p-ignore
+                           />
+                         </div>
+                         <Input
+                           type="date"
+                           placeholder="Birth Date *"
+                           value={newMember.birth_date}
+                           onChange={(e) => setNewMember({ ...newMember, birth_date: e.target.value })}
+                           className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                           autoComplete="off"
+                           data-1p-ignore
+                         />
                           <Input
                             placeholder="Role"
                             value={newMember.role}
                             onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
                             className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                            autoComplete="off"
+                            data-1p-ignore
                           />
                           <Input
                             placeholder="Work Style Challenges"
                             value={newMember.work_style_challenges || ''}
                             onChange={(e) => setNewMember({ ...newMember, work_style_challenges: e.target.value })}
                             className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                            autoComplete="off"
+                            data-1p-ignore
                           />
                           <Select value={newMember.seniority} onValueChange={(v) => setNewMember({ ...newMember, seniority: v })}>
                             <SelectTrigger className="bg-slate-900 border-slate-700 text-white h-8 text-sm">
