@@ -179,6 +179,54 @@ export default function MyProfile() {
     return colors[archetype] || 'text-gray-400';
   };
 
+  const getArchetypeDescription = (archetype) => {
+    const descriptions = {
+      visionary: {
+        title: 'The Visionary',
+        description: 'You excel at seeing the big picture and inspiring others with innovative ideas. You thrive in environments that value creativity, forward-thinking, and transformational change.',
+        strengths: ['Strategic thinking', 'Innovation', 'Inspiring leadership', 'Future-focused', 'Adaptable to change'],
+        workStyle: 'You prefer autonomy and the freedom to explore new possibilities. You excel in roles that require conceptual thinking and long-term planning.'
+      },
+      strategist: {
+        title: 'The Strategist',
+        description: 'You bring analytical rigor and systematic thinking to every challenge. You excel at breaking down complex problems and creating efficient, data-driven solutions.',
+        strengths: ['Analytical thinking', 'Problem-solving', 'Process optimization', 'Risk assessment', 'Detail-oriented'],
+        workStyle: 'You thrive in structured environments with clear objectives. You excel when given time to analyze and plan before taking action.'
+      },
+      creator: {
+        title: 'The Creator',
+        description: 'You are action-oriented and results-driven, excelling at turning ideas into reality. You bring practical execution skills and a hands-on approach to every project.',
+        strengths: ['Execution', 'Hands-on problem solving', 'Practical innovation', 'Results-focused', 'Resourceful'],
+        workStyle: 'You prefer learning by doing and thrive in dynamic environments. You excel in roles that allow you to build, create, and see tangible outcomes.'
+      },
+      harmonizer: {
+        title: 'The Harmonizer',
+        description: 'You excel at building relationships and creating cohesive teams. You bring emotional intelligence and collaborative skills that strengthen organizational culture.',
+        strengths: ['Team building', 'Conflict resolution', 'Empathy', 'Communication', 'Collaborative leadership'],
+        workStyle: 'You thrive in team-oriented environments where collaboration is valued. You excel at facilitating communication and ensuring everyone feels heard.'
+      }
+    };
+    return descriptions[archetype] || null;
+  };
+
+  const getLifePathInsight = (lifePathNumber) => {
+    const insights = {
+      1: 'Natural leader with strong independence and pioneering spirit',
+      2: 'Diplomatic peacemaker with strong intuition and partnership skills',
+      3: 'Creative communicator with natural charisma and expressive abilities',
+      4: 'Practical builder focused on stability, organization, and hard work',
+      5: 'Dynamic adventurer seeking freedom, variety, and progressive change',
+      6: 'Nurturing caretaker focused on harmony, responsibility, and service',
+      7: 'Analytical thinker with deep introspection and spiritual awareness',
+      8: 'Ambitious achiever focused on material success and executive abilities',
+      9: 'Humanitarian visionary with compassion and universal understanding',
+      11: 'Master intuitive with heightened spiritual awareness and inspiration (Master Number)',
+      22: 'Master builder capable of turning grand visions into reality (Master Number)',
+      33: 'Master teacher focused on compassionate service and spiritual upliftment (Master Number)'
+    };
+    return insights[lifePathNumber] || 'Unique path of personal growth and development';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 flex items-center justify-center">
@@ -356,7 +404,7 @@ export default function MyProfile() {
               </>
             ) : (
               <>
-                <div className="p-6 bg-green-500/10 border-2 border-green-500 rounded-lg">
+                <div className="p-6 bg-green-500/10 border-2 border-green-500 rounded-lg mb-6">
                   <div className="flex items-center gap-3 mb-3">
                     <CheckCircle2 className="w-8 h-8 text-green-400" />
                     <h3 className="text-xl font-bold text-green-300">Assessment Complete!</h3>
@@ -379,11 +427,101 @@ export default function MyProfile() {
                     )}
                   </div>
                 </div>
-                
-                <p className="text-gray-400 text-sm text-center">
-                  Your results have been saved. You can close this page or retake the assessment below.
-                </p>
 
+                {/* Detailed Archetype Profile */}
+                {getArchetypeDescription(testArchetype) && (
+                  <div className="space-y-6 mb-6">
+                    <div className="p-6 bg-slate-900/50 rounded-lg border border-slate-700">
+                      <h3 className={`text-2xl font-bold mb-3 capitalize ${getArchetypeColor(testArchetype)}`}>
+                        {getArchetypeDescription(testArchetype).title}
+                      </h3>
+                      <p className="text-gray-300 mb-4">
+                        {getArchetypeDescription(testArchetype).description}
+                      </p>
+                      
+                      <div className="mb-4">
+                        <h4 className="text-teal-400 font-semibold mb-2">Key Strengths</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {getArchetypeDescription(testArchetype).strengths.map((strength, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-teal-500/20 text-teal-300 rounded-full text-sm">
+                              {strength}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="text-blue-400 font-semibold mb-2">Your Work Style</h4>
+                        <p className="text-gray-300">{getArchetypeDescription(testArchetype).workStyle}</p>
+                      </div>
+                    </div>
+
+                    {/* Secondary Archetype */}
+                    {(user.archetype_secondary || linkedRecord?.archetype_secondary) && getArchetypeDescription(user.archetype_secondary || linkedRecord?.archetype_secondary) && (
+                      <div className="p-6 bg-slate-900/30 rounded-lg border border-slate-700">
+                        <h3 className={`text-xl font-bold mb-3 capitalize ${getArchetypeColor(user.archetype_secondary || linkedRecord?.archetype_secondary)}`}>
+                          Secondary: {getArchetypeDescription(user.archetype_secondary || linkedRecord?.archetype_secondary).title}
+                        </h3>
+                        <p className="text-gray-300">
+                          {getArchetypeDescription(user.archetype_secondary || linkedRecord?.archetype_secondary).description}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Numerology Insights */}
+                    {linkedRecord && (linkedRecord.life_path_western || linkedRecord.expression_western) && (
+                      <div className="p-6 bg-slate-900/50 rounded-lg border border-slate-700">
+                        <h3 className="text-xl font-bold text-amber-400 mb-4">Your Numerology Profile</h3>
+                        
+                        {linkedRecord.life_path_western && (
+                          <div className="mb-4">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-3xl font-bold text-amber-400">{linkedRecord.life_path_western}</span>
+                              <div>
+                                <h4 className="text-white font-semibold">Life Path Number</h4>
+                                <p className="text-gray-400 text-sm">Your core purpose and natural tendencies</p>
+                              </div>
+                            </div>
+                            <p className="text-gray-300 text-sm">{getLifePathInsight(linkedRecord.life_path_western)}</p>
+                          </div>
+                        )}
+
+                        {linkedRecord.expression_western && (
+                          <div className="mb-4">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-2xl font-bold text-purple-400">{linkedRecord.expression_western}</span>
+                              <div>
+                                <h4 className="text-white font-semibold">Expression Number</h4>
+                                <p className="text-gray-400 text-sm">Your natural talents and abilities</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {linkedRecord.master_numbers && (
+                          <div className="p-4 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                            <h4 className="text-amber-300 font-semibold mb-2">✨ Master Numbers Present</h4>
+                            <p className="text-gray-300 text-sm mb-2">{linkedRecord.master_numbers}</p>
+                            <p className="text-gray-400 text-xs">Master numbers indicate heightened potential and spiritual significance in your path.</p>
+                          </div>
+                        )}
+
+                        {linkedRecord.element && (
+                          <div className="mt-4">
+                            <h4 className="text-white font-semibold mb-1">Element: <span className="text-blue-400">{linkedRecord.element}</span></h4>
+                            <p className="text-gray-400 text-sm">
+                              {linkedRecord.element === 'Fire' && 'Dynamic, passionate, and driven by action'}
+                              {linkedRecord.element === 'Earth' && 'Practical, stable, and focused on tangible results'}
+                              {linkedRecord.element === 'Air' && 'Intellectual, communicative, and ideas-oriented'}
+                              {linkedRecord.element === 'Water' && 'Intuitive, emotional, and relationship-focused'}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 <Button
                   onClick={() => setShowTest(true)}
                   variant="outline"
