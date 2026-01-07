@@ -14,9 +14,23 @@ export default function Layout({ children, currentPageName }) {
     const loadUser = async () => {
       const u = await base44.auth.me();
       setUser(u);
+      
+      // Auto-redirect non-admin users without linked profiles to MyProfile
+      if (u && u.role !== 'admin' && currentPageName !== 'MyProfile') {
+        const candidates = await base44.entities.Candidate.list();
+        const members = await base44.entities.TeamMember.list();
+        
+        const hasLinkedProfile = 
+          candidates.some(c => c.email?.toLowerCase() === u.email.toLowerCase()) ||
+          members.some(m => m.email?.toLowerCase() === u.email.toLowerCase());
+        
+        if (!hasLinkedProfile) {
+          window.location.href = createPageUrl('MyProfile');
+        }
+      }
     };
     loadUser();
-  }, []);
+  }, [currentPageName]);
 
   const handleLogout = () => {
     base44.auth.logout('/');
