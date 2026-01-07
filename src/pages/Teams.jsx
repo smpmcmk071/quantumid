@@ -218,8 +218,8 @@ export default function Teams() {
         ...newMember,
         full_name: data.full_name || newMember.full_name,
         email: data.email || newMember.email,
-        role: data.previous_roles?.split(',')[0] || newMember.role,
-        skills: data.extracted_skills || ''
+        role: data.previous_roles?.split(';')[0]?.split(' at ')[0]?.trim() || newMember.role,
+        skills: data.extracted_skills || newMember.skills
       });
     }
     setParsingResume(false);

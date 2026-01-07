@@ -209,10 +209,10 @@ export default function Candidates() {
         ...newCandidate,
         full_name: data.full_name || newCandidate.full_name,
         email: data.email || newCandidate.email,
-        extracted_skills: data.extracted_skills,
-        years_experience: parseInt(data.years_experience) || 0,
-        education: data.education,
-        previous_roles: data.previous_roles
+        extracted_skills: data.extracted_skills || newCandidate.extracted_skills,
+        years_experience: data.years_experience || newCandidate.years_experience,
+        education: data.education || newCandidate.education,
+        previous_roles: data.previous_roles || newCandidate.previous_roles
       });
     }
     setParsing(false);
@@ -367,7 +367,7 @@ export default function Candidates() {
         full_name: data.full_name || editingCandidate.full_name,
         email: data.email || editingCandidate.email,
         extracted_skills: data.extracted_skills || editingCandidate.extracted_skills,
-        years_experience: parseInt(data.years_experience) || editingCandidate.years_experience,
+        years_experience: data.years_experience || editingCandidate.years_experience,
         education: data.education || editingCandidate.education,
         previous_roles: data.previous_roles || editingCandidate.previous_roles
       });

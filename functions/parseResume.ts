@@ -24,12 +24,14 @@ Resume:
 ${resumeText}
 
 Extract:
-- full_name (string)
-- email (string, if found)
+- full_name (string) - REQUIRED, do not leave empty
+- email (string, if found) - REQUIRED, do not leave empty
 - skills (array of strings - technical and soft skills)
-- years_experience (number - total years of professional experience)
+- years_experience (number - IMPORTANT: if text says "4+" or "4 years" extract as number 4, if "10+ years" extract as 10, etc. Extract the base number only.)
 - education (string - highest degree and institution)
 - previous_roles (array of objects with: title, company, duration)
+
+CRITICAL: For years_experience, convert phrases like "4+", "over 4 years", "4 years of experience" to just the number 4.
 
 Return format:
 {
@@ -63,16 +65,27 @@ Return format:
       }
     });
 
+    // Only include fields that were actually found (not empty)
+    const extractedData = {};
+    
+    if (response.full_name?.trim()) extractedData.full_name = response.full_name.trim();
+    if (response.email?.trim()) extractedData.email = response.email.trim();
+    if (response.skills && response.skills.length > 0) {
+      extractedData.extracted_skills = response.skills.join(', ');
+    }
+    if (response.years_experience && response.years_experience > 0) {
+      extractedData.years_experience = response.years_experience;
+    }
+    if (response.education?.trim()) extractedData.education = response.education.trim();
+    if (response.previous_roles && response.previous_roles.length > 0) {
+      extractedData.previous_roles = response.previous_roles
+        .map(r => `${r.title} at ${r.company} (${r.duration})`)
+        .join('; ');
+    }
+
     return Response.json({
       success: true,
-      data: {
-        full_name: response.full_name,
-        email: response.email,
-        extracted_skills: response.skills?.join(', ') || '',
-        years_experience: response.years_experience || 0,
-        education: response.education || '',
-        previous_roles: response.previous_roles?.map(r => `${r.title} at ${r.company} (${r.duration})`).join('; ') || ''
-      }
+      data: extractedData
     });
 
   } catch (error) {
