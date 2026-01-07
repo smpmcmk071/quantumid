@@ -25,6 +25,12 @@ export default function Dashboard() {
     const u = await base44.auth.me();
     setUser(u);
 
+    // If not admin, redirect to My Profile
+    if (u.role !== 'admin') {
+      window.location.href = createPageUrl('MyProfile');
+      return;
+    }
+
     // Find client by admin email
     const clients = await base44.entities.Client.filter({ admin_email: u.email });
     if (clients.length > 0) {

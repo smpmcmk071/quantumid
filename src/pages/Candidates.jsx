@@ -366,13 +366,16 @@ export default function Candidates() {
                   onChange={(e) => setNewCandidate({ ...newCandidate, full_name: e.target.value })}
                   className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                 />
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={newCandidate.email}
-                  onChange={(e) => setNewCandidate({ ...newCandidate, email: e.target.value })}
-                  className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                />
+                <div>
+                  <label className="text-gray-300 text-xs mb-0.5 block">Email *</label>
+                  <Input
+                    placeholder="Email (required to invite)"
+                    type="email"
+                    value={newCandidate.email}
+                    onChange={(e) => setNewCandidate({ ...newCandidate, email: e.target.value })}
+                    className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                  />
+                </div>
                 <div>
                   <label className="text-gray-300 text-xs mb-0.5 block">Birth Date *</label>
                   <Input

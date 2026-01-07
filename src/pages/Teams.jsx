@@ -346,13 +346,16 @@ export default function Teams() {
                             onChange={(e) => setNewMember({ ...newMember, full_name: e.target.value })}
                             className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
                           />
-                          <Input
-                            placeholder="Email"
-                            type="email"
-                            value={newMember.email}
-                            onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
-                            className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                          />
+                          <div>
+                            <label className="text-gray-300 text-xs mb-0.5 block">Email *</label>
+                            <Input
+                              placeholder="Email (required to invite)"
+                              type="email"
+                              value={newMember.email}
+                              onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+                              className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                            />
+                          </div>
                           <Input
                             type="date"
                             placeholder="Birth Date *"
