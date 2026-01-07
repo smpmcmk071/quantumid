@@ -43,15 +43,15 @@ export default function BirthdayInsights() {
       const today = new Date();
       const upcoming = members.filter(m => {
         if (!m.birth_date) return false;
-        const bday = new Date(m.birth_date);
-        const thisYearBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+        const [year, month, day] = m.birth_date.split('-');
+        const thisYearBday = new Date(today.getFullYear(), parseInt(month) - 1, parseInt(day));
         const daysUntil = Math.ceil((thisYearBday - today) / (1000 * 60 * 60 * 24));
         return daysUntil >= 0 && daysUntil <= 30;
       }).sort((a, b) => {
-        const bdayA = new Date(a.birth_date);
-        const bdayB = new Date(b.birth_date);
-        const thisYearA = new Date(today.getFullYear(), bdayA.getMonth(), bdayA.getDate());
-        const thisYearB = new Date(today.getFullYear(), bdayB.getMonth(), bdayB.getDate());
+        const [yearA, monthA, dayA] = a.birth_date.split('-');
+        const [yearB, monthB, dayB] = b.birth_date.split('-');
+        const thisYearA = new Date(today.getFullYear(), parseInt(monthA) - 1, parseInt(dayA));
+        const thisYearB = new Date(today.getFullYear(), parseInt(monthB) - 1, parseInt(dayB));
         return thisYearA - thisYearB;
       });
       
@@ -92,8 +92,8 @@ export default function BirthdayInsights() {
 
   const getDaysUntilBirthday = (birthDate) => {
     const today = new Date();
-    const bday = new Date(birthDate);
-    const thisYearBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+    const [year, month, day] = birthDate.split('-');
+    const thisYearBday = new Date(today.getFullYear(), parseInt(month) - 1, parseInt(day));
     const daysUntil = Math.ceil((thisYearBday - today) / (1000 * 60 * 60 * 24));
     return daysUntil;
   };
@@ -161,11 +161,19 @@ export default function BirthdayInsights() {
                   <SelectValue placeholder="Choose a team member..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {allMembers.map(member => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {member.full_name} - {member.role} {member.birth_date && `(${new Date(member.birth_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`}
-                    </SelectItem>
-                  ))}
+                  {allMembers.map(member => {
+                    let bdayDisplay = '';
+                    if (member.birth_date) {
+                      const [year, month, day] = member.birth_date.split('-');
+                      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                      bdayDisplay = ` (${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
+                    }
+                    return (
+                      <SelectItem key={member.id} value={member.id}>
+                        {member.full_name} - {member.role}{bdayDisplay}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </CardContent>
@@ -197,7 +205,11 @@ export default function BirthdayInsights() {
                     {insights.member.archetype}
                   </span>
                   <span className="text-gray-400 text-sm">
-                    🎂 {new Date(insights.member.birth_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                    🎂 {(() => {
+                      const [year, month, day] = insights.member.birth_date.split('-');
+                      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                      return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                    })()}
                   </span>
                 </div>
               </CardHeader>
