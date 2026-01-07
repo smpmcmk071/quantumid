@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 
@@ -33,6 +33,8 @@ export default function Candidates() {
   const [testingCandidate, setTestingCandidate] = useState(null);
   const [showComparison, setShowComparison] = useState(false);
   const [teams, setTeams] = useState([]);
+  const [editingCandidate, setEditingCandidate] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -100,7 +102,10 @@ export default function Candidates() {
           personality_western: calc.personality?.reduced || 0,
           birthday_number: calc.birthday?.reduced || 0,
           master_numbers: calc.masterNumbers?.join(', ') || '',
-          element: calc.astrology?.element || 'Earth'
+          element: calc.astrology?.element || 'Earth',
+          chinese_zodiac: calc.astrology?.chineseZodiac || '',
+          chinese_animal: calc.astrology?.chineseAnimal || '',
+          sun_sign: calc.astrology?.sign || ''
         });
       }
       }
@@ -189,7 +194,10 @@ export default function Candidates() {
         personality_western: personalityWestern,
         birthday_number: birthdayNumber,
         master_numbers: masterNumbers,
-        element: element
+        element: element,
+        chinese_zodiac: calc.astrology?.chineseZodiac || '',
+        chinese_animal: calc.astrology?.chineseAnimal || '',
+        sun_sign: calc.astrology?.sign || ''
       });
       
       setNewCandidate({
@@ -224,6 +232,25 @@ export default function Candidates() {
     } catch (error) {
       alert('Error sending invitation: ' + error.message);
     }
+  };
+
+  const startEditCandidate = (candidate) => {
+    setEditingCandidate({ ...candidate });
+    setShowEditDialog(true);
+  };
+
+  const saveEditCandidate = async () => {
+    if (!editingCandidate) return;
+    
+    await base44.entities.Candidate.update(editingCandidate.id, {
+      email: editingCandidate.email,
+      full_name: editingCandidate.full_name,
+      birth_date: editingCandidate.birth_date
+    });
+    
+    setShowEditDialog(false);
+    setEditingCandidate(null);
+    loadData();
   };
 
   const startArchetypeTest = (candidate) => {
@@ -458,9 +485,29 @@ export default function Candidates() {
                     {candidate.master_numbers && (
                       <p className="text-amber-300 text-xs mt-2">✨ Master: {candidate.master_numbers}</p>
                     )}
+
+                    {candidate.chinese_zodiac && (
+                      <p className="text-pink-300 text-xs mt-1">🐉 {candidate.chinese_zodiac}</p>
+                    )}
+
+                    {candidate.sun_sign && (
+                      <p className="text-indigo-300 text-xs">♈ {candidate.sun_sign} • {candidate.element}</p>
+                    )}
                   </div>
                   
                   <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditCandidate(candidate);
+                      }}
+                      className="text-blue-400 hover:text-blue-300 h-8"
+                      title="Edit candidate details"
+                    >
+                      <Pencil className="w-3 h-3" />
+                    </Button>
                     {candidate.email && (
                       <Button
                         size="sm"
@@ -551,6 +598,44 @@ export default function Candidates() {
           </div>
         )}
 
+        {/* Edit Candidate Dialog */}
+        {showEditDialog && editingCandidate && (
+          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+            <DialogContent className="bg-slate-800 border-slate-700">
+              <DialogHeader>
+                <DialogTitle className="text-white">Edit Candidate</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Full Name"
+                  value={editingCandidate.full_name}
+                  onChange={(e) => setEditingCandidate({ ...editingCandidate, full_name: e.target.value })}
+                  className="bg-slate-900 border-slate-700 text-white"
+                />
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  value={editingCandidate.email || ''}
+                  onChange={(e) => setEditingCandidate({ ...editingCandidate, email: e.target.value })}
+                  className="bg-slate-900 border-slate-700 text-white"
+                />
+                <Input
+                  type="date"
+                  value={editingCandidate.birth_date}
+                  onChange={(e) => setEditingCandidate({ ...editingCandidate, birth_date: e.target.value })}
+                  className="bg-slate-900 border-slate-700 text-white"
+                />
+                <Button
+                  onClick={saveEditCandidate}
+                  className="w-full bg-teal-600 hover:bg-teal-700"
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+
         {/* Candidate Comparison */}
         {showComparison && (
           <CandidateComparison
@@ -560,7 +645,7 @@ export default function Candidates() {
             onClose={() => setShowComparison(false)}
           />
         )}
-      </div>
-    </div>
-  );
-}
+        </div>
+        </div>
+        );
+        }

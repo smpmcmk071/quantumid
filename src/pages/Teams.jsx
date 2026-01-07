@@ -159,6 +159,9 @@ export default function Teams() {
             birthday_number: birthdayNumber,
             master_numbers: masterNumbers,
             element: element,
+            chinese_zodiac: calc.astrology?.chineseZodiac || '',
+            chinese_animal: calc.astrology?.chineseAnimal || '',
+            sun_sign: calc.astrology?.sign || '',
             strengths: '',
             weaknesses: '',
             work_style_challenges: newMember.work_style_challenges || ''
