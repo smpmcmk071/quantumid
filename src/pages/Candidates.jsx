@@ -219,83 +219,86 @@ export default function Candidates() {
   };
 
   const addCandidate = async () => {
-    const trimmedName = newCandidate.full_name?.trim();
-    const trimmedEmail = newCandidate.email?.trim();
-    const trimmedBirthDate = newCandidate.birth_date?.trim();
+    if (!client) {
+      alert('No client found. Please refresh the page.');
+      return;
+    }
 
-    if (!client || !trimmedName || !trimmedBirthDate || !trimmedEmail) {
+    if (!newCandidate.full_name || !newCandidate.email || !newCandidate.birth_date) {
       alert('Please fill in Name, Email, and Birth Date');
       return;
     }
     
     setCalculating(true);
     
-    // Encrypt resume text before storing
-    const encryptResponse = await base44.functions.invoke('encryptData', {
-      data: newCandidate.resume_text
-    });
-    const encryptedResume = encryptResponse.data?.encrypted || newCandidate.resume_text;
-    
-    // Calculate numerology
-    const response = await base44.functions.invoke('calculateNumerology', {
-      type: 'name',
-      name: trimmedName,
-      birthDate: trimmedBirthDate
-    });
-
-    if (response.data?.success) {
-      const calc = response.data.data;
-
-      // Extract correct values from nested response
-      const lifePathWestern = calc.lifePath?.reduced || 0;
-      const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
-      const expressionWestern = calc.expression?.reduced || 0;
-      const soulUrgeWestern = calc.soulUrge?.reduced || 0;
-      const personalityWestern = calc.personality?.reduced || 0;
-      const birthdayNumber = calc.birthday?.reduced || 0;
-      const masterNumbers = calc.masterNumbers?.join(', ') || '';
-      const element = calc.astrology?.element || 'Earth';
-
-      await base44.entities.Candidate.create({
-        client_id: client.id,
-        full_name: trimmedName,
-        email: trimmedEmail,
-        birth_date: trimmedBirthDate,
-        resume_text: encryptedResume,
-        extracted_skills: newCandidate.extracted_skills || '',
-        years_experience: newCandidate.years_experience || 0,
-        education: newCandidate.education || '',
-        previous_roles: newCandidate.previous_roles || '',
-        status: newCandidate.status,
-        life_path_western: lifePathWestern,
-        life_path_chaldean: lifePathChaldean,
-        expression_western: expressionWestern,
-        soul_urge_western: soulUrgeWestern,
-        personality_western: personalityWestern,
-        birthday_number: birthdayNumber,
-        master_numbers: masterNumbers,
-        element: element,
-        chinese_zodiac: calc.astrology?.chineseZodiac || '',
-        chinese_animal: calc.astrology?.chineseAnimal || '',
-        sun_sign: calc.astrology?.sign || ''
+    try {
+      // Calculate numerology
+      const response = await base44.functions.invoke('calculateNumerology', {
+        type: 'name',
+        name: newCandidate.full_name,
+        birthDate: newCandidate.birth_date
       });
+
+      if (response.data?.success) {
+        const calc = response.data.data;
+
+        // Extract correct values from nested response
+        const lifePathWestern = calc.lifePath?.reduced || 0;
+        const lifePathChaldean = calc.lifePathChaldean?.reduced || 0;
+        const expressionWestern = calc.expression?.reduced || 0;
+        const soulUrgeWestern = calc.soulUrge?.reduced || 0;
+        const personalityWestern = calc.personality?.reduced || 0;
+        const birthdayNumber = calc.birthday?.reduced || 0;
+        const masterNumbers = calc.masterNumbers?.join(', ') || '';
+        const element = calc.astrology?.element || 'Earth';
+
+        await base44.entities.Candidate.create({
+          client_id: client.id,
+          full_name: newCandidate.full_name,
+          email: newCandidate.email,
+          birth_date: newCandidate.birth_date,
+          resume_text: newCandidate.resume_text || '',
+          extracted_skills: newCandidate.extracted_skills || '',
+          years_experience: newCandidate.years_experience || 0,
+          education: newCandidate.education || '',
+          previous_roles: newCandidate.previous_roles || '',
+          status: newCandidate.status,
+          life_path_western: lifePathWestern,
+          life_path_chaldean: lifePathChaldean,
+          expression_western: expressionWestern,
+          soul_urge_western: soulUrgeWestern,
+          personality_western: personalityWestern,
+          birthday_number: birthdayNumber,
+          master_numbers: masterNumbers,
+          element: element,
+          chinese_zodiac: calc.astrology?.chineseZodiac || '',
+          chinese_animal: calc.astrology?.chineseAnimal || '',
+          sun_sign: calc.astrology?.sign || ''
+        });
+      } else {
+        alert('Failed to calculate numerology profile');
+        setCalculating(false);
+        return;
+      }
       
-      setNewCandidate({
-        full_name: '',
-        email: '',
-        birth_date: '',
-        resume_text: '',
-        status: 'new',
-        extracted_skills: '',
-        years_experience: 0,
-        education: '',
-        previous_roles: ''
-      });
-      setShowAddCandidate(false);
-      loadData();
-    }
-    
-    setCalculating(false);
+        setNewCandidate({
+          full_name: '',
+          email: '',
+          birth_date: '',
+          resume_text: '',
+          status: 'new',
+          extracted_skills: '',
+          years_experience: 0,
+          education: '',
+          previous_roles: ''
+        });
+        setShowAddCandidate(false);
+        loadData();
+      } catch (error) {
+        alert('Error adding candidate: ' + error.message);
+      } finally {
+        setCalculating(false);
+      }
   };
 
   const deleteCandidate = async (candidateId) => {
