@@ -445,9 +445,16 @@ export default function Candidates() {
                       </span>
                     </div>
                     
-                    {candidate.email && (
-                      <p className="text-gray-400 text-sm">{candidate.email}</p>
-                    )}
+                    <div className="mb-2">
+                      <span className="text-gray-500 text-xs">Email: </span>
+                      <span className={`text-sm font-mono ${candidate.email ? 'text-teal-300' : 'text-red-400'}`}>
+                        {candidate.email || '❌ NO EMAIL SAVED'}
+                      </span>
+                    </div>
+                    
+                    <div className="text-gray-500 text-xs">
+                      Birth Date: <span className="text-gray-400">{candidate.birth_date || 'N/A'}</span>
+                    </div>
 
                     {candidate.archetype_primary && (
                       <div className="flex gap-2 mt-2">
