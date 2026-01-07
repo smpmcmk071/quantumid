@@ -569,18 +569,6 @@ export default function Candidates() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        startEditCandidate(candidate);
-                      }}
-                      className="text-blue-400 hover:text-blue-300 h-8"
-                      title="Edit candidate details"
-                    >
-                      <Pencil className="w-3 h-3" />
-                    </Button>
                     {candidate.email && (
                       <Button
                         size="sm"
@@ -595,6 +583,18 @@ export default function Candidates() {
                         Invite
                       </Button>
                     )}
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startAddToTeam(candidate);
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 h-8"
+                      title="Add to team"
+                    >
+                      <Users className="w-3 h-3 mr-1" />
+                      Add to Team
+                    </Button>
                     <Select value={candidate.status} onValueChange={(v) => updateStatus(candidate.id, v)}>
                       <SelectTrigger className="bg-slate-900 border-slate-700 text-white w-32 h-8 text-xs">
                         <SelectValue />
@@ -608,6 +608,18 @@ export default function Candidates() {
                         <SelectItem value="rejected">Rejected</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditCandidate(candidate);
+                      }}
+                      className="text-blue-400 hover:text-blue-300 h-8"
+                      title="Edit candidate details"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
                     <Button
                       size="sm"
                       variant="ghost"
