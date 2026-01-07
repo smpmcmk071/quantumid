@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users, Target } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 
@@ -41,6 +41,11 @@ export default function Candidates() {
   const [memberRole, setMemberRole] = useState('');
   const [memberSeniority, setMemberSeniority] = useState('mid');
   const [addingToTeam, setAddingToTeam] = useState(false);
+  const [showCompatibility, setShowCompatibility] = useState(false);
+  const [compatibilityCandidate, setCompatibilityCandidate] = useState(null);
+  const [compatibilityTeamId, setCompatibilityTeamId] = useState('');
+  const [compatibilityJobId, setCompatibilityJobId] = useState('');
+  const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -339,6 +344,31 @@ export default function Candidates() {
     loadData();
   };
 
+  const runCompatibilityAnalysis = async () => {
+    if (!compatibilityCandidate) return;
+
+    setAnalyzing(true);
+    try {
+      const response = await base44.functions.invoke('analyzeCompatibility', {
+        candidateId: compatibilityCandidate.id,
+        teamId: compatibilityTeamId || null,
+        jobPostingId: compatibilityJobId || null
+      });
+
+      if (response.data?.success) {
+        alert('Compatibility analysis completed! View results in the Compatibility Report page.');
+        setShowCompatibility(false);
+        setCompatibilityCandidate(null);
+        setCompatibilityTeamId('');
+        setCompatibilityJobId('');
+      }
+    } catch (error) {
+      alert('Error running analysis: ' + error.message);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       new: 'bg-blue-500/20 text-blue-300',
@@ -587,6 +617,19 @@ export default function Candidates() {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setCompatibilityCandidate(candidate);
+                        setShowCompatibility(true);
+                      }}
+                      className="bg-purple-600 hover:bg-purple-700 h-8"
+                      title="Run compatibility analysis"
+                    >
+                      <Target className="w-3 h-3 mr-1" />
+                      Analyze
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         startAddToTeam(candidate);
                       }}
                       className="bg-blue-600 hover:bg-blue-700 h-8"
@@ -776,6 +819,74 @@ export default function Candidates() {
                     <>
                       <Users className="w-4 h-4 mr-2" />
                       Add to Team
+                    </>
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {/* Compatibility Analysis Dialog */}
+        {showCompatibility && compatibilityCandidate && (
+          <Dialog open={showCompatibility} onOpenChange={setShowCompatibility}>
+            <DialogContent className="bg-slate-800 border-slate-700">
+              <DialogHeader>
+                <DialogTitle className="text-white">Compatibility Analysis: {compatibilityCandidate.full_name}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p className="text-gray-300 text-sm">
+                  Select a team and/or job posting to analyze compatibility.
+                </p>
+
+                <div>
+                  <label className="text-gray-300 text-sm mb-2 block">Team (optional)</label>
+                  <Select value={compatibilityTeamId} onValueChange={setCompatibilityTeamId}>
+                    <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                      <SelectValue placeholder="Select team..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={null}>None</SelectItem>
+                      {teams.map(team => (
+                        <SelectItem key={team.id} value={team.id}>
+                          {team.team_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-gray-300 text-sm mb-2 block">Job Posting (optional)</label>
+                  <Select value={compatibilityJobId} onValueChange={setCompatibilityJobId}>
+                    <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                      <SelectValue placeholder="Select job..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={null}>None</SelectItem>
+                      {jobs.map(job => (
+                        <SelectItem key={job.id} value={job.id}>
+                          {job.job_title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button
+                  onClick={runCompatibilityAnalysis}
+                  disabled={analyzing}
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                >
+                  {analyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4 mr-2" />
+                      Run Analysis
                     </>
                   )}
                 </Button>
