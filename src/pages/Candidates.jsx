@@ -70,28 +70,28 @@ export default function Candidates() {
       }
       const clients = await base44.entities.Client.filter({ admin_email: user.email });
     
-    if (clients.length > 0) {
-      const c = clients[0];
-      setClient(c);
-      const cands = await base44.entities.Candidate.filter({ client_id: c.id });
-      
-      // Auto-classify candidates without archetypes
-      for (const candidate of cands) {
-        if (!candidate.archetype_primary && candidate.life_path_western) {
-          await base44.functions.invoke('classifyArchetype', {
-            personId: candidate.id,
-            entityType: 'Candidate'
-          });
+      if (clients.length > 0) {
+        const c = clients[0];
+        setClient(c);
+        const cands = await base44.entities.Candidate.filter({ client_id: c.id });
+        
+        // Auto-classify candidates without archetypes
+        for (const candidate of cands) {
+          if (!candidate.archetype_primary && candidate.life_path_western) {
+            await base44.functions.invoke('classifyArchetype', {
+              personId: candidate.id,
+              entityType: 'Candidate'
+            });
+          }
         }
+        
+        const updatedCands = await base44.entities.Candidate.filter({ client_id: c.id });
+        const j = await base44.entities.JobPosting.filter({ client_id: c.id, status: 'open' });
+        const t = await base44.entities.Team.filter({ client_id: c.id });
+        setCandidates(updatedCands);
+        setJobs(j);
+        setTeams(t);
       }
-      
-      const updatedCands = await base44.entities.Candidate.filter({ client_id: c.id });
-      const j = await base44.entities.JobPosting.filter({ client_id: c.id, status: 'open' });
-      const t = await base44.entities.Team.filter({ client_id: c.id });
-      setCandidates(updatedCands);
-      setJobs(j);
-      setTeams(t);
-    }
     } catch (error) {
       console.error('Error loading data:', error);
       if (error.message?.includes('Unauthorized') || error.message?.includes('Network')) {
