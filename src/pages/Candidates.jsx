@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users, Target, ClipboardCheck } from 'lucide-react';
+import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, Pencil, Users, Target, ClipboardCheck, Eye } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 import InterviewAssessment from '../components/candidates/InterviewAssessment';
@@ -867,8 +867,20 @@ export default function Candidates() {
                       <p className="text-indigo-300 text-xs">♈ {candidate.sun_sign} • {candidate.element}</p>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = createPageUrl('MemberProfile') + `?id=${candidate.id}&type=Candidate`;
+                      }}
+                      className="bg-indigo-600 hover:bg-indigo-700 h-8"
+                      title="View detailed profile"
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Profile
+                    </Button>
                     {candidate.email && (
                       <Button
                         size="sm"
