@@ -91,9 +91,16 @@ export default function Candidates() {
       setCandidates(updatedCands);
       setJobs(j);
       setTeams(t);
+    }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      if (error.message?.includes('Unauthorized') || error.message?.includes('Network')) {
+        base44.auth.redirectToLogin();
       }
+    } finally {
       setLoading(false);
-      };
+    }
+  };
 
       const generateSampleCandidates = async () => {
       if (!client) return;
