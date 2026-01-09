@@ -318,15 +318,7 @@ export default function Marketing() {
               />
             </div>
 
-            <div className="pt-4 border-t border-slate-700">
-              <Button 
-                className="w-full bg-teal-600 hover:bg-teal-700"
-                onClick={() => setShowDemo(false)}
-              >
-                Get Started Now
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
+
           </div>
         </DialogContent>
       </Dialog>
