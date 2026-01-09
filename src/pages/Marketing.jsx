@@ -241,14 +241,14 @@ export default function Marketing() {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                <h3 className="text-xl font-semibold text-white">Dashboard Overview</h3>
+                <h3 className="text-xl font-semibold text-white">Add Your Team Members</h3>
               </div>
               <p className="text-gray-300 ml-11">
-                View all your teams, candidates, and open positions at a glance. Track key metrics and access quick actions.
+                Upload resumes or manually add team members and candidates with their birth dates. AI automatically extracts skills and experience.
               </p>
               <img 
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop" 
-                alt="Dashboard" 
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=400&fit=crop" 
+                alt="Team management" 
                 className="w-full rounded-lg border border-slate-700"
               />
             </div>
