@@ -34,21 +34,24 @@ Deno.serve(async (req) => {
       name: person.full_name,
       birthDate: person.birth_date,
       pythagorean: {
-        lifePathTotal: person.life_path_western,
+        lifePathVibe: person.life_path_western_vibe || String(person.life_path_western),
+        expressionVibe: person.expression_western_vibe || String(person.expression_western),
         expressionReduced: person.expression_western,
         expressionTotal: person.pythagorean_total,
+        soulUrgeVibe: person.soul_urge_western_vibe || String(person.soul_urge_western),
         soulUrgeReduced: person.soul_urge_western,
+        personalityVibe: person.personality_western_vibe || String(person.personality_western),
         personalityReduced: person.personality_western
       },
       chaldean: {
-        lifePathTotal: person.life_path_chaldean,
+        lifePathVibe: person.life_path_chaldean_vibe || String(person.life_path_chaldean),
         lifePath2: person.life_path_chaldean2,
-        expressionReduced: person.expression_chaldean,
+        expressionVibe: person.expression_chaldean_vibe || String(person.expression_chaldean),
         expression2: person.expression_chaldean2,
         expressionTotal: person.chaldean_total,
-        soulUrgeReduced: person.soul_urge_chaldean,
+        soulUrgeVibe: person.soul_urge_chaldean_vibe || String(person.soul_urge_chaldean),
         soulUrge2: person.soul_urge_chaldean2,
-        personalityReduced: person.personality_chaldean,
+        personalityVibe: person.personality_chaldean_vibe || String(person.personality_chaldean),
         personality2: person.personality_chaldean2
       },
       lifePath: {
@@ -97,24 +100,24 @@ ${JSON.stringify(numerologyData, null, 2)}
 1. **Overview & Energy Pattern**: Start with their unique numerology vibes and overall energetic signature
 
 2. **Pythagorean Analysis (Western)**:
-   - Life Path ${person.life_path_western}: Core life purpose and journey
-   - Expression ${person.expression_western} (from total ${person.pythagorean_total}): Analyze BOTH the compound number meaning AND the reduced number
-   - Soul Urge ${person.soul_urge_western}: Inner desires and motivations
-   - Personality ${person.personality_western}: Outer persona and first impressions
+   - Life Path ${person.life_path_western_vibe || person.life_path_western}: Core life purpose and journey
+   - Expression ${person.expression_western_vibe || person.expression_western} (compound: ${person.pythagorean_total}): Analyze BOTH the vibe/compound number AND the reduced number meaning
+   - Soul Urge ${person.soul_urge_western_vibe || person.soul_urge_western}: Inner desires and true motivations
+   - Personality ${person.personality_western_vibe || person.personality_western}: How they appear to others
    - Birthday ${person.birthday_number}: Special gifts from birth day
 
 3. **Chaldean Analysis** (MORE MYSTICAL - emphasize sound vibrations and deeper spiritual layers):
-   - Life Path Chaldean: ${person.life_path_chaldean} and ${person.life_path_chaldean2}
-   - Expression Chaldean: ${person.expression_chaldean}, ${person.expression_chaldean2} (from total ${person.chaldean_total})
-   - Soul Urge Chaldean: ${person.soul_urge_chaldean}, ${person.soul_urge_chaldean2} - emphasize intuitive/mystical connections
-   - Personality Chaldean: ${person.personality_chaldean}, ${person.personality_chaldean2} - reveal metaphysical interaction patterns
-   - Explain how Chaldean reveals DEEPER layers than Pythagorean
+   - Life Path Chaldean Vibe: ${person.life_path_chaldean_vibe || person.life_path_chaldean} (always single digit: ${person.life_path_chaldean2})
+   - Expression Chaldean Vibe: ${person.expression_chaldean_vibe || person.expression_chaldean}, single digit: ${person.expression_chaldean2} (from total ${person.chaldean_total})
+   - Soul Urge Chaldean Vibe: ${person.soul_urge_chaldean_vibe || person.soul_urge_chaldean}, single digit: ${person.soul_urge_chaldean2} - emphasize intuitive/mystical connections and sound vibrations
+   - Personality Chaldean Vibe: ${person.personality_chaldean_vibe || person.personality_chaldean}, single digit: ${person.personality_chaldean2} - reveal metaphysical interaction patterns
+   - Explain how Chaldean reveals DEEPER layers than Pythagorean through mystical sound frequency
 
 4. **KARMIC PATTERNS - CRITICAL SECTION**:
-   - Karmic Debt Numbers: ${person.karmic_debt || 'None'} - If present (13, 14, 16, 19), explain the SPECIFIC karmic lesson and challenge in detail
-   - **SPECIAL ATTENTION to 16/7 (The Tower)**: If present, this is a powerful spiritual awakening number involving ego dissolution and rebuilding
-   - Karmic Lessons: ${person.karmic_lessons || 'None'} - Missing numbers indicating growth areas
-   - Master Numbers: ${person.master_numbers || 'None'} - Explain amplified potential and higher spiritual calling
+   - Karmic Debt Numbers: ${person.karmic_debt || 'None'} - If present (especially 13, 14, 16, 19), explain the SPECIFIC karmic lesson and challenge in detail
+   - **SPECIAL ATTENTION to 16/7 (The Tower)**: If present in expression or other calculations, this is THE ULTIMATE spiritual awakening number involving ego dissolution, rebuilding, and transformation
+   - Karmic Lessons: ${person.karmic_lessons || 'None'} - Missing numbers indicating growth areas and development paths
+   - Master Numbers: ${person.master_numbers || 'None'} - Explain amplified potential and higher spiritual calling (11=Intuition, 22=Master Builder, 33=Master Teacher)
 
 5. **Astrological Integration**:
    - Sun ${person.sun_sign}, Moon ${person.moon_sign}, Ascendant ${person.ascendant}
