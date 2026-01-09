@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Target, TrendingUp, Sparkles, ChevronRight } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Users, Target, TrendingUp, Sparkles, ChevronRight, X } from 'lucide-react';
 
 export default function Marketing() {
+  const [showDemo, setShowDemo] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section */}
@@ -23,7 +26,11 @@ export default function Marketing() {
                 Get Started Free
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" className="border-slate-700 text-white hover:bg-slate-800 text-lg px-8 py-6">
+              <Button 
+                variant="outline" 
+                className="border-slate-700 text-white hover:bg-slate-800 text-lg px-8 py-6"
+                onClick={() => setShowDemo(true)}
+              >
                 Watch Demo
               </Button>
             </div>
@@ -222,6 +229,107 @@ export default function Marketing() {
           <p className="text-teal-400 mt-2 font-semibold">Stay Above the Threshold.</p>
         </div>
       </div>
+
+      {/* Demo Modal */}
+      <Dialog open={showDemo} onOpenChange={setShowDemo}>
+        <DialogContent className="bg-slate-800 border-slate-700 max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-2xl">TeamBuilder7A Demo Tour</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Feature 1 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                <h3 className="text-xl font-semibold text-white">Dashboard Overview</h3>
+              </div>
+              <p className="text-gray-300 ml-11">
+                View all your teams, candidates, and open positions at a glance. Track key metrics and access quick actions.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop" 
+                alt="Dashboard" 
+                className="w-full rounded-lg border border-slate-700"
+              />
+            </div>
+
+            {/* Feature 2 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <h3 className="text-xl font-semibold text-white">Team Archetype Analysis</h3>
+              </div>
+              <p className="text-gray-300 ml-11">
+                Each team member completes a quick assessment to discover their archetype: Visionary, Strategist, Creator, or Harmonizer.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop" 
+                alt="Archetype test" 
+                className="w-full rounded-lg border border-slate-700"
+              />
+            </div>
+
+            {/* Feature 3 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <h3 className="text-xl font-semibold text-white">Numerology Profiles</h3>
+              </div>
+              <p className="text-gray-300 ml-11">
+                Automatically calculate Life Path, Expression, Soul Urge, and other numerological insights from birth dates and names.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop" 
+                alt="Numerology" 
+                className="w-full rounded-lg border border-slate-700"
+              />
+            </div>
+
+            {/* Feature 4 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                <h3 className="text-xl font-semibold text-white">AI-Powered Compatibility</h3>
+              </div>
+              <p className="text-gray-300 ml-11">
+                Match candidates to teams and roles with AI-powered compatibility scoring based on numerology, skills, and team dynamics.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=400&fit=crop" 
+                alt="Compatibility" 
+                className="w-full rounded-lg border border-slate-700"
+              />
+            </div>
+
+            {/* Feature 5 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">5</div>
+                <h3 className="text-xl font-semibold text-white">Optimal Team Builder</h3>
+              </div>
+              <p className="text-gray-300 ml-11">
+                Let AI assemble perfectly balanced teams based on numerology, archetypes, and astrological factors including Chinese Zodiac compatibility.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop" 
+                alt="Team builder" 
+                className="w-full rounded-lg border border-slate-700"
+              />
+            </div>
+
+            <div className="pt-4 border-t border-slate-700">
+              <Button 
+                className="w-full bg-teal-600 hover:bg-teal-700"
+                onClick={() => setShowDemo(false)}
+              >
+                Get Started Now
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
