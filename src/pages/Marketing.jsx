@@ -27,8 +27,7 @@ export default function Marketing() {
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
               <Button 
-                variant="outline" 
-                className="border-slate-700 text-white hover:bg-slate-800 text-lg px-8 py-6"
+                className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-6"
                 onClick={() => setShowDemo(true)}
               >
                 Watch Demo
