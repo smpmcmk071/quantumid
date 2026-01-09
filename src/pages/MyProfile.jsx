@@ -300,9 +300,10 @@ export default function MyProfile() {
 
               {selectedProfileId && (
                 <div>
-                  <label className="text-gray-300 text-sm mb-2 block">Confirm Your Birth Date</label>
+                  <label className="text-gray-300 text-sm mb-2 block">Confirm Your Birth Date (YYYY-MM-DD)</label>
                   <Input
-                    type="date"
+                    type="text"
+                    placeholder="1969-05-01"
                     value={confirmBirthDate}
                     onChange={(e) => setConfirmBirthDate(e.target.value)}
                     className="bg-slate-900 border-slate-700 text-white"
@@ -355,9 +356,10 @@ export default function MyProfile() {
               />
             </div>
             <div>
-              <label className="text-gray-300 text-sm mb-2 block">Birth Date</label>
+              <label className="text-gray-300 text-sm mb-2 block">Birth Date (YYYY-MM-DD)</label>
               <Input
-                type="date"
+                type="text"
+                placeholder="1969-05-01"
                 value={birthDate}
                 disabled
                 className="bg-slate-900 border-slate-700 text-white"

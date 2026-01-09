@@ -601,15 +601,18 @@ export default function Teams() {
                              data-1p-ignore
                            />
                          </div>
-                         <Input
-                           type="date"
-                           placeholder="Birth Date *"
-                           value={newMember.birth_date}
-                           onChange={(e) => setNewMember({ ...newMember, birth_date: e.target.value })}
-                           className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
-                           autoComplete="off"
-                           data-1p-ignore
-                         />
+                         <div>
+                           <label className="text-gray-300 text-xs mb-0.5 block">Birth Date * (YYYY-MM-DD)</label>
+                           <Input
+                             type="text"
+                             placeholder="1969-05-01"
+                             value={newMember.birth_date}
+                             onChange={(e) => setNewMember({ ...newMember, birth_date: e.target.value })}
+                             className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
+                             autoComplete="off"
+                             data-1p-ignore
+                           />
+                         </div>
                           <Input
                             placeholder="Role"
                             value={newMember.role}
