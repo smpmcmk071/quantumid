@@ -48,7 +48,8 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Meeting Planner', page: 'MeetingPlanner', icon: LayoutDashboard },
     { name: 'Birthday Insights', page: 'BirthdayInsights', icon: User },
     { name: 'Reports', page: 'Reports', icon: TrendingUp },
-    { name: 'Compatibility', page: 'CompatibilityReport', icon: Target }
+    { name: 'Compatibility', page: 'CompatibilityReport', icon: Target },
+    { name: 'Admin Tools', page: 'AdminTools', icon: TrendingUp }
   ] : [
     { name: 'My Profile', page: 'MyProfile', icon: User }
   ];

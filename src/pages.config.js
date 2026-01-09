@@ -11,6 +11,7 @@ import MemberProfile from './pages/MemberProfile';
 import MyProfile from './pages/MyProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
+import AdminTools from './pages/AdminTools';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +29,7 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "Reports": Reports,
     "Teams": Teams,
+    "AdminTools": AdminTools,
 }
 
 export const pagesConfig = {

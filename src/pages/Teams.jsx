@@ -235,16 +235,77 @@ export default function Teams() {
 
     try {
       if (editingMember) {
-        // Update existing member
-        await base44.entities.TeamMember.update(editingMember.id, {
-          full_name: newMember.full_name,
-          email: newMember.email || '',
-          birth_date: newMember.birth_date,
-          role: newMember.role || '',
-          seniority: newMember.seniority,
-          work_style_challenges: newMember.work_style_challenges || '',
-          skills: newMember.skills || ''
-        });
+        // Update existing member - recalculate if birth_date changed
+        const needsRecalculation = editingMember.birth_date !== newMember.birth_date;
+        
+        if (needsRecalculation) {
+          // Recalculate numerology
+          const response = await base44.functions.invoke('calculateNumerology', {
+            type: 'name',
+            name: newMember.full_name,
+            birthDate: newMember.birth_date
+          });
+
+          if (response.data?.success) {
+            const calc = response.data.data;
+
+            await base44.entities.TeamMember.update(editingMember.id, {
+              full_name: newMember.full_name,
+              email: newMember.email || '',
+              birth_date: newMember.birth_date,
+              role: newMember.role || '',
+              seniority: newMember.seniority,
+              work_style_challenges: newMember.work_style_challenges || '',
+              skills: newMember.skills || '',
+              life_path_western: calc.lifePath?.reduced || 0,
+              life_path_chaldean: calc.lifePathChaldean?.reduced || 0,
+              life_path_chaldean2: calc.lifePathChaldean2?.reduced || 0,
+              expression_western: calc.expression?.reduced || 0,
+              expression_chaldean: calc.expressionChaldean?.reduced || 0,
+              expression_chaldean2: calc.expressionChaldean2?.reduced || 0,
+              soul_urge_western: calc.soulUrge?.reduced || 0,
+              soul_urge_chaldean: calc.soulUrgeChaldean?.reduced || 0,
+              soul_urge_chaldean2: calc.soulUrgeChaldean2?.reduced || 0,
+              personality_western: calc.personality?.reduced || 0,
+              personality_chaldean: calc.personalityChaldean?.reduced || 0,
+              personality_chaldean2: calc.personalityChaldean2?.reduced || 0,
+              birthday_number: calc.birthday?.reduced || 0,
+              pythagorean_total: calc.pythagoreanTotal || 0,
+              chaldean_total: calc.chaldeanTotal || 0,
+              gematria_simple: calc.gematriaSimple || 0,
+              gematria_reverse: calc.gematriaReverse || 0,
+              karmic_debt: calc.karmicDebt?.join(', ') || '',
+              karmic_lessons: calc.karmicLessons?.join(', ') || '',
+              master_numbers: calc.masterNumbers?.join(', ') || '',
+              element: calc.astrology?.element || 'Earth',
+              chinese_zodiac: calc.astrology?.chineseZodiac || '',
+              chinese_animal: calc.astrology?.chineseAnimal || '',
+              chinese_element: calc.astrology?.chineseElement || '',
+              sun_sign: calc.astrology?.sign || '',
+              moon_sign: calc.astrology?.moonSign || '',
+              ascendant: calc.astrology?.ascendant || '',
+              dominant_element: calc.astrology?.dominantElement || '',
+              dominant_modality: calc.astrology?.dominantModality || ''
+            });
+
+            // Auto-classify archetype
+            await base44.functions.invoke('classifyArchetype', {
+              personId: editingMember.id,
+              entityType: 'TeamMember'
+            });
+          }
+        } else {
+          // No birth_date change, just update basic fields
+          await base44.entities.TeamMember.update(editingMember.id, {
+            full_name: newMember.full_name,
+            email: newMember.email || '',
+            birth_date: newMember.birth_date,
+            role: newMember.role || '',
+            seniority: newMember.seniority,
+            work_style_challenges: newMember.work_style_challenges || '',
+            skills: newMember.skills || ''
+          });
+        }
         setEditingMember(null);
       } else {
         // Calculate numerology for new member
