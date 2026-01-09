@@ -20,6 +20,16 @@ Deno.serve(async (req) => {
     const team = teamId ? await base44.entities.Team.get(teamId) : null;
     const teamMembers = team ? await base44.entities.TeamMember.filter({ team_id: teamId }) : [];
     const jobPosting = jobPostingId ? await base44.entities.JobPosting.get(jobPostingId) : null;
+    
+    // Chinese Zodiac Clash Detection
+    const chineseClashes = {
+      'Rat': 'Horse', 'Horse': 'Rat',
+      'Ox': 'Goat', 'Goat': 'Ox',
+      'Tiger': 'Monkey', 'Monkey': 'Tiger',
+      'Rabbit': 'Rooster', 'Rooster': 'Rabbit',
+      'Dragon': 'Dog', 'Dog': 'Dragon',
+      'Snake': 'Pig', 'Pig': 'Snake'
+    };
 
     // Calculate team fit score (0-100)
     let teamFitScore = 50; // baseline
@@ -63,6 +73,21 @@ Deno.serve(async (req) => {
       if (compatibleCount / totalMembers > 0.5) {
         teamFitScore += 15;
         teamFitExplanation += `✓ Strong scientific compatibility with over half the team. `;
+      }
+      
+      // Check for Chinese Zodiac clashes
+      const candidateAnimal = candidate.chinese_animal;
+      if (candidateAnimal) {
+        const clashingMembers = teamMembers.filter(m => 
+          m.chinese_animal && chineseClashes[candidateAnimal] === m.chinese_animal
+        );
+        
+        if (clashingMembers.length > 0) {
+          teamFitScore -= (clashingMembers.length * 5);
+          teamFitExplanation += `⚠ Chinese Zodiac clash with ${clashingMembers.length} team member(s) (${candidateAnimal} vs ${chineseClashes[candidateAnimal]}). `;
+        } else if (candidateAnimal) {
+          teamFitExplanation += `✓ No Chinese Zodiac clashes detected. `;
+        }
       }
       
       teamFitScore = Math.min(100, Math.max(0, teamFitScore));
@@ -147,24 +172,57 @@ Deno.serve(async (req) => {
     else if (overallScore >= 65) recommendation = 'recommend';
     else if (overallScore < 50) recommendation = 'not_recommended';
 
-    // Generate strengths and concerns using AI
+    // Generate strengths and concerns using AI with ALL numerology data
     const aiAnalysis = await base44.integrations.Core.InvokeLLM({
-      prompt: `Based on this compatibility analysis, provide a brief summary of strengths and concerns:
+      prompt: `Based on this comprehensive compatibility analysis, provide a brief summary of strengths and concerns:
 
-Candidate: ${candidate.full_name}
-Life Path: ${candidate.life_path_western}
-Skills: ${candidate.extracted_skills}
-Experience: ${candidate.years_experience} years
+CANDIDATE PROFILE:
+Name: ${candidate.full_name}
+Birth Date: ${candidate.birth_date}
 
-Overall Score: ${overallScore}/100
-Team Fit: ${teamFitScore}/100
-Job Fit: ${jobFitScore}/100
-Science Score: ${numerologyScore}/100
+NUMEROLOGY:
+- Life Path (Western): ${candidate.life_path_western}
+- Life Path (Chaldean): ${candidate.life_path_chaldean}
+- Expression: ${candidate.expression_western}
+- Soul Urge: ${candidate.soul_urge_western}
+- Personality: ${candidate.personality_western}
+- Birthday Number: ${candidate.birthday_number}
+- Master Numbers: ${candidate.master_numbers || 'None'}
+- Karmic Debt: ${candidate.karmic_debt || 'None'}
+- Karmic Lessons: ${candidate.karmic_lessons || 'None'}
 
-Job: ${jobPosting?.job_title || 'N/A'}
-Team Size: ${teamMembers.length} members
+ASTROLOGY:
+- Sun Sign: ${candidate.sun_sign}
+- Moon Sign: ${candidate.moon_sign || 'N/A'}
+- Ascendant: ${candidate.ascendant || 'N/A'}
+- Western Element: ${candidate.element}
+- Dominant Element: ${candidate.dominant_element || 'N/A'}
+- Chinese Zodiac: ${candidate.chinese_zodiac} (${candidate.chinese_animal} ${candidate.chinese_element})
 
-Provide 2-3 bullet points for strengths and 1-2 for concerns. Be specific and actionable.`,
+ARCHETYPE:
+- Primary: ${candidate.archetype_primary || 'N/A'}
+- Secondary: ${candidate.archetype_secondary || 'N/A'}
+
+PROFESSIONAL:
+- Skills: ${candidate.extracted_skills || 'N/A'}
+- Experience: ${candidate.years_experience || 0} years
+
+${candidate.numerology_analysis ? `DETAILED ANALYSIS:\n${candidate.numerology_analysis.substring(0, 500)}...` : ''}
+
+COMPATIBILITY SCORES:
+- Overall: ${overallScore}/100
+- Team Fit: ${teamFitScore}/100
+- Job Fit: ${jobFitScore}/100
+- Numerology/Astrology Score: ${numerologyScore}/100
+
+CONTEXT:
+- Job: ${jobPosting?.job_title || 'N/A'}
+- Team: ${teamMembers.length} members
+- Team Fit Details: ${teamFitExplanation}
+- Job Fit Details: ${jobFitExplanation}
+- Numerology Details: ${numerologyExplanation}
+
+Provide 2-3 bullet points for strengths and 1-2 for concerns. Be specific, actionable, and reference the comprehensive numerology and astrological data.`,
       response_json_schema: {
         type: 'object',
         properties: {
