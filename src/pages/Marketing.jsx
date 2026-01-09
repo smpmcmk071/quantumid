@@ -21,11 +21,7 @@ export default function Marketing() {
               TeamBuilder7A combines numerology, behavioral science, and AI to help HR professionals 
               create perfectly balanced teams that exceed performance thresholds.
             </p>
-            <div className="flex gap-4 justify-center">
-              <Button className="bg-teal-600 hover:bg-teal-700 text-lg px-8 py-6">
-                Get Started Free
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
+            <div className="flex justify-center">
               <Button 
                 className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-6"
                 onClick={() => setShowDemo(true)}
@@ -207,13 +203,16 @@ export default function Marketing() {
       <div className="bg-gradient-to-r from-teal-600 to-blue-600 py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to Build High-Performing Teams?
+            Interested in TeamBuilder7A?
           </h2>
           <p className="text-xl text-white/90 mb-10">
-            Join forward-thinking HR professionals who use science and AI to build exceptional teams.
+            Contact us to learn more about building your dream team.
           </p>
-          <Button className="bg-white text-teal-600 hover:bg-gray-100 text-lg px-10 py-6 font-semibold">
-            Start Free Trial
+          <Button 
+            className="bg-white text-teal-600 hover:bg-gray-100 text-lg px-10 py-6 font-semibold"
+            onClick={() => window.location.href = 'mailto:spmaher1969@icloud.com'}
+          >
+            Contact Us
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
