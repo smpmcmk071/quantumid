@@ -398,6 +398,25 @@ function calculateLifePathChaldean(birthDate) {
     calculation: allDigits.split('').join('+') + '=' + total,
     total,
     reduced: reduceToDigit(total),
+    reducedSingleDigit: reduceToDigit(total, false), // Always single digit
+    formatted: formatWithReduction(total)
+  };
+}
+
+function calculateLifePathChaldean2(birthDate) {
+  // Chaldean2: Same as Chaldean but ALWAYS reduces to single digit (no master numbers)
+  const date = new Date(birthDate);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  
+  const allDigits = `${month}${day}${year}`;
+  const total = allDigits.split('').reduce((sum, d) => sum + parseInt(d), 0);
+  
+  return {
+    calculation: allDigits.split('').join('+') + '=' + total,
+    total,
+    reduced: reduceToDigit(total, false), // ALWAYS single digit
     formatted: formatWithReduction(total)
   };
 }
@@ -418,6 +437,17 @@ function calculateExpressionChaldean(fullName) {
   return {
     sum,
     reduced: reduceToDigit(sum),
+    reducedSingleDigit: reduceToDigit(sum, false), // Always single digit
+    formatted: formatWithReduction(sum)
+  };
+}
+
+function calculateExpressionChaldean2(fullName) {
+  // Chaldean2 Expression = Full name Chaldean sum, ALWAYS reduced to single digit
+  const sum = chaldeanSum(fullName);
+  return {
+    sum,
+    reduced: reduceToDigit(sum, false), // ALWAYS single digit
     formatted: formatWithReduction(sum)
   };
 }
@@ -442,7 +472,7 @@ function calculateSoulUrgeWestern(fullName) {
 
 function calculateSoulUrgeChaldean(fullName) {
   // Soul Urge Chaldean = Vowels only using Chaldean
-  if (!fullName) return { sum: 0, reduced: 0, formatted: '0' };
+  if (!fullName) return { sum: 0, reduced: 0, reducedSingleDigit: 0, formatted: '0' };
   
   let sum = 0;
   for (const ch of fullName.toUpperCase()) {
@@ -454,6 +484,25 @@ function calculateSoulUrgeChaldean(fullName) {
   return {
     sum,
     reduced: reduceToDigit(sum),
+    reducedSingleDigit: reduceToDigit(sum, false), // Always single digit
+    formatted: formatWithReduction(sum)
+  };
+}
+
+function calculateSoulUrgeChaldean2(fullName) {
+  // Soul Urge Chaldean2 = Vowels only using Chaldean, ALWAYS single digit
+  if (!fullName) return { sum: 0, reduced: 0, formatted: '0' };
+  
+  let sum = 0;
+  for (const ch of fullName.toUpperCase()) {
+    if (VOWELS.includes(ch) && CHALDEAN[ch]) {
+      sum += CHALDEAN[ch];
+    }
+  }
+  
+  return {
+    sum,
+    reduced: reduceToDigit(sum, false), // ALWAYS single digit
     formatted: formatWithReduction(sum)
   };
 }
@@ -478,7 +527,7 @@ function calculatePersonalityWestern(fullName) {
 
 function calculatePersonalityChaldean(fullName) {
   // Personality Chaldean = Consonants only using Chaldean
-  if (!fullName) return { sum: 0, reduced: 0, formatted: '0' };
+  if (!fullName) return { sum: 0, reduced: 0, reducedSingleDigit: 0, formatted: '0' };
   
   let sum = 0;
   for (const ch of fullName.toUpperCase()) {
@@ -490,6 +539,25 @@ function calculatePersonalityChaldean(fullName) {
   return {
     sum,
     reduced: reduceToDigit(sum),
+    reducedSingleDigit: reduceToDigit(sum, false), // Always single digit
+    formatted: formatWithReduction(sum)
+  };
+}
+
+function calculatePersonalityChaldean2(fullName) {
+  // Personality Chaldean2 = Consonants only using Chaldean, ALWAYS single digit
+  if (!fullName) return { sum: 0, reduced: 0, formatted: '0' };
+  
+  let sum = 0;
+  for (const ch of fullName.toUpperCase()) {
+    if (!VOWELS.includes(ch) && CHALDEAN[ch]) {
+      sum += CHALDEAN[ch];
+    }
+  }
+  
+  return {
+    sum,
+    reduced: reduceToDigit(sum, false), // ALWAYS single digit
     formatted: formatWithReduction(sum)
   };
 }
@@ -665,12 +733,20 @@ function calculateSunSign(birthDate) {
     // Handle Capricorn which spans year boundary
     if (startMonth > endMonth) {
       if ((month === startMonth && day >= startDay) || (month === endMonth && day <= endDay)) {
-        return s;
+        return {
+          ...s,
+          chineseAnimal,
+          chineseElement
+        };
       }
     } else {
       if ((month === startMonth && day >= startDay) || (month === endMonth && day <= endDay) ||
           (month > startMonth && month < endMonth)) {
-        return s;
+        return {
+          ...s,
+          chineseAnimal,
+          chineseElement
+        };
       }
     }
   }
@@ -1156,6 +1232,11 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
   const soulUrgeChaldean = calculateSoulUrgeChaldean(cleanedName);
   const personalityChaldean = calculatePersonalityChaldean(cleanedName);
   
+  // Chaldean2 calculations - ALWAYS single digit (no master numbers)
+  const expressionChaldean2 = calculateExpressionChaldean2(cleanedName);
+  const soulUrgeChaldean2 = calculateSoulUrgeChaldean2(cleanedName);
+  const personalityChaldean2 = calculatePersonalityChaldean2(cleanedName);
+  
   const vowelConsonant = vowelConsonantAnalysis(cleanedName);
   const masters = detectNameMasterNumbers(cleanedName, birthDate);
   
@@ -1253,17 +1334,37 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
     expressionChaldean: {
       sum: expressionChaldean.sum,
       reduced: ALL_MASTER_NUMBERS.includes(expressionChaldean.sum) ? expressionChaldean.sum : expressionChaldean.reduced,
+      reducedSingleDigit: expressionChaldean.reducedSingleDigit,
       display: ALL_MASTER_NUMBERS.includes(expressionChaldean.sum) ? String(expressionChaldean.sum) : expressionChaldean.formatted
     },
     soulUrgeChaldean: {
       sum: soulUrgeChaldean.sum,
       reduced: ALL_MASTER_NUMBERS.includes(soulUrgeChaldean.sum) ? soulUrgeChaldean.sum : soulUrgeChaldean.reduced,
+      reducedSingleDigit: soulUrgeChaldean.reducedSingleDigit,
       display: ALL_MASTER_NUMBERS.includes(soulUrgeChaldean.sum) ? String(soulUrgeChaldean.sum) : soulUrgeChaldean.formatted
     },
     personalityChaldean: {
       sum: personalityChaldean.sum,
       reduced: ALL_MASTER_NUMBERS.includes(personalityChaldean.sum) ? personalityChaldean.sum : personalityChaldean.reduced,
+      reducedSingleDigit: personalityChaldean.reducedSingleDigit,
       display: ALL_MASTER_NUMBERS.includes(personalityChaldean.sum) ? String(personalityChaldean.sum) : personalityChaldean.formatted
+    },
+    
+    // Chaldean2 versions (ALWAYS single digit)
+    expressionChaldean2: {
+      sum: expressionChaldean2.sum,
+      reduced: expressionChaldean2.reduced, // Always single digit
+      display: expressionChaldean2.formatted
+    },
+    soulUrgeChaldean2: {
+      sum: soulUrgeChaldean2.sum,
+      reduced: soulUrgeChaldean2.reduced, // Always single digit
+      display: soulUrgeChaldean2.formatted
+    },
+    personalityChaldean2: {
+      sum: personalityChaldean2.sum,
+      reduced: personalityChaldean2.reduced, // Always single digit
+      display: personalityChaldean2.formatted
     },
     
     // Vowel/Consonant analysis
@@ -1292,6 +1393,7 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
     // Western life path (primary)
     const lifePathWestern = calculateLifePathWestern(birthDate);
     const lifePathChaldean = calculateLifePathChaldean(birthDate);
+    const lifePathChaldean2 = calculateLifePathChaldean2(birthDate);
     const birthday = calculateBirthdayNumber(day);
     const birthdayMonth = { reduced: reduceToDigit(month), display: formatWithReduction(month) };
     
@@ -1310,7 +1412,15 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
     result.lifePathChaldean = {
       total: lifePathChaldean.total,
       reduced: lifePathChaldeanIsMaster ? lifePathChaldean.total : lifePathChaldean.reduced,
+      reducedSingleDigit: lifePathChaldean.reducedSingleDigit,
       display: lifePathChaldeanIsMaster ? String(lifePathChaldean.total) : lifePathChaldean.formatted
+    };
+    
+    // Chaldean2 life path (ALWAYS single digit)
+    result.lifePathChaldean2 = {
+      total: lifePathChaldean2.total,
+      reduced: lifePathChaldean2.reduced, // Always single digit
+      display: lifePathChaldean2.formatted
     };
     
     result.birthday = {
