@@ -62,8 +62,13 @@ export default function Candidates() {
 
   const loadData = async () => {
     setLoading(true);
-    const user = await base44.auth.me();
-    const clients = await base44.entities.Client.filter({ admin_email: user.email });
+    try {
+      const user = await base44.auth.me();
+      if (!user) {
+        base44.auth.redirectToLogin();
+        return;
+      }
+      const clients = await base44.entities.Client.filter({ admin_email: user.email });
     
     if (clients.length > 0) {
       const c = clients[0];
