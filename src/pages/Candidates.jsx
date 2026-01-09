@@ -10,6 +10,7 @@ import { UserPlus, Loader2, Upload, Trash2, FlaskConical, GitCompare, X, Mail, P
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
 import CandidateComparison from '../components/candidates/CandidateComparison';
 import InterviewAssessment from '../components/candidates/InterviewAssessment';
+import { createPageUrl } from '../utils';
 
 export default function Candidates() {
   const [client, setClient] = useState(null);
