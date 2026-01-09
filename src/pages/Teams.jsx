@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Plus, Loader2, UserPlus, Trash2, Pencil, FlaskConical, X, Mail, Upload } from 'lucide-react';
+import { Users, Plus, Loader2, UserPlus, Trash2, Pencil, FlaskConical, X, Mail, Upload, Eye } from 'lucide-react';
 import ArchetypeTest from '../components/candidates/ArchetypeTest';
+import { createPageUrl } from '../utils';
 
 export default function Teams() {
   const [client, setClient] = useState(null);
@@ -738,6 +739,18 @@ export default function Teams() {
                             )}
                           </div>
                           <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.location.href = createPageUrl('MemberProfile') + `?id=${member.id}&type=TeamMember`;
+                              }}
+                              className="text-indigo-400 hover:text-indigo-300 h-6 w-6 p-0"
+                              title="View detailed profile"
+                            >
+                              <Eye className="w-3 h-3" />
+                            </Button>
                             {member.email && (
                               <Button
                                 size="sm"
