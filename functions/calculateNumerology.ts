@@ -1646,7 +1646,21 @@ Deno.serve(async (req) => {
                 if (!name) {
                   return Response.json({ error: 'Name required' }, { status: 400 });
                 }
-                result = calculateFullNameNumerology(name, birthDate, body.birthTime, body.birthPlace);
+                const calc = calculateFullNameNumerology(name, birthDate, body.birthTime, body.birthPlace);
+                // Add vibe strings for storage in database
+                result = {
+                  ...calc,
+                  // Western vibes (compound numbers like 16/7)
+                  expression_western_vibe: calc.expression.display,
+                  life_path_western_vibe: calc.lifePath ? calc.lifePath.display : null,
+                  soul_urge_western_vibe: calc.soulUrge.display,
+                  personality_western_vibe: calc.personality.display,
+                  // Chaldean vibes
+                  expression_chaldean_vibe: calc.expressionChaldean.display,
+                  life_path_chaldean_vibe: calc.lifePathChaldean ? calc.lifePathChaldean.display : null,
+                  soul_urge_chaldean_vibe: calc.soulUrgeChaldean.display,
+                  personality_chaldean_vibe: calc.personalityChaldean.display
+                };
                 break;
         
       case 'family':
