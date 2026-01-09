@@ -57,6 +57,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
       {/* Header */}
+      {currentPageName !== 'Marketing' && (
       <header className="bg-slate-900/90 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
           <Link to={createPageUrl('Dashboard')} className="flex items-center">
@@ -139,13 +140,15 @@ export default function Layout({ children, currentPageName }) {
       <main>{children}</main>
 
       {/* Footer */}
+      {currentPageName !== 'Marketing' && (
       <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-sm">
             © {new Date().getFullYear()} TeamBuilder7A - A Product of Threshold7 Analytics. Stay Above the Threshold.
           </p>
-        </div>
-      </footer>
+          </div>
+          </footer>
+          )}
     </div>
   );
 }

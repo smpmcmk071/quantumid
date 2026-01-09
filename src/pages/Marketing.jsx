@@ -222,6 +222,12 @@ export default function Marketing() {
       {/* Footer */}
       <div className="bg-slate-900 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-gray-400 mb-2">
+            For more information, contact us at{' '}
+            <a href="mailto:spmaher1969@icloud.com" className="text-teal-400 hover:text-teal-300 underline">
+              spmaher1969@icloud.com
+            </a>
+          </p>
           <p className="text-gray-400">
             © {new Date().getFullYear()} TeamBuilder7A - A Product of Threshold7 Analytics
           </p>
