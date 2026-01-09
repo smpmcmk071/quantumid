@@ -55,6 +55,7 @@ export default function Candidates() {
   const [analyzing, setAnalyzing] = useState(false);
   const [showInterviewAssessment, setShowInterviewAssessment] = useState(false);
   const [assessingCandidate, setAssessingCandidate] = useState(null);
+  const [regeneratingAnalysis, setRegeneratingAnalysis] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -631,6 +632,26 @@ export default function Candidates() {
     loadData();
   };
 
+  const regenerateAnalysis = async (candidate) => {
+    setRegeneratingAnalysis(candidate.id);
+    try {
+      const response = await base44.functions.invoke('generateNumerologyAnalysis', {
+        personId: candidate.id,
+        entityType: 'Candidate'
+      });
+
+      if (response.data?.success) {
+        loadData();
+      } else {
+        alert('Failed to regenerate analysis');
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    } finally {
+      setRegeneratingAnalysis(null);
+    }
+  };
+
   const runCompatibilityAnalysis = async () => {
     if (!compatibilityCandidate) return;
 
@@ -1011,6 +1032,28 @@ export default function Candidates() {
                         <SelectItem value="rejected">Rejected</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        regenerateAnalysis(candidate);
+                      }}
+                      disabled={regeneratingAnalysis === candidate.id}
+                      className="bg-amber-600 hover:bg-amber-700 h-8 text-xs"
+                      title="Regenerate AI analysis"
+                    >
+                      {regeneratingAnalysis === candidate.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          <FlaskConical className="w-3 h-3 mr-1" />
+                          Recalc AI
+                        </>
+                      )}
+                    </Button>
                     <Button
                       size="sm"
                       variant="ghost"
