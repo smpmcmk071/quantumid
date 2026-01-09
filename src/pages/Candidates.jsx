@@ -654,9 +654,10 @@ export default function Candidates() {
                   />
                 </div>
                 <div>
-                  <label className="text-gray-300 text-xs mb-0.5 block">Birth Date *</label>
+                  <label className="text-gray-300 text-xs mb-0.5 block">Birth Date * (YYYY-MM-DD)</label>
                   <Input
-                    type="date"
+                    type="text"
+                    placeholder="1969-05-01"
                     value={newCandidate.birth_date}
                     onChange={(e) => setNewCandidate({ ...newCandidate, birth_date: e.target.value })}
                     className="bg-slate-900 border-slate-700 text-white h-8 text-sm"
@@ -1021,7 +1022,8 @@ export default function Candidates() {
                   className="bg-slate-900 border-slate-700 text-white text-sm h-8"
                 />
                 <Input
-                  type="date"
+                  type="text"
+                  placeholder="1969-05-01"
                   value={editingCandidate.birth_date}
                   onChange={(e) => setEditingCandidate({ ...editingCandidate, birth_date: e.target.value })}
                   className="bg-slate-900 border-slate-700 text-white text-sm h-8"

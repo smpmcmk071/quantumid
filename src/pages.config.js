@@ -1,5 +1,6 @@
 import About from './pages/About';
 import Analyzer from './pages/Analyzer';
+import BirthdayInsights from './pages/BirthdayInsights';
 import Candidates from './pages/Candidates';
 import CompatibilityReport from './pages/CompatibilityReport';
 import Dashboard from './pages/Dashboard';
@@ -10,13 +11,13 @@ import MemberProfile from './pages/MemberProfile';
 import MyProfile from './pages/MyProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
-import BirthdayInsights from './pages/BirthdayInsights';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "Analyzer": Analyzer,
+    "BirthdayInsights": BirthdayInsights,
     "Candidates": Candidates,
     "CompatibilityReport": CompatibilityReport,
     "Dashboard": Dashboard,
@@ -27,7 +28,6 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "Reports": Reports,
     "Teams": Teams,
-    "BirthdayInsights": BirthdayInsights,
 }
 
 export const pagesConfig = {
