@@ -1,4 +1,5 @@
 import About from './pages/About';
+import AdminTools from './pages/AdminTools';
 import Analyzer from './pages/Analyzer';
 import BirthdayInsights from './pages/BirthdayInsights';
 import Candidates from './pages/Candidates';
@@ -11,12 +12,12 @@ import MemberProfile from './pages/MemberProfile';
 import MyProfile from './pages/MyProfile';
 import Reports from './pages/Reports';
 import Teams from './pages/Teams';
-import AdminTools from './pages/AdminTools';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "AdminTools": AdminTools,
     "Analyzer": Analyzer,
     "BirthdayInsights": BirthdayInsights,
     "Candidates": Candidates,
@@ -29,7 +30,6 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "Reports": Reports,
     "Teams": Teams,
-    "AdminTools": AdminTools,
 }
 
 export const pagesConfig = {
