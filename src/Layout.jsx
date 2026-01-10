@@ -11,6 +11,14 @@ export default function Layout({ children, currentPageName }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    // Load Google Font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
+  useEffect(() => {
     const loadUser = async () => {
       const u = await base44.auth.me();
       setUser(u);
@@ -56,12 +64,25 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
+      <style>{`
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        .brand-logo {
+          font-family: 'Poppins', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+      `}</style>
       {/* Header */}
       {currentPageName !== 'Marketing' && (
         <header className="bg-slate-900/90 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
           <Link to={createPageUrl('Dashboard')} className="flex items-center">
-            <span className="text-xl font-bold text-white">TeamBuilder7A</span>
+            <span className="text-xl font-bold text-white brand-logo">
+              Teambuilder<span className="text-teal-400">7a</span>
+            </span>
           </Link>
 
           {/* Desktop Nav */}
