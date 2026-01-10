@@ -3,7 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, User } from 'lucide-react';
+import { Loader2, ArrowLeft, User, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { createPageUrl } from '../utils';
 import { Link } from 'react-router-dom';
 import NumerologyAnalysisView from '../components/NumerologyAnalysisView';
@@ -60,6 +62,35 @@ export default function MemberProfile() {
     }
   };
 
+  const handleExportToPDF = async () => {
+    setGenerating(true);
+    try {
+      const element = document.getElementById('profile-content');
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        backgroundColor: '#0f172a',
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10;
+      
+      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save(`${person.full_name}_Profile.pdf`);
+    } catch (error) {
+      alert('Error generating PDF: ' + error.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 flex items-center justify-center">
@@ -91,18 +122,28 @@ export default function MemberProfile() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center">
-            <User className="w-10 h-10 text-white" />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center">
+              <User className="w-10 h-10 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Member <span className="text-yellow-400">Profile</span></h1>
+              <p className="text-gray-300 text-lg">{person.full_name}</p>
+              <p className="text-gray-400">{person.role || 'Candidate'}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white">Member <span className="text-yellow-400">Profile</span></h1>
-            <p className="text-gray-300 text-lg">{person.full_name}</p>
-            <p className="text-gray-400">{person.role || 'Candidate'}</p>
-          </div>
+          <Button
+            onClick={handleExportToPDF}
+            disabled={generating}
+            className="bg-teal-600 hover:bg-teal-700"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export to PDF
+          </Button>
         </div>
 
-        <div className="grid gap-6 mb-6">
+        <div id="profile-content" className="grid gap-6 mb-6">
           {/* Basic Numerology Summary */}
           <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
             <CardHeader>
