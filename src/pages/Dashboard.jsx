@@ -123,8 +123,9 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">{client.company_name}</h1>
-          <p className="text-gray-300">Welcome back, {user?.full_name || user?.email}</p>
+          <h1 className="text-3xl font-bold text-white">Team <span className="text-yellow-400">Dashboard</span></h1>
+          <p className="text-gray-400 text-lg">{client.company_name}</p>
+          <p className="text-gray-500">Welcome back, {user?.full_name || user?.email}</p>
         </div>
 
         {/* Stats Cards */}

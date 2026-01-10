@@ -111,7 +111,7 @@ export default function BirthdayInsights() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Cake className="w-8 h-8 text-pink-400" />
-          <h1 className="text-3xl font-bold text-white">Birthday Insights</h1>
+          <h1 className="text-3xl font-bold text-white">Birthday <span className="text-yellow-400">Insights</span></h1>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-6">

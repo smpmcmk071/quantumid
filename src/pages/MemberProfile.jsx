@@ -96,7 +96,8 @@ export default function MemberProfile() {
             <User className="w-10 h-10 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">{person.full_name}</h1>
+            <h1 className="text-3xl font-bold text-white">Member <span className="text-yellow-400">Profile</span></h1>
+            <p className="text-gray-300 text-lg">{person.full_name}</p>
             <p className="text-gray-400">{person.role || 'Candidate'}</p>
           </div>
         </div>

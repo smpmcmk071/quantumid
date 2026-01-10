@@ -438,7 +438,7 @@ export default function Teams() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Team Management</h1>
+          <h1 className="text-3xl font-bold text-white">Team <span className="text-yellow-400">Management</span></h1>
           <Dialog open={showAddTeam} onOpenChange={setShowAddTeam}>
             <DialogTrigger asChild>
               <Button className="bg-teal-600 hover:bg-teal-700">
