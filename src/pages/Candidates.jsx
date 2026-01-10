@@ -701,7 +701,7 @@ export default function Candidates() {
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Candidates</h1>
+          <h1 className="text-3xl font-bold text-white">Candidate <span className="text-yellow-400">Pipeline</span></h1>
           <div className="flex gap-2">
             <Button
               onClick={generateSampleCandidates}

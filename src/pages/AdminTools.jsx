@@ -83,7 +83,7 @@ export default function AdminTools() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-6">Admin Tools</h1>
+        <h1 className="text-3xl font-bold text-white mb-6">Admin <span className="text-yellow-400">Tools</span></h1>
 
         {/* Recalculate All Profiles */}
         <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 mb-6">
