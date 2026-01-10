@@ -30,7 +30,8 @@ export default function Candidates() {
     extracted_skills: '',
     years_experience: 0,
     education: '',
-    previous_roles: ''
+    previous_roles: '',
+    parsed_resume_summary: ''
   });
   const [jobs, setJobs] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -199,7 +200,8 @@ export default function Candidates() {
           extracted_skills: Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || '',
           years_experience: parseInt(data.years_experience) || 0,
           education: data.education || '',
-          previous_roles: data.previous_roles || ''
+          previous_roles: data.previous_roles || '',
+          parsed_resume_summary: data.parsed_resume_summary || ''
         });
       }
     } catch (error) {
@@ -226,7 +228,8 @@ export default function Candidates() {
         extracted_skills: data.extracted_skills || newCandidate.extracted_skills,
         years_experience: data.years_experience || newCandidate.years_experience,
         education: data.education || newCandidate.education,
-        previous_roles: data.previous_roles || newCandidate.previous_roles
+        previous_roles: data.previous_roles || newCandidate.previous_roles,
+        parsed_resume_summary: data.parsed_resume_summary || newCandidate.parsed_resume_summary
       });
     }
     setParsing(false);
@@ -273,6 +276,7 @@ export default function Candidates() {
           email: newCandidate.email,
           birth_date: newCandidate.birth_date,
           resume_text: newCandidate.resume_text || '',
+          parsed_resume_summary: newCandidate.parsed_resume_summary || '',
           extracted_skills: newCandidate.extracted_skills || '',
           years_experience: newCandidate.years_experience || 0,
           education: newCandidate.education || '',
@@ -331,7 +335,8 @@ export default function Candidates() {
           extracted_skills: '',
           years_experience: 0,
           education: '',
-          previous_roles: ''
+          previous_roles: '',
+          parsed_resume_summary: ''
         });
         setShowAddCandidate(false);
         loadData();
@@ -451,6 +456,7 @@ export default function Candidates() {
         full_name: editingCandidate.full_name,
         birth_date: editingCandidate.birth_date,
         resume_text: editingCandidate.resume_text || '',
+        parsed_resume_summary: editingCandidate.parsed_resume_summary || '',
         extracted_skills: editingCandidate.extracted_skills || '',
         years_experience: editingCandidate.years_experience || 0,
         education: editingCandidate.education || '',
@@ -480,7 +486,8 @@ export default function Candidates() {
         extracted_skills: data.extracted_skills || editingCandidate.extracted_skills,
         years_experience: data.years_experience || editingCandidate.years_experience,
         education: data.education || editingCandidate.education,
-        previous_roles: data.previous_roles || editingCandidate.previous_roles
+        previous_roles: data.previous_roles || editingCandidate.previous_roles,
+        parsed_resume_summary: data.parsed_resume_summary || editingCandidate.parsed_resume_summary
       });
     }
     setParsing(false);
@@ -836,13 +843,10 @@ export default function Candidates() {
                   </SelectContent>
                 </Select>
 
-                {newCandidate.extracted_skills && (
+                {newCandidate.parsed_resume_summary && (
                   <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
-                    <p className="text-green-300 text-xs font-medium">✓ AI Extracted</p>
-                    <p className="text-gray-300 text-xs mt-0.5">{newCandidate.extracted_skills}</p>
-                    {newCandidate.years_experience > 0 && (
-                      <p className="text-gray-300 text-xs">{newCandidate.years_experience} yrs exp</p>
-                    )}
+                    <p className="text-green-300 text-xs font-medium">✓ AI Parsed Resume</p>
+                    <p className="text-gray-300 text-xs mt-0.5">{newCandidate.parsed_resume_summary}</p>
                   </div>
                 )}
 
@@ -934,10 +938,10 @@ export default function Candidates() {
                       )}
                     </div>
                     
-                    {candidate.extracted_skills && (
-                      <div className="mt-2">
-                        <p className="text-gray-500 text-xs mb-1">Skills:</p>
-                        <p className="text-gray-300 text-sm">{candidate.extracted_skills}</p>
+                    {candidate.parsed_resume_summary && (
+                      <div className="mt-2 p-2 bg-slate-900/50 rounded border border-slate-700">
+                        <p className="text-gray-500 text-xs mb-1">Resume Summary:</p>
+                        <p className="text-gray-300 text-xs">{candidate.parsed_resume_summary}</p>
                       </div>
                     )}
                     

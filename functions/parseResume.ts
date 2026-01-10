@@ -115,6 +115,25 @@ Return format:
         .join('; ');
     }
 
+    // Generate resume summary
+    const summaryParts = [];
+    if (extractedData.years_experience >= 0) {
+      summaryParts.push(`${extractedData.years_experience} years of experience`);
+    }
+    if (extractedData.extracted_skills) {
+      summaryParts.push(`Skills: ${extractedData.extracted_skills}`);
+    }
+    if (extractedData.education) {
+      summaryParts.push(`Education: ${extractedData.education}`);
+    }
+    if (extractedData.previous_roles) {
+      summaryParts.push(`Previous roles: ${extractedData.previous_roles}`);
+    }
+    
+    if (summaryParts.length > 0) {
+      extractedData.parsed_resume_summary = summaryParts.join(' | ');
+    }
+
     return Response.json({
       success: true,
       data: extractedData
