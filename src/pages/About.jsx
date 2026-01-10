@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, Users, Target, TrendingUp, Brain, Lightbulb, Heart, Trophy } from 'lucide-react';
 
 export default function About() {
+  useEffect(() => {
+    // Load Google Font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
+      <style>{`
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        .brand-logo {
+          font-family: 'Poppins', sans-serif;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+        }
+      `}</style>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white">TeamBuilder7A</h1>
+          <h1 className="text-4xl font-bold text-white brand-logo">
+            Teambuilder<span className="text-teal-400">7a</span>
+          </h1>
           <p className="text-xl text-gray-300 mt-4 italic">
             Stay Above the Threshold
           </p>
@@ -27,7 +48,7 @@ export default function About() {
           </CardHeader>
           <CardContent className="space-y-4 text-gray-300">
             <p>
-              TeamBuilder7A combines PhD-level team building research with behavioral science to help HR professionals 
+              <span className="brand-logo">Teambuilder<span className="text-teal-400">7a</span></span> combines PhD-level team building research with behavioral science to help HR professionals 
               build high-performing teams with scientific precision.
             </p>
             <p>
