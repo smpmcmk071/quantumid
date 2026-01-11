@@ -460,7 +460,9 @@ export default function Candidates() {
         extracted_skills: editingCandidate.extracted_skills || '',
         years_experience: editingCandidate.years_experience || 0,
         education: editingCandidate.education || '',
-        previous_roles: editingCandidate.previous_roles || ''
+        previous_roles: editingCandidate.previous_roles || '',
+        karmic_debt: editingCandidate.karmic_debt || '',
+        karmic_lessons: editingCandidate.karmic_lessons || ''
       });
     }
     
