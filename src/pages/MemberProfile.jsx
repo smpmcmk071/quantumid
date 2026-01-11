@@ -9,8 +9,6 @@ import jsPDF from 'jspdf';
 import { createPageUrl } from '../utils';
 import { Link } from 'react-router-dom';
 import NumerologyAnalysisView from '../components/NumerologyAnalysisView';
-import AstrologyChartView from '../components/astrology/AstrologyChartView';
-import AstrologyCalculator from '../components/astrology/AstrologyCalculator';
 
 export default function MemberProfile() {
   const location = useLocation();
@@ -208,20 +206,6 @@ export default function MemberProfile() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Astrology Calculator */}
-        <AstrologyCalculator
-          personId={person.id}
-          personType={type}
-          birthDate={person.birth_date}
-          onComplete={loadPerson}
-        />
-
-        {/* Astrology Chart View */}
-        <AstrologyChartView
-          personId={person.id}
-          personType={type}
-        />
 
         {/* Detailed Analysis Section */}
         <NumerologyAnalysisView 
