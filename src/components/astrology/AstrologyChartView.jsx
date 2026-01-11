@@ -2,11 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Star, Orbit } from 'lucide-react';
+import { Loader2, Star, Orbit, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ZODIAC_SIGNS, PLANETS, HOUSES, ASPECTS } from './InterpretationData';
 
 export default function AstrologyChartView({ personId, personType }) {
   const [chart, setChart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [expandedSections, setExpandedSections] = useState({});
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   useEffect(() => {
     loadChart();
@@ -102,15 +112,62 @@ export default function AstrologyChartView({ personId, personType }) {
               { name: 'Uranus', sign: chart.uranus_sign, degree: chart.uranus_degree, house: chart.uranus_house, color: 'text-cyan-400' },
               { name: 'Neptune', sign: chart.neptune_sign, degree: chart.neptune_degree, house: chart.neptune_house, color: 'text-indigo-400' },
               { name: 'Pluto', sign: chart.pluto_sign, degree: chart.pluto_degree, house: chart.pluto_house, color: 'text-slate-400' },
-            ].map(planet => (
-              <div key={planet.name} className="p-3 bg-slate-900/50 rounded border border-slate-700">
-                <div className={`font-semibold ${planet.color} mb-1`}>{planet.name}</div>
-                <div className="text-white text-sm">
-                  {planet.sign} {planet.degree}°
-                </div>
-                <div className="text-gray-400 text-xs">House {planet.house}</div>
-              </div>
-            ))}
+            ].map(planet => {
+              const planetKey = `planet-${planet.name}`;
+              const planetInfo = PLANETS[planet.name];
+              const signInfo = ZODIAC_SIGNS[planet.sign];
+              
+              return (
+                <Collapsible key={planet.name} open={expandedSections[planetKey]}>
+                  <div className="p-3 bg-slate-900/50 rounded border border-slate-700">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className={`font-semibold ${planet.color} mb-1`}>{planet.name}</div>
+                        <div className="text-white text-sm">
+                          {planet.sign} {planet.degree}°
+                        </div>
+                        <div className="text-gray-400 text-xs">House {planet.house}</div>
+                      </div>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSection(planetKey)}
+                          className="h-6 w-6 p-0"
+                        >
+                          {expandedSections[planetKey] ? (
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <Info className="w-4 h-4 text-gray-400" />
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                    <CollapsibleContent className="mt-3 pt-3 border-t border-slate-700">
+                      {planetInfo && (
+                        <div className="space-y-2 text-xs">
+                          <div>
+                            <span className="text-teal-400 font-semibold">Represents: </span>
+                            <span className="text-gray-300">{planetInfo.represents}</span>
+                          </div>
+                          <div>
+                            <span className="text-teal-400 font-semibold">Meaning: </span>
+                            <span className="text-gray-300">{planetInfo.description}</span>
+                          </div>
+                        </div>
+                      )}
+                      {signInfo && (
+                        <div className="mt-2 pt-2 border-t border-slate-700 space-y-1 text-xs">
+                          <div className="text-purple-400 font-semibold">{planet.sign} Traits:</div>
+                          <div className="text-gray-300">{signInfo.description}</div>
+                          <div className="text-gray-400">Element: {signInfo.element} • {signInfo.modality}</div>
+                        </div>
+                      )}
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -147,18 +204,54 @@ export default function AstrologyChartView({ personId, personType }) {
       {/* House Cusps */}
       <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
         <CardHeader>
-          <CardTitle className="text-white">House Cusps</CardTitle>
+          <CardTitle className="text-white">House Cusps & Life Areas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(house => (
-              <div key={house} className="p-2 bg-slate-900/50 rounded border border-slate-700">
-                <div className="text-gray-400 text-xs">House {house}</div>
-                <div className="text-white text-sm">
-                  {chart[`house_${house}_sign`]} {chart[`house_${house}_degree`]?.toFixed(2)}°
-                </div>
-              </div>
-            ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(house => {
+              const houseKey = `house-${house}`;
+              const houseInfo = HOUSES[house];
+              
+              return (
+                <Collapsible key={house} open={expandedSections[houseKey]}>
+                  <div className="p-3 bg-slate-900/50 rounded border border-slate-700">
+                    <div className="flex items-start justify-between mb-1">
+                      <div className="flex-1">
+                        <div className="text-gray-400 text-xs font-semibold">{houseInfo?.name || `House ${house}`}</div>
+                        <div className="text-white text-sm">
+                          {chart[`house_${house}_sign`]} {chart[`house_${house}_degree`]?.toFixed(2)}°
+                        </div>
+                      </div>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSection(houseKey)}
+                          className="h-6 w-6 p-0"
+                        >
+                          {expandedSections[houseKey] ? (
+                            <ChevronUp className="w-3 h-3 text-gray-400" />
+                          ) : (
+                            <Info className="w-3 h-3 text-gray-400" />
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
+                    <CollapsibleContent className="mt-2 pt-2 border-t border-slate-700">
+                      {houseInfo && (
+                        <div className="space-y-1 text-xs">
+                          <div>
+                            <span className="text-amber-400 font-semibold">Area: </span>
+                            <span className="text-gray-300">{houseInfo.area}</span>
+                          </div>
+                          <div className="text-gray-300">{houseInfo.description}</div>
+                        </div>
+                      )}
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -171,14 +264,59 @@ export default function AstrologyChartView({ personId, personType }) {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {aspects.map((aspect, idx) => (
-                <div key={idx} className="p-2 bg-slate-900/50 rounded border border-slate-700 text-sm">
-                  <span className="text-white font-semibold">{aspect.planet1}</span>
-                  <span className="text-gray-400 mx-2">{aspect.aspect}</span>
-                  <span className="text-white font-semibold">{aspect.planet2}</span>
-                  <span className="text-gray-500 ml-2">({aspect.angle}° orb: {aspect.orb}°)</span>
-                </div>
-              ))}
+              {aspects.map((aspect, idx) => {
+                const aspectKey = `aspect-${idx}`;
+                const aspectInfo = ASPECTS[aspect.aspect];
+                
+                return (
+                  <Collapsible key={idx} open={expandedSections[aspectKey]}>
+                    <div className="p-3 bg-slate-900/50 rounded border border-slate-700">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="text-sm">
+                            <span className="text-white font-semibold">{aspect.planet1}</span>
+                            <span className="text-gray-400 mx-2 capitalize">{aspect.aspect}</span>
+                            <span className="text-white font-semibold">{aspect.planet2}</span>
+                          </div>
+                          <div className="text-gray-500 text-xs mt-1">
+                            {aspect.angle}° • Orb: {aspect.orb}°
+                            {aspectInfo && (
+                              <span className={`ml-2 ${
+                                aspectInfo.nature === 'Harmonious' ? 'text-green-400' :
+                                aspectInfo.nature === 'Challenging' ? 'text-orange-400' :
+                                'text-blue-400'
+                              }`}>
+                                {aspectInfo.nature}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <CollapsibleTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleSection(aspectKey)}
+                            className="h-6 w-6 p-0"
+                          >
+                            {expandedSections[aspectKey] ? (
+                              <ChevronUp className="w-4 h-4 text-gray-400" />
+                            ) : (
+                              <Info className="w-4 h-4 text-gray-400" />
+                            )}
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                      <CollapsibleContent className="mt-2 pt-2 border-t border-slate-700">
+                        {aspectInfo && (
+                          <div className="text-xs text-gray-300">
+                            {aspectInfo.description}
+                          </div>
+                        )}
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
