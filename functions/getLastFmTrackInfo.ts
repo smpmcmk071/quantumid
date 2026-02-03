@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
     }
     
     // Build comprehensive result
-    const result = {
+    const trackData = {
       name: trackInfo.name,
       artist_name: trackInfo.artist.name,
       artist_mbid: trackInfo.artist.mbid || null,
@@ -136,8 +136,23 @@ Deno.serve(async (req) => {
       similar_tracks: similarTracks,
       musicbrainz_id: trackInfo.mbid || null
     };
-    
-    return Response.json({ success: true, data: result });
+
+    // Check if track already exists
+    const existingTracks = await base44.asServiceRole.entities.MusicTrack.filter({
+      name: trackData.name,
+      artist_name: trackData.artist_name
+    });
+
+    let savedTrack;
+    if (existingTracks.length > 0) {
+      // Update existing track
+      savedTrack = await base44.asServiceRole.entities.MusicTrack.update(existingTracks[0].id, trackData);
+    } else {
+      // Create new track
+      savedTrack = await base44.asServiceRole.entities.MusicTrack.create(trackData);
+    }
+
+    return Response.json({ success: true, data: trackData, savedTrack });
     
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
