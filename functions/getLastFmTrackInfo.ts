@@ -21,36 +21,120 @@ Deno.serve(async (req) => {
     }
     
     const baseUrl = 'http://ws.audioscrobbler.com/2.0/';
-    const params = new URLSearchParams({
+    
+    // Helper function to call Last.fm API
+    const lastfmGet = async (params) => {
+      const queryParams = new URLSearchParams({
+        ...params,
+        api_key: apiKey,
+        format: 'json'
+      });
+      
+      const response = await fetch(`${baseUrl}?${queryParams}`);
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(`Last.fm error: ${data.message}`);
+      }
+      
+      return data;
+    };
+    
+    // 1. Get track info
+    const trackData = await lastfmGet({
       method: 'track.getInfo',
       artist: artist,
       track: track,
-      autocorrect: '1',
-      api_key: apiKey,
-      format: 'json'
+      autocorrect: '1'
     });
     
-    const response = await fetch(`${baseUrl}?${params}`);
-    const data = await response.json();
+    const trackInfo = trackData.track;
     
-    if (data.error) {
-      return Response.json({ error: `Last.fm error: ${data.message}` }, { status: 400 });
+    // 2. Get album release date (if album exists)
+    let releaseDate = null;
+    const albumTitle = trackInfo.album?.title;
+    if (albumTitle) {
+      try {
+        const albumData = await lastfmGet({
+          method: 'album.getInfo',
+          artist: trackInfo.artist.name,
+          album: albumTitle,
+          autocorrect: '1'
+        });
+        
+        const releaseDateStr = albumData.album?.wiki?.published || albumData.album?.releasedate;
+        if (releaseDateStr && releaseDateStr.trim() !== '') {
+          releaseDate = releaseDateStr.trim();
+        }
+      } catch (error) {
+        console.log('Could not fetch album info:', error.message);
+      }
     }
     
-    const trackData = data.track;
+    // 3. Get artist bio
+    let artistBio = null;
+    try {
+      const artistData = await lastfmGet({
+        method: 'artist.getInfo',
+        artist: trackInfo.artist.name,
+        autocorrect: '1'
+      });
+      
+      let bio = artistData.artist?.bio?.summary || '';
+      // Clean up Last.fm link junk
+      bio = bio.split('<a href="https://www.last.fm">')[0].trim();
+      artistBio = bio || null;
+    } catch (error) {
+      console.log('Could not fetch artist info:', error.message);
+    }
     
-    // Extract relevant information
+    // 4. Get similar tracks
+    let similarTracks = [];
+    try {
+      const similarData = await lastfmGet({
+        method: 'track.getSimilar',
+        artist: trackInfo.artist.name,
+        track: trackInfo.name,
+        limit: '10',
+        autocorrect: '1'
+      });
+      
+      let tracks = similarData.similartracks?.track || [];
+      // Handle single track case (not array)
+      if (!Array.isArray(tracks)) {
+        tracks = [tracks];
+      }
+      
+      similarTracks = tracks
+        .filter(t => t.name && t.artist?.name)
+        .map(t => `${t.name} (${t.artist.name})`);
+    } catch (error) {
+      console.log('Could not fetch similar tracks:', error.message);
+    }
+    
+    // Extract track wiki summary
+    let trackWiki = trackInfo.wiki?.summary || null;
+    if (trackWiki) {
+      trackWiki = trackWiki.split('<a href')[0].trim();
+    }
+    
+    // Build comprehensive result
     const result = {
-      name: trackData.name,
-      artist: trackData.artist.name,
-      album: trackData.album?.title || 'N/A',
-      duration_ms: parseInt(trackData.duration) || 0,
-      playcount: parseInt(trackData.playcount) || 0,
-      listeners: parseInt(trackData.listeners) || 0,
-      tags: (trackData.toptags?.tag || []).map(t => t.name).slice(0, 10),
-      wiki_summary: trackData.wiki?.summary?.split('<a href')[0]?.trim() || null,
-      mbid: trackData.mbid || null,
-      url: trackData.url
+      name: trackInfo.name,
+      artist_name: trackInfo.artist.name,
+      artist_mbid: trackInfo.artist.mbid || null,
+      artist_url: trackInfo.artist.url || null,
+      album_name: albumTitle || null,
+      release_date: releaseDate,
+      duration_ms: parseInt(trackInfo.duration) || 0,
+      lastfm_playcount: parseInt(trackInfo.playcount) || 0,
+      lastfm_listeners: parseInt(trackInfo.listeners) || 0,
+      lastfm_tags: (trackInfo.toptags?.tag || []).map(t => t.name).slice(0, 10),
+      lastfm_track_wiki_summary: trackWiki,
+      lastfm_artist_bio_summary: artistBio,
+      track_url: trackInfo.url || null,
+      similar_tracks: similarTracks,
+      musicbrainz_id: trackInfo.mbid || null
     };
     
     return Response.json({ success: true, data: result });
