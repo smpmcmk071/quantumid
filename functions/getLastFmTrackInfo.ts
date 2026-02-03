@@ -179,25 +179,21 @@ Deno.serve(async (req) => {
     let savedTrack;
     if (existingTracks.length > 0) {
       // Update existing track
-      try {
-        savedTrack = await base44.asServiceRole.entities.MusicTrack.update(existingTracks[0].id, trackData);
-        console.log(`Updated MusicTrack: ${savedTrack.id}`);
-      } catch (dbError) {
-        console.error(`Error updating MusicTrack ${existingTracks[0].id}:`, dbError);
-        return Response.json({ error: `Database update failed: ${dbError.message}` }, { status: 500 });
-      }
+      savedTrack = await base44.asServiceRole.entities.MusicTrack.update(existingTracks[0].id, trackData);
+      console.log(`✅ Updated MusicTrack ID: ${savedTrack.id}, Name: ${savedTrack.name}`);
     } else {
       // Create new track
-      try {
-        savedTrack = await base44.asServiceRole.entities.MusicTrack.create(trackData);
-        console.log(`Created MusicTrack: ${savedTrack.id}`);
-      } catch (dbError) {
-        console.error('Error creating MusicTrack:', dbError);
-        return Response.json({ error: `Database creation failed: ${dbError.message}` }, { status: 500 });
-      }
+      savedTrack = await base44.asServiceRole.entities.MusicTrack.create(trackData);
+      console.log(`✅ Created NEW MusicTrack ID: ${savedTrack.id}, Name: ${savedTrack.name}`);
     }
 
-    return Response.json({ success: true, data: trackData, savedTrack, savedArtist });
+    console.log(`📊 Returning data - Track ID: ${savedTrack?.id}, Artist: ${savedArtist?.id}`);
+    return Response.json({ 
+      success: true, 
+      data: trackData, 
+      savedTrack: savedTrack,
+      savedArtist: savedArtist 
+    });
 
     } catch (error) {
     console.error('Unhandled error in getLastFmTrackInfo:', error);
