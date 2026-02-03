@@ -50,6 +50,7 @@
 import About from './pages/About';
 import MusicDiscovery from './pages/MusicDiscovery';
 import UserMusicProfileSetup from './pages/UserMusicProfileSetup';
+import AdminTracks from './pages/AdminTracks';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +58,7 @@ export const PAGES = {
     "About": About,
     "MusicDiscovery": MusicDiscovery,
     "UserMusicProfileSetup": UserMusicProfileSetup,
+    "AdminTracks": AdminTracks,
 }
 
 export const pagesConfig = {
