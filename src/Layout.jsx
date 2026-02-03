@@ -23,17 +23,12 @@ export default function Layout({ children, currentPageName }) {
       const u = await base44.auth.me();
       setUser(u);
       
-      // Auto-redirect non-admin users without linked profiles to MyProfile
-      if (u && u.role !== 'admin' && currentPageName !== 'MyProfile') {
-        const candidates = await base44.entities.Candidate.list();
-        const members = await base44.entities.TeamMember.list();
-        
-        const hasLinkedProfile = 
-          candidates.some(c => c.email?.toLowerCase() === u.email.toLowerCase()) ||
-          members.some(m => m.email?.toLowerCase() === u.email.toLowerCase());
-        
-        if (!hasLinkedProfile) {
-          window.location.href = createPageUrl('MyProfile');
+      // Auto-redirect users without profile to setup page
+      if (u && currentPageName !== 'UserMusicProfileSetup') {
+        const profiles = await base44.entities.UserMusicProfile.filter({ user_id: u.id });
+
+        if (profiles.length === 0) {
+          window.location.href = createPageUrl('UserMusicProfileSetup');
         }
       }
     };
@@ -46,20 +41,9 @@ export default function Layout({ children, currentPageName }) {
 
   const isAdmin = user?.role === 'admin';
 
-  const navItems = isAdmin ? [
-    { name: 'Dashboard', page: 'Dashboard', icon: LayoutDashboard },
-    { name: 'My Profile', page: 'MyProfile', icon: User },
-    { name: 'Teams', page: 'Teams', icon: Users },
-    { name: 'Candidates', page: 'Candidates', icon: UserPlus },
-    { name: 'Jobs', page: 'JobPostings', icon: Briefcase },
-    { name: 'Team Builder', page: 'Analyzer', icon: Target },
-    { name: 'Meeting Planner', page: 'MeetingPlanner', icon: LayoutDashboard },
-    { name: 'Birthday Insights', page: 'BirthdayInsights', icon: User },
-    { name: 'Reports', page: 'Reports', icon: TrendingUp },
-    { name: 'Compatibility', page: 'CompatibilityReport', icon: Target },
-    { name: 'Admin Tools', page: 'AdminTools', icon: TrendingUp }
-  ] : [
-    { name: 'My Profile', page: 'MyProfile', icon: User }
+  const navItems = [
+    { name: 'Music Discovery', page: 'MusicDiscovery', icon: LayoutDashboard },
+    { name: 'My Profile', page: 'UserMusicProfileSetup', icon: User }
   ];
 
   return (
@@ -79,9 +63,9 @@ export default function Layout({ children, currentPageName }) {
       {currentPageName !== 'Marketing' && (
         <header className="bg-slate-900/90 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
-          <Link to={createPageUrl('Dashboard')} className="flex items-center">
+          <Link to={createPageUrl('MusicDiscovery')} className="flex items-center">
             <span className="text-xl font-bold text-white brand-logo">
-              Teambuilder<span className="text-teal-400">7a</span>
+              <span className="text-purple-400">Quantum</span><span className="text-pink-400">Vibe</span>
             </span>
           </Link>
 
@@ -166,7 +150,7 @@ export default function Layout({ children, currentPageName }) {
         <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} TeamBuilder7A - A Product of Threshold7 Analytics. Stay Above the Threshold.
+              © {new Date().getFullYear()} QuantumVibe - Cosmic Music Recommendations Powered by Numerology & Astrology
             </p>
           </div>
         </footer>
