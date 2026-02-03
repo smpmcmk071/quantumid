@@ -62,7 +62,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "About",
+    mainPage: "MusicDiscovery",
     Pages: PAGES,
     Layout: __Layout,
 };
