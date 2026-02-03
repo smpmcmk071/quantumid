@@ -71,15 +71,17 @@ Deno.serve(async (req) => {
       }
     }
     
-    // 3. Get artist bio
+    // 3. Get artist bio and full artist data
     let artistBio = null;
+    let fullArtistData = null;
     try {
       const artistData = await lastfmGet({
         method: 'artist.getInfo',
         artist: trackInfo.artist.name,
         autocorrect: '1'
       });
-      
+
+      fullArtistData = artistData.artist;
       let bio = artistData.artist?.bio?.summary || '';
       // Clean up Last.fm link junk
       bio = bio.split('<a href="https://www.last.fm">')[0].trim();
@@ -137,6 +139,37 @@ Deno.serve(async (req) => {
       musicbrainz_id: trackInfo.mbid || null
     };
 
+    // Save or update artist data
+    let savedArtist = null;
+    if (fullArtistData) {
+      const artistRecord = {
+        name: trackInfo.artist.name,
+        musicbrainz_id: trackInfo.artist.mbid || null,
+        genres: (fullArtistData.tags?.tag || []).map(t => t.name).slice(0, 10),
+        image_url: fullArtistData.image?.find(img => img.size === 'large')?.['#text'] || 
+                   fullArtistData.image?.find(img => img.size === 'extralarge')?.['#text'] || 
+                   null,
+        astrological_profile: {
+          bio_summary: artistBio,
+          bio_full: fullArtistData.bio?.content || null,
+          lastfm_url: fullArtistData.url || null,
+          listeners: parseInt(fullArtistData.stats?.listeners) || 0,
+          playcount: parseInt(fullArtistData.stats?.playcount) || 0,
+          similar_artists: (fullArtistData.similar?.artist || []).map(a => a.name).slice(0, 10)
+        }
+      };
+
+      const existingArtists = await base44.asServiceRole.entities.MusicArtist.filter({
+        name: artistRecord.name
+      });
+
+      if (existingArtists.length > 0) {
+        savedArtist = await base44.asServiceRole.entities.MusicArtist.update(existingArtists[0].id, artistRecord);
+      } else {
+        savedArtist = await base44.asServiceRole.entities.MusicArtist.create(artistRecord);
+      }
+    }
+
     // Check if track already exists
     const existingTracks = await base44.asServiceRole.entities.MusicTrack.filter({
       name: trackData.name,
@@ -152,7 +185,7 @@ Deno.serve(async (req) => {
       savedTrack = await base44.asServiceRole.entities.MusicTrack.create(trackData);
     }
 
-    return Response.json({ success: true, data: trackData, savedTrack });
+    return Response.json({ success: true, data: trackData, savedTrack, savedArtist });
     
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
