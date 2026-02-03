@@ -15,6 +15,7 @@ export default function MusicDiscovery() {
   const [searchTrack, setSearchTrack] = useState('');
   const [trackInfo, setTrackInfo] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [testResult, setTestResult] = useState(null);
 
   useEffect(() => {
     loadProfile();
@@ -49,6 +50,28 @@ export default function MusicDiscovery() {
       setRecommendations(recs);
     } catch (error) {
       console.error('Error loading recommendations:', error);
+    }
+  };
+
+  const handleTestFunction = async () => {
+    if (!searchArtist || !searchTrack) {
+      alert('Please enter both artist and track name');
+      return;
+    }
+
+    setSearching(true);
+    setTestResult(null);
+    try {
+      const response = await base44.functions.invoke('getLastFmTrackInfo', {
+        artist: searchArtist,
+        track: searchTrack
+      });
+
+      setTestResult(response.data);
+    } catch (error) {
+      setTestResult({ error: error.message });
+    } finally {
+      setSearching(false);
     }
   };
 
@@ -174,7 +197,7 @@ export default function MusicDiscovery() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Search className="w-5 h-5" />
-              Search & Analyze Music
+              Test getLastFmTrackInfo Function
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -192,27 +215,26 @@ export default function MusicDiscovery() {
                 className="bg-slate-800 border-purple-500/30 text-white"
               />
               <Button
-                onClick={handleSearch}
+                onClick={handleTestFunction}
                 disabled={searching}
                 className="bg-gradient-to-r from-purple-600 to-pink-600"
               >
                 {searching ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Search className="w-4 h-4" />
+                  'Test'
                 )}
               </Button>
             </div>
 
-            {trackInfo && (
-              <div className="p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                <h3 className="text-white font-semibold">{trackInfo.name}</h3>
-                <p className="text-purple-300">by {trackInfo.artist}</p>
-                <p className="text-purple-400 text-sm mt-2">
-                  {trackInfo.playcount?.toLocaleString()} plays • {trackInfo.listeners?.toLocaleString()} listeners
-                </p>
+            {testResult && (
+              <div className="p-4 bg-slate-800 rounded-lg border border-purple-500/20 overflow-auto max-h-96">
+                <pre className="text-purple-200 text-xs">
+                  {JSON.stringify(testResult, null, 2)}
+                </pre>
               </div>
             )}
+
           </CardContent>
         </Card>
 
