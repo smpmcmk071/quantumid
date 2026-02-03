@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Music, Search, Star, Sparkles } from 'lucide-react';
+import { Loader2, Music, Search, Star, Sparkles, Plus, RefreshCw, Database } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { createPageUrl } from '../utils';
 import { Link } from 'react-router-dom';
 
@@ -16,10 +17,13 @@ export default function MusicDiscovery() {
   const [trackInfo, setTrackInfo] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [testResult, setTestResult] = useState(null);
+  const [tracks, setTracks] = useState([]);
+  const [inserting, setInserting] = useState(false);
 
   useEffect(() => {
     loadProfile();
     loadRecommendations();
+    loadTracks();
   }, []);
 
   const loadProfile = async () => {
@@ -53,6 +57,36 @@ export default function MusicDiscovery() {
     }
   };
 
+  const loadTracks = async () => {
+    try {
+      const allTracks = await base44.entities.MusicTrack.list('-created_date', 50);
+      setTracks(allTracks);
+    } catch (error) {
+      console.error('Error loading tracks:', error);
+    }
+  };
+
+  const handleInsertSampleTrack = async () => {
+    setInserting(true);
+    try {
+      const response = await base44.functions.invoke('getLastFmTrackInfo', {
+        artist: 'The Beatles',
+        track: 'Here Comes the Sun'
+      });
+
+      if (response.data?.error) {
+        alert('Error: ' + response.data.error);
+      } else {
+        alert('Track inserted successfully!');
+        await loadTracks();
+      }
+    } catch (error) {
+      alert('Error inserting track: ' + error.message);
+    } finally {
+      setInserting(false);
+    }
+  };
+
   const handleTestFunction = async () => {
     if (!searchArtist || !searchTrack) {
       alert('Please enter both artist and track name');
@@ -68,6 +102,7 @@ export default function MusicDiscovery() {
       });
 
       setTestResult(response.data);
+      await loadTracks();
     } catch (error) {
       setTestResult({ error: error.message });
     } finally {
@@ -235,6 +270,77 @@ export default function MusicDiscovery() {
               </div>
             )}
 
+          </CardContent>
+        </Card>
+
+        {/* Tracks Database */}
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-white flex items-center gap-2">
+                <Database className="w-5 h-5" />
+                Music Tracks in Database ({tracks.length})
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleInsertSampleTrack}
+                  disabled={inserting}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  {inserting ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Plus className="w-4 h-4 mr-2" />
+                  )}
+                  Insert Sample Track
+                </Button>
+                <Button
+                  onClick={loadTracks}
+                  variant="outline"
+                  className="border-purple-500/30 text-purple-200"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {tracks.length === 0 ? (
+              <div className="text-center py-8">
+                <Music className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                <p className="text-purple-200">No tracks in database yet.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-purple-500/30 hover:bg-slate-800/50">
+                      <TableHead className="text-purple-300">Track</TableHead>
+                      <TableHead className="text-purple-300">Artist</TableHead>
+                      <TableHead className="text-purple-300">Album</TableHead>
+                      <TableHead className="text-purple-300">Playcount</TableHead>
+                      <TableHead className="text-purple-300">Listeners</TableHead>
+                      <TableHead className="text-purple-300">Tags</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tracks.map((track) => (
+                      <TableRow key={track.id} className="border-purple-500/20 hover:bg-slate-800/50">
+                        <TableCell className="text-white font-medium">{track.name}</TableCell>
+                        <TableCell className="text-purple-200">{track.artist_name}</TableCell>
+                        <TableCell className="text-purple-200">{track.album_name || '-'}</TableCell>
+                        <TableCell className="text-purple-200">{track.lastfm_playcount?.toLocaleString() || '0'}</TableCell>
+                        <TableCell className="text-purple-200">{track.lastfm_listeners?.toLocaleString() || '0'}</TableCell>
+                        <TableCell className="text-purple-200 max-w-xs truncate text-xs">
+                          {track.lastfm_tags?.slice(0, 3).join(', ') || '-'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
 
