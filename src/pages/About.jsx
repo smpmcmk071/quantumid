@@ -1,212 +1,131 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Users, Target, TrendingUp, Brain, Lightbulb, Heart, Trophy } from 'lucide-react';
+import { Music, Star, Sparkles, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../utils';
+import { Button } from '@/components/ui/button';
 
 export default function About() {
-  useEffect(() => {
-    // Load Google Font
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6 md:p-12">
-      <style>{`
-        * {
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-        .brand-logo {
-          font-family: 'Poppins', sans-serif;
-          font-weight: 600;
-          letter-spacing: -0.02em;
-        }
-      `}</style>
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-6 md:p-12">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white brand-logo">
-            Teambuilder<span className="text-teal-400">7a</span>
-          </h1>
-          <p className="text-xl text-gray-300 mt-4 italic">
-            Stay Above the Threshold
-          </p>
-          <p className="text-base text-gray-400 mt-2">
-            Expanding your threshold of actionable knowledge
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Sparkles className="w-12 h-12 text-yellow-400" />
+            <h1 className="text-5xl font-bold text-white">QuantumVibe</h1>
+            <Music className="w-12 h-12 text-purple-400" />
+          </div>
+          <p className="text-purple-200 text-xl">
+            Discover music aligned with your cosmic energy through numerology and astrology
           </p>
         </div>
 
-        {/* Mission */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 mb-8">
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Target className="w-6 h-6 text-amber-400" />
-              Our Mission
-            </CardTitle>
+            <CardTitle className="text-white text-2xl">What is QuantumVibe?</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 text-gray-300">
+          <CardContent className="text-purple-200 space-y-4">
             <p>
-              <span className="brand-logo">Teambuilder<span className="text-teal-400">7a</span></span> combines PhD-level team building research with behavioral science to help HR professionals 
-              build high-performing teams with scientific precision.
+              QuantumVibe is a revolutionary music recommendation system that goes beyond algorithms 
+              and listening history. We analyze your birth date, name, and astrological profile to 
+              discover music that resonates with your unique energetic signature.
             </p>
             <p>
-              We've analyzed decades of research from Patrick Lencioni, Meredith Belbin, Bruce Tuckman, and other team science 
-              pioneers, then mapped their findings to scientific archetypes for instant, accurate team composition analysis.
+              By combining ancient wisdom from numerology and astrology with modern music data from 
+              Last.fm and MusicBrainz, we create deeply personalized recommendations that align with 
+              who you truly are at a cosmic level.
             </p>
           </CardContent>
         </Card>
 
-        {/* The 4 Core Archetypes */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 mb-8">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Star className="w-6 h-6 text-yellow-400" />
+                Numerology Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-purple-200 space-y-2">
+              <p>
+                We calculate your Life Path, Expression, Soul Urge, and Personality numbers from 
+                your birth date and name. Each number reveals different aspects of your energetic blueprint.
+              </p>
+              <p className="text-sm text-purple-300">
+                • Life Path: Your core essence and life journey<br />
+                • Expression: How you express yourself creatively<br />
+                • Soul Urge: Your inner desires and motivations<br />
+                • Master Numbers: Special spiritual significance
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Zap className="w-6 h-6 text-pink-400" />
+                Astrological Mapping
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-purple-200 space-y-2">
+              <p>
+                Music carries its own astrological signature through key, tempo, mood, and release date. 
+                We map these qualities to zodiac signs, planetary influences, and houses.
+              </p>
+              <p className="text-sm text-purple-300">
+                • Musical Key → Zodiac Sign<br />
+                • Tempo → Planetary Energy<br />
+                • Mood → House Placement<br />
+                • Release Date → Numerological Resonance
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Users className="w-6 h-6 text-blue-400" />
-              The 4 Core Team Archetypes
-            </CardTitle>
+            <CardTitle className="text-white text-2xl">How It Works</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-gray-300 mb-4">
-              Every high-performing team needs a balance of these four archetypes. Our AI analyzes your organization's 
-              profiles to build teams with optimal balance.
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg border border-amber-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="w-5 h-5 text-amber-400" />
-                  <h3 className="text-amber-300 font-semibold">Visionary/Leader</h3>
-                </div>
-                <p className="text-amber-200 text-xs mb-2">Life Path 1, 8, 11, 22</p>
-                <p className="text-gray-300 text-sm">
-                  Sets direction, drives execution, makes decisions. Natural leadership energy. 
-                  Takes charge of goals and ensures results.
-                </p>
+          <CardContent className="text-purple-200 space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">1</div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Create Your Cosmic Profile</h3>
+                <p>Enter your birth date, time, location, and full name to generate your numerological and astrological profile.</p>
               </div>
-
-              <div className="p-4 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg border border-blue-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-5 h-5 text-blue-400" />
-                  <h3 className="text-blue-300 font-semibold">Strategist/Analyst</h3>
-                </div>
-                <p className="text-blue-200 text-xs mb-2">Life Path 4, 7</p>
-                <p className="text-gray-300 text-sm">
-                  Deep thinker, systematic planner, risk analyzer. 
-                  Ensures quality through careful analysis and strategic thinking.
-                </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">2</div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Search for Music</h3>
+                <p>Search for any track by artist and song name. We fetch data from Last.fm and analyze its cosmic properties.</p>
               </div>
-
-              <div className="p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Lightbulb className="w-5 h-5 text-purple-400" />
-                  <h3 className="text-purple-300 font-semibold">Creator/Innovator</h3>
-                </div>
-                <p className="text-purple-200 text-xs mb-2">Life Path 3, 5, 33</p>
-                <p className="text-gray-300 text-sm">
-                  Generates ideas, finds creative solutions, adapts to change. 
-                  Brings innovation and flexibility to overcome obstacles.
-                </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">3</div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Get Your Match Score</h3>
+                <p>We calculate a compatibility score based on zodiac alignment, planetary resonance, house placement, and numerological harmony.</p>
               </div>
-
-              <div className="p-4 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <Heart className="w-5 h-5 text-green-400" />
-                  <h3 className="text-green-300 font-semibold">Harmonizer/Builder</h3>
-                </div>
-                <p className="text-green-200 text-xs mb-2">Life Path 2, 6, 9</p>
-                <p className="text-gray-300 text-sm">
-                  Unifies the team, resolves conflicts, supports members. 
-                  The glue that holds teams together through empathy and collaboration.
-                </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">4</div>
+              <div>
+                <h3 className="font-semibold text-white mb-1">Discover Your Soundtrack</h3>
+                <p>Build a personalized library of music that truly resonates with your soul's frequency.</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Master Numbers */}
-        <Card className="bg-gradient-to-br from-amber-900/30 to-purple-900/30 backdrop-blur-sm border-amber-500/30 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-amber-400" />
-              Master Numbers: High-Potential Individuals
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-gray-300">
-            <p>
-              People with Master Numbers (11, 22, 33) in their scientific profile are identified as "High-Potential" 
-              because these numbers represent amplified leadership and collaboration capabilities.
-            </p>
-            <div className="grid md:grid-cols-3 gap-3">
-              <div className="p-3 bg-white/10 rounded-lg text-center">
-                <span className="text-3xl font-bold text-amber-400">11</span>
-                <p className="text-sm mt-1">Visionary Intuition</p>
-              </div>
-              <div className="p-3 bg-white/10 rounded-lg text-center">
-                <span className="text-3xl font-bold text-purple-400">22</span>
-                <p className="text-sm mt-1">Master Builder</p>
-              </div>
-              <div className="p-3 bg-white/10 rounded-lg text-center">
-                <span className="text-3xl font-bold text-pink-400">33</span>
-                <p className="text-sm mt-1">Master Teacher</p>
-              </div>
-            </div>
-            <p className="text-amber-300 font-medium text-center">
-              Our AI prioritizes Master Number holders when building teams, distributing them for maximum impact.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* How It Works */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-green-400" />
-              How It Works
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ol className="space-y-3 text-gray-300">
-              <li className="flex gap-3">
-                <span className="text-blue-400 font-bold">1.</span>
-                <span>Add your team members with their birth dates</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-blue-400 font-bold">2.</span>
-                <span>Our system calculates their Life Path number and classifies their archetype</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-blue-400 font-bold">3.</span>
-                <span>Use the Team Builder to say "create 3 teams of 5" or "organize all 50 people"</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-blue-400 font-bold">4.</span>
-                <span>AI assigns roles and explains why each person fits based on behavioral science + team research</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-blue-400 font-bold">5.</span>
-                <span>Get balanced teams with clear role assignments and reasoning</span>
-              </li>
-            </ol>
-          </CardContent>
-        </Card>
-
-        {/* Getting Started */}
-        <Card className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-blue-500/30">
-          <CardContent className="py-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Ready to Build Better Teams?</h2>
-            <p className="text-gray-300 mb-6">
-              Start by adding your team members to see their archetypes, then use the Team Builder 
-              to create optimally balanced teams in seconds.
-            </p>
-            <p className="text-gray-400 text-sm mb-2">
-              A Product of <span className="text-teal-400 font-semibold">Threshold7 Analytics</span>
-            </p>
-            <p className="text-gray-400 text-sm">
-              Questions? Contact us at <a href="mailto:7day11com@gmail.com" className="text-teal-400 underline">7day11com@gmail.com</a>
-            </p>
-          </CardContent>
-        </Card>
+        <div className="text-center">
+          <Link to={createPageUrl('UserMusicProfileSetup')}>
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6">
+              <Sparkles className="w-5 h-5 mr-2" />
+              Get Started
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
