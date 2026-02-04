@@ -19,51 +19,52 @@ Deno.serve(async (req) => {
         const response = await base44.integrations.Core.InvokeLLM({
           prompt: `You are parsing a professional resume. Extract information EXACTLY as presented in the document.
 
-    Here is the resume text:
+          Here is the resume text:
 
-    ${resume_text}
+          ${resume_text}
 
-    EXTRACT THESE FIELDS:
-- full_name: The person's actual name from the top of the resume
-- email: Email address
-- phone: Phone number if present
-- education: Array of education entries with degree, school, year
-- years_experience: Total years (extract from summary or calculate from dates)
-- skills: Array of all skills mentioned (technical and soft skills)
-- job_history: Array of all jobs with ACCURATE details:
-  * position: The exact job title
-  * employer: The exact company/organization name
-  * start_date: Start date in YYYY-MM-DD format (estimate if only year given, e.g., "2005" → "2005-01-01")
-  * end_date: End date in YYYY-MM-DD format (use current date if "Present", e.g., "2025-02-04")
-  * responsibilities: ALL bullet points/descriptions for this job as one string, preserving the original text
-  * skills: Array of specific skills used in this role
+          EXTRACT THESE FIELDS:
+          - full_name: The person's actual name from the top of the resume
+          - email: Email address
+          - phone: Phone number if present
+          - education: Array of education entries with degree, school, year
+          - years_experience: Total years (extract from summary or calculate from dates)
+          - skills: Array of all skills mentioned (technical and soft skills)
+          - job_history: Array of all jobs with ACCURATE details:
+          * position: The exact job title
+          * employer: The exact company/organization name
+          * start_date: Extract date AS WRITTEN in the resume (e.g., "06/2020", "2005", "January 2020", "Present")
+          * end_date: Extract date AS WRITTEN in the resume (e.g., "09/2025", "Present", "Current")
+          * responsibilities: ALL bullet points/descriptions for this job as one string, preserving the original text
+          * skills: Array of specific skills used in this role
 
-CRITICAL RULES:
-1. For dates: If only a year is given (e.g., "2005"), use "2005-01-01"
-2. For "Present" or current roles: Use "2025-02-04" as end_date
-3. For responsibilities: Include ALL bullet points exactly as written in the resume
-4. For job_history: Return one entry per job, in chronological order (most recent first)
-5. Do NOT combine or summarize responsibilities - preserve the original text
+          CRITICAL RULES:
+          1. For dates: Use the EXACT format from the resume - do NOT convert or reformat
+          2. For "Present" or current roles: Use "Present" as the end_date
+          3. For responsibilities: Include ALL bullet points exactly as written in the resume
+          4. For job_history: Return one entry per job, in chronological order (most recent first)
+          5. Do NOT combine or summarize responsibilities - preserve the original text
+          6. Keep dates as they appear - no conversion needed
 
-Return format:
-{
-  "full_name": "string",
-  "email": "string",
-  "phone": "string",
-  "education": [{"degree": "string", "school": "string", "year": "YYYY"}],
-  "years_experience": number,
-  "skills": ["skill1", "skill2"],
-  "job_history": [
-    {
-      "position": "string",
-      "employer": "string",
-      "start_date": "YYYY-MM-DD",
-      "end_date": "YYYY-MM-DD",
-      "responsibilities": "string with all bullet points",
-      "skills": ["skill1", "skill2"]
-    }
-  ]
-}`,
+          Return format:
+          {
+          "full_name": "string",
+          "email": "string",
+          "phone": "string",
+          "education": [{"degree": "string", "school": "string", "year": "string"}],
+          "years_experience": number,
+          "skills": ["skill1", "skill2"],
+          "job_history": [
+          {
+          "position": "string",
+          "employer": "string",
+          "start_date": "string (as written in resume)",
+          "end_date": "string (as written in resume)",
+          "responsibilities": "string with all bullet points",
+          "skills": ["skill1", "skill2"]
+          }
+          ]
+          }`,
       file_urls: [file_url],
       response_json_schema: {
         type: 'object',
