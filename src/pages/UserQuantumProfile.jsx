@@ -691,18 +691,26 @@ export default function UserQuantumProfile() {
                 
                 <div className="space-y-2 mt-4">
                   {jobs.map((job, idx) => (
-                    <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
-                      <h4 className="text-white font-semibold">{job.position} at {job.employer}</h4>
-                      <p className="text-purple-300 text-sm">{job.start_date} - {job.end_date || 'Present'}</p>
-                      {job.skills && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {job.skills.map((skill, i) => (
-                            <span key={i} className="bg-purple-600/30 px-2 py-1 rounded text-xs text-purple-200">
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                    <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20 flex justify-between items-start">
+                      <div className="flex-1">
+                        <h4 className="text-white font-semibold">{job.position} at {job.employer}</h4>
+                        <p className="text-purple-300 text-sm">{job.start_date} - {job.end_date || 'Present'}</p>
+                        {job.skills && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {job.skills.map((skill, i) => (
+                              <span key={i} className="bg-purple-600/30 px-2 py-1 rounded text-xs text-purple-200">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setJobs(jobs.filter((_, i) => i !== idx))}
+                        className="text-red-400 hover:text-red-300 ml-4"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
                   ))}
                 </div>
