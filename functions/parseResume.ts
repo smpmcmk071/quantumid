@@ -48,24 +48,23 @@ Deno.serve(async (req) => {
 
           Return format:
           {
-          "full_name": "string",
-          "email": "string",
-          "phone": "string",
-          "education": [{"degree": "string", "school": "string", "year": "string"}],
-          "years_experience": number,
-          "skills": ["skill1", "skill2"],
-          "job_history": [
-          {
-          "position": "string",
-          "employer": "string",
-          "start_date": "string (as written in resume)",
-          "end_date": "string (as written in resume)",
-          "responsibilities": "string with all bullet points",
-          "skills": ["skill1", "skill2"]
-          }
-          ]
+            "full_name": "string",
+            "email": "string",
+            "phone": "string",
+            "education": [{"degree": "string", "school": "string", "year": "string"}],
+            "years_experience": number,
+            "skills": ["skill1", "skill2"],
+            "job_history": [
+              {
+                "position": "string",
+                "employer": "string",
+                "start_date": "string (as written in resume)",
+                "end_date": "string (as written in resume)",
+                "responsibilities": "string with all bullet points",
+                "skills": ["skill1", "skill2"]
+              }
+            ]
           }`,
-      file_urls: [file_url],
       response_json_schema: {
         type: 'object',
         properties: {
