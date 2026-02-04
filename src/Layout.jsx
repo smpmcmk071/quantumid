@@ -24,7 +24,7 @@ export default function Layout({ children, currentPageName }) {
       setUser(u);
       
       // Auto-redirect users without profile to setup page
-      if (u && currentPageName !== 'UserMusicProfileSetup') {
+      if (u && currentPageName !== 'UserMusicProfileSetup' && currentPageName !== 'UserQuantumProfile') {
         const profiles = await base44.entities.UserMusicProfile.filter({ user_id: u.id });
 
         if (profiles.length === 0) {
@@ -42,10 +42,8 @@ export default function Layout({ children, currentPageName }) {
   const isAdmin = user?.role === 'admin';
 
   const navItems = [
-    { name: 'Music Discovery', page: 'MusicDiscovery', icon: LayoutDashboard },
     { name: 'My Profile', page: 'UserMusicProfileSetup', icon: User },
-    { name: 'Quantum Profile', page: 'UserQuantumProfile', icon: Target },
-    ...(isAdmin ? [{ name: 'Admin Tracks', page: 'AdminTracks', icon: Users }] : [])
+    { name: 'Quantum Profile', page: 'UserQuantumProfile', icon: Target }
   ];
 
   return (
