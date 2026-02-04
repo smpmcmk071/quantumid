@@ -99,10 +99,13 @@ Return format:
             }
           }
         }
-      }
-    });
+        }
+        });
 
-    // Process and structure the extracted data
+        // Process and structure the extracted data
+        if (!response) {
+        return Response.json({ success: false, error: 'No response from LLM' }, { status: 500 });
+        }
     const extractedData = {
       full_name: response.full_name || null,
       email: response.email || null,
