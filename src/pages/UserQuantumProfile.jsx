@@ -65,6 +65,7 @@ export default function UserQuantumProfile() {
   // Resume parsing
   const [parsing, setParsing] = useState(false);
   const [parsedJobs, setParsedJobs] = useState(null);
+  const [resumeText, setResumeText] = useState('');
   
   useEffect(() => {
     loadData();
