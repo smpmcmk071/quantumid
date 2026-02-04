@@ -24,17 +24,42 @@ export default function UserQuantumProfile() {
   });
   
   // Job History
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState([
+    {
+      employer: 'TechCorp Solutions',
+      position: 'Senior Software Engineer',
+      start_date: '2019-01-15',
+      end_date: '2024-06-30',
+      responsibilities: 'Led development of cloud infrastructure, mentored junior engineers, architected microservices',
+      skills: ['JavaScript', 'React', 'Node.js', 'AWS', 'Docker', 'PostgreSQL']
+    },
+    {
+      employer: 'Digital Innovations Inc',
+      position: 'Full Stack Developer',
+      start_date: '2016-03-10',
+      end_date: '2018-12-31',
+      responsibilities: 'Built web applications, implemented CI/CD pipelines, database optimization',
+      skills: ['Python', 'Django', 'Vue.js', 'MySQL', 'Linux']
+    }
+  ]);
   const [newJob, setNewJob] = useState({
     employer: '', position: '', start_date: '', end_date: '', responsibilities: '', skills: ''
   });
-  
+
   // Family Data
-  const [familyMembers, setFamilyMembers] = useState([]);
+  const [familyMembers, setFamilyMembers] = useState([
+    { name: 'Margaret Maher', relationship: 'Mother', birth_date: '1947-03-22' },
+    { name: 'Paul Maher Sr.', relationship: 'Father', birth_date: '1945-08-15' },
+    { name: 'Lisa Maher', relationship: 'Sister', birth_date: '1972-05-10' }
+  ]);
   const [newMember, setNewMember] = useState({ name: '', relationship: '', birth_date: '' });
-  
+
   // Hobbies
-  const [hobbies, setHobbies] = useState([]);
+  const [hobbies, setHobbies] = useState([
+    { name: 'Guitar Playing', category: 'Music', skill_level: 'Advanced', since_year: 2005 },
+    { name: 'Rock Climbing', category: 'Sports', skill_level: 'Intermediate', since_year: 2015 },
+    { name: 'Photography', category: 'Creative', skill_level: 'Intermediate', since_year: 2018 }
+  ]);
   const [newHobby, setNewHobby] = useState({ name: '', category: '', skill_level: '', since_year: '' });
   
   // Resume parsing
