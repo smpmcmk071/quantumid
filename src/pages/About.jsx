@@ -38,49 +38,26 @@ export default function About() {
           </CardContent>
         </Card>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Star className="w-6 h-6 text-yellow-400" />
-                Numerology Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-purple-200 space-y-2">
-              <p>
-                We calculate your Life Path, Expression, Soul Urge, and Personality numbers from 
-                your birth date and name. Each number reveals different aspects of your energetic blueprint.
-              </p>
-              <p className="text-sm text-purple-300">
-                • Life Path: Your core essence and life journey<br />
-                • Expression: How you express yourself creatively<br />
-                • Soul Urge: Your inner desires and motivations<br />
-                • Master Numbers: Special spiritual significance
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Zap className="w-6 h-6 text-pink-400" />
-                Astrological Mapping
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-purple-200 space-y-2">
-              <p>
-                Music carries its own astrological signature through key, tempo, mood, and release date. 
-                We map these qualities to zodiac signs, planetary influences, and houses.
-              </p>
-              <p className="text-sm text-purple-300">
-                • Musical Key → Zodiac Sign<br />
-                • Tempo → Planetary Energy<br />
-                • Mood → House Placement<br />
-                • Release Date → Numerological Resonance
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Star className="w-6 h-6 text-yellow-400" />
+              Numerology Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-purple-200 space-y-2">
+            <p>
+              We calculate your Life Path, Expression, Soul Urge, and Personality numbers from 
+              your birth date and name. Each number reveals different aspects of your energetic blueprint.
+            </p>
+            <p className="text-sm text-purple-300">
+              • Life Path: Your core essence and life journey<br />
+              • Expression: How you express yourself creatively<br />
+              • Soul Urge: Your inner desires and motivations<br />
+              • Master Numbers: Special spiritual significance
+            </p>
+          </CardContent>
+        </Card>
 
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
           <CardHeader>
