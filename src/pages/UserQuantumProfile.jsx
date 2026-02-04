@@ -540,20 +540,36 @@ export default function UserQuantumProfile() {
               
               {/* Jobs Tab */}
               <TabsContent value="jobs" className="space-y-4">
-                {/* Resume Upload */}
-                <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
-                  <label className="text-purple-300 text-sm font-semibold mb-3 block">
-                    Quick Import: Upload Resume
-                  </label>
-                  <input
-                    type="file"
-                    accept=".pdf,.txt,.doc,.docx"
-                    onChange={handleResumeUpload}
-                    disabled={parsing}
-                    className="block w-full text-sm text-purple-200 file:bg-purple-600 file:text-white file:border-0 file:rounded file:px-3 file:py-2 file:cursor-pointer hover:file:bg-purple-700"
-                  />
-                  <p className="text-purple-400 text-xs mt-2">Supports PDF, TXT, DOC, DOCX</p>
-                </div>
+                {/* Resume Paste */}
+                  <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                    <label className="text-purple-300 text-sm font-semibold mb-3 block">
+                      Quick Import: Paste Resume Text
+                    </label>
+                    <Textarea
+                      placeholder="Paste your resume content here..."
+                      value={resumeText}
+                      onChange={(e) => setResumeText(e.target.value)}
+                      disabled={parsing}
+                      className="bg-slate-700 border-purple-500/30 text-white min-h-40"
+                    />
+                    <Button
+                      onClick={handleParseResumeText}
+                      disabled={parsing || !resumeText.trim()}
+                      className="mt-3 bg-purple-600 hover:bg-purple-700 w-full"
+                    >
+                      {parsing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Parsing...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-2" />
+                          Parse Resume
+                        </>
+                      )}
+                    </Button>
+                  </div>
 
                 {/* Parsed Data Confirmation */}
                 {parsedJobs && (
