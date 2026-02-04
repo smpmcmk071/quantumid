@@ -439,15 +439,15 @@ export default function UserQuantumProfile() {
               <div className="mt-6 grid grid-cols-3 gap-4">
                 <div className="bg-slate-800 p-3 rounded-lg">
                   <p className="text-purple-300 text-xs">Life Path</p>
-                  <p className="text-white font-bold text-xl">{quantumProfile.life_path_number}</p>
+                  <p className="text-white font-bold text-xl">{quantumProfile.life_path_number || 'None'}</p>
                 </div>
                 <div className="bg-slate-800 p-3 rounded-lg">
                   <p className="text-purple-300 text-xs">Sun Sign</p>
-                  <p className="text-white font-bold">{quantumProfile.sun_sign}</p>
+                  <p className="text-white font-bold">{quantumProfile.sun_sign || 'None'}</p>
                 </div>
                 <div className="bg-slate-800 p-3 rounded-lg">
                   <p className="text-purple-300 text-xs">Moon Sign</p>
-                  <p className="text-white font-bold">{quantumProfile.moon_sign}</p>
+                  <p className="text-white font-bold">{quantumProfile.moon_sign || 'None'}</p>
                 </div>
               </div>
             )}
