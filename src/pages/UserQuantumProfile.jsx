@@ -103,7 +103,7 @@ export default function UserQuantumProfile() {
       alert('Please enter full name and birth date');
       return;
     }
-    
+
     setCalculating(true);
     try {
       const response = await base44.functions.invoke('calculateNumerology', {
@@ -113,45 +113,48 @@ export default function UserQuantumProfile() {
         birthTime: formData.birth_time || 'unknown',
         birthLocation: formData.birth_location || 'unknown'
       });
-      
+
       if (response.data?.success) {
         const calcData = response.data.data;
 
-        // Save or update quantum profile with calculated data
-        const profileData = {
+        // Start with existing profile data to prevent overwriting
+        const profileData = quantumProfile ? { ...quantumProfile } : {};
+
+        // Merge in new calculated data
+        Object.assign(profileData, {
           user_id: user.id,
           birth_date: formData.birth_date,
-          birth_time: formData.birth_time,
-          birth_location: formData.birth_location,
+          birth_time: formData.birth_time || 'None',
+          birth_location: formData.birth_location || 'None',
           full_name: formData.full_name,
-          sun_sign: calcData.sun_sign || calcData.sunSign || '',
-          moon_sign: calcData.moon_sign || calcData.moonSign || '',
-          rising_sign: calcData.rising_sign || calcData.risingSign || '',
+          sun_sign: calcData.sun_sign || calcData.sunSign || 'None',
+          moon_sign: calcData.moon_sign || calcData.moonSign || 'None',
+          rising_sign: calcData.rising_sign || calcData.risingSign || 'None',
           houses: calcData.houses || {},
           planets: calcData.planets || {},
           aspects: calcData.aspects || {},
-          element: calcData.element || '',
-          dominant_element: calcData.dominant_element || calcData.dominantElement || '',
-          chinese_zodiac: calcData.chinese_zodiac || calcData.chineseZodiac || '',
-          chinese_animal: calcData.chinese_animal || calcData.chineseAnimal || '',
-          chinese_element: calcData.chinese_element || calcData.chineseElement || '',
+          element: calcData.element || 'None',
+          dominant_element: calcData.dominant_element || calcData.dominantElement || 'None',
+          chinese_zodiac: calcData.chinese_zodiac || calcData.chineseZodiac || 'None',
+          chinese_animal: calcData.chinese_animal || calcData.chineseAnimal || 'None',
+          chinese_element: calcData.chinese_element || calcData.chineseElement || 'None',
           life_path_number: calcData.life_path_number || calcData.lifePathNumber || 0,
           expression_number: calcData.expression_number || calcData.expressionNumber || 0,
           soul_urge_number: calcData.soul_urge_number || calcData.soulUrgeNumber || 0,
           personality_number: calcData.personality_number || calcData.personalityNumber || 0,
           birthday_number: calcData.birthday_number || calcData.birthdayNumber || 0,
-          master_numbers: (calcData.masterNumbers || []).join(', ') || 'none',
-          karmic_debt: (calcData.karmicDebt?.locations || '') || 'none',
-          karmic_lessons: (calcData.karmicLessons?.lessons || []).join(', ') || 'none',
-          dominant_polarity: calcData.dominant_polarity || calcData.dominantPolarity || '',
+          master_numbers: (calcData.masterNumbers || []).join(', ') || 'None',
+          karmic_debt: (calcData.karmicDebt?.locations || '') || 'None',
+          karmic_lessons: (calcData.karmicLessons?.lessons || []).join(', ') || 'None',
+          dominant_polarity: calcData.dominant_polarity || calcData.dominantPolarity || 'None',
           preferred_keys: calcData.preferred_keys || calcData.preferredKeys || [],
           preferred_tempos: calcData.preferred_tempos || calcData.preferredTempos || [],
           mood_preferences: calcData.mood_preferences || calcData.moodPreferences || {},
           job_history: jobs,
           family_data: { members: familyMembers },
           hobbies: hobbies
-        };
-        
+        });
+
         if (quantumProfile) {
           const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, profileData);
           setQuantumProfile(updated);
@@ -159,7 +162,7 @@ export default function UserQuantumProfile() {
           const created = await base44.entities.QuantumProfile.create(profileData);
           setQuantumProfile(created);
         }
-        
+
         alert('Profile calculated successfully! Now generate your QuantumID.');
       }
     } catch (error) {
