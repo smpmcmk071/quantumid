@@ -44,6 +44,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: 'Music Discovery', page: 'MusicDiscovery', icon: LayoutDashboard },
     { name: 'My Profile', page: 'UserMusicProfileSetup', icon: User },
+    { name: 'Quantum Profile', page: 'UserQuantumProfile', icon: Target },
     ...(isAdmin ? [{ name: 'Admin Tracks', page: 'AdminTracks', icon: Users }] : [])
   ];
 
