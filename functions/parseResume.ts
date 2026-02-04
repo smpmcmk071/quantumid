@@ -92,8 +92,8 @@ Deno.serve(async (req) => {
               properties: {
                 position: { type: 'string' },
                 employer: { type: 'string' },
-                start_date: { type: 'string' },
-                end_date: { type: 'string' },
+                start_date: { type: 'string', description: 'Date as written in resume (mm/yyyy, yyyy, etc)' },
+                end_date: { type: 'string', description: 'Date as written in resume or "Present"' },
                 responsibilities: { type: 'string' },
                 skills: { type: 'array', items: { type: 'string' } }
               }
