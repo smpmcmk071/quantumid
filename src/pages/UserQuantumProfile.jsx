@@ -219,11 +219,14 @@ export default function UserQuantumProfile() {
 
     setSaving(true);
     try {
-      const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, {
+      // Merge new data with all existing fields
+      const updateData = {
+        ...quantumProfile,
         job_history: jobs,
         family_data: { members: familyMembers },
         hobbies: hobbies
-      });
+      };
+      const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, updateData);
       setQuantumProfile(updated);
       alert('Profile saved successfully!');
     } catch (error) {
