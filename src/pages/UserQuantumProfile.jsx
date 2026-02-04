@@ -4,16 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock } from 'lucide-react';
+import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UserQuantumProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [calculating, setCalculating] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [user, setUser] = useState(null);
-  const [musicProfile, setMusicProfile] = useState(null);
   const [quantumProfile, setQuantumProfile] = useState(null);
+  
+  // Form fields
+  const [formData, setFormData] = useState({
+    full_name: '',
+    birth_date: '',
+    birth_time: '',
+    birth_location: ''
+  });
   
   // Job History
   const [jobs, setJobs] = useState([]);
@@ -39,17 +47,17 @@ export default function UserQuantumProfile() {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
       
-      // Load music profile for astrology data
-      const musicProfiles = await base44.entities.UserMusicProfile.filter({ user_id: currentUser.id });
-      if (musicProfiles.length > 0) {
-        setMusicProfile(musicProfiles[0]);
-      }
-      
       // Load quantum profile if exists
       const quantumProfiles = await base44.entities.QuantumProfile.filter({ user_id: currentUser.id });
       if (quantumProfiles.length > 0) {
         const qp = quantumProfiles[0];
         setQuantumProfile(qp);
+        setFormData({
+          full_name: qp.full_name || '',
+          birth_date: qp.birth_date || '',
+          birth_time: qp.birth_time || '',
+          birth_location: qp.birth_location || ''
+        });
         setJobs(qp.job_history || []);
         setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
@@ -61,38 +69,57 @@ export default function UserQuantumProfile() {
     }
   };
   
-  const generateQuantumID = async () => {
-    if (!musicProfile) {
-      alert('Please complete your Music Profile first to generate QuantumID');
+  const calculateProfile = async () => {
+    if (!formData.full_name || !formData.birth_date) {
+      alert('Please enter full name and birth date');
       return;
     }
     
-    setGenerating(true);
+    setCalculating(true);
     try {
-      const response = await base44.functions.invoke('generateQuantumID', {
-        userProfileId: musicProfile.id,
-        planets: musicProfile.planets || {},
-        lifePathNumber: musicProfile.life_path_number,
-        birthDate: musicProfile.birth_date,
-        fullName: musicProfile.full_name
+      const response = await base44.functions.invoke('calculateNumerology', {
+        fullName: formData.full_name,
+        birthDate: formData.birth_date,
+        birthTime: formData.birth_time || 'unknown',
+        birthLocation: formData.birth_location || 'unknown'
       });
       
       if (response.data?.success) {
-        const qData = response.data;
+        const calcData = response.data.data;
         
-        // Save or update quantum profile
+        // Save or update quantum profile with calculated data
         const profileData = {
           user_id: user.id,
-          quantum_id: qData.quantumID,
-          planetary_codes: qData.planetaryCodes,
-          life_path_number: musicProfile.life_path_number,
-          protection_hash: qData.protectionHash,
-          short_code_report: qData.shortCodeReport,
+          birth_date: formData.birth_date,
+          birth_time: formData.birth_time,
+          birth_location: formData.birth_location,
+          full_name: formData.full_name,
+          sun_sign: calcData.sunSign,
+          moon_sign: calcData.moonSign,
+          rising_sign: calcData.risingSign,
+          houses: calcData.houses,
+          planets: calcData.planets,
+          aspects: calcData.aspects,
+          element: calcData.element,
+          dominant_element: calcData.dominantElement,
+          chinese_zodiac: calcData.chineseZodiac,
+          chinese_animal: calcData.chineseAnimal,
+          chinese_element: calcData.chineseElement,
+          life_path_number: calcData.lifePathNumber,
+          expression_number: calcData.expressionNumber,
+          soul_urge_number: calcData.soulUrgeNumber,
+          personality_number: calcData.personalityNumber,
+          birthday_number: calcData.birthdayNumber,
+          master_numbers: calcData.masterNumbers?.join(', ') || '',
+          karmic_debt: calcData.karmicDebt?.join(', ') || '',
+          karmic_lessons: calcData.karmicLessons?.join(', ') || '',
+          dominant_polarity: calcData.dominantPolarity,
+          preferred_keys: calcData.preferredKeys || [],
+          preferred_tempos: calcData.preferredTempos || [],
+          mood_preferences: calcData.moodPreferences || {},
           job_history: jobs,
           family_data: { members: familyMembers },
-          hobbies: hobbies,
-          blockchain_ready: true,
-          export_data: qData.exportData
+          hobbies: hobbies
         };
         
         if (quantumProfile) {
@@ -103,6 +130,45 @@ export default function UserQuantumProfile() {
           setQuantumProfile(created);
         }
         
+        alert('Profile calculated successfully! Now generate your QuantumID.');
+      }
+    } catch (error) {
+      alert('Error calculating profile: ' + error.message);
+    } finally {
+      setCalculating(false);
+    }
+  };
+  
+  const generateQuantumID = async () => {
+    if (!quantumProfile?.planets || !quantumProfile?.life_path_number) {
+      alert('Please calculate your profile first before generating QuantumID');
+      return;
+    }
+    
+    setGenerating(true);
+    try {
+      const response = await base44.functions.invoke('generateQuantumID', {
+        userProfileId: quantumProfile.id,
+        planets: quantumProfile.planets,
+        lifePathNumber: quantumProfile.life_path_number,
+        birthDate: quantumProfile.birth_date,
+        fullName: quantumProfile.full_name
+      });
+      
+      if (response.data?.success) {
+        const qData = response.data;
+        
+        // Update quantum profile with ID data
+        const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, {
+          quantum_id: qData.quantumID,
+          planetary_codes: qData.planetaryCodes,
+          protection_hash: qData.protectionHash,
+          short_code_report: qData.shortCodeReport,
+          blockchain_ready: true,
+          export_data: qData.exportData
+        });
+        
+        setQuantumProfile(updated);
         alert('QuantumID generated successfully!');
       }
     } catch (error) {
@@ -203,13 +269,98 @@ export default function UserQuantumProfile() {
             <p className="text-purple-200 mt-2">Self-sovereign identity with blockchain-ready export</p>
           </div>
           
-          {quantumProfile && (
+          {quantumProfile?.quantum_id && (
             <Button onClick={downloadReport} variant="outline" className="border-cyan-500/30 text-cyan-300">
               <Download className="w-4 h-4 mr-2" />
               Export Backup
             </Button>
           )}
         </div>
+        
+        {/* Profile Setup Section */}
+        <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white">Profile Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="text-purple-300 text-sm">Full Name</label>
+                <Input
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+                  placeholder="Enter your full name"
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+              <div>
+                <label className="text-purple-300 text-sm">Birth Date</label>
+                <Input
+                  type="date"
+                  value={formData.birth_date}
+                  onChange={(e) => setFormData({...formData, birth_date: e.target.value})}
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+              <div>
+                <label className="text-purple-300 text-sm">Birth Time (optional)</label>
+                <Input
+                  value={formData.birth_time}
+                  onChange={(e) => setFormData({...formData, birth_time: e.target.value})}
+                  placeholder="e.g., 14:30 or morning"
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+              <div>
+                <label className="text-purple-300 text-sm">Birth Location (optional)</label>
+                <Input
+                  value={formData.birth_location}
+                  onChange={(e) => setFormData({...formData, birth_location: e.target.value})}
+                  placeholder="City, Country"
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3">
+              <Button
+                onClick={calculateProfile}
+                disabled={calculating}
+                className="bg-gradient-to-r from-purple-600 to-pink-600"
+              >
+                {calculating ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                )}
+                Calculate Profile
+              </Button>
+              
+              {quantumProfile?.planets && (
+                <div className="text-green-400 flex items-center gap-2">
+                  ✓ Profile calculated
+                </div>
+              )}
+            </div>
+            
+            {quantumProfile && (
+              <div className="mt-6 grid grid-cols-3 gap-4">
+                <div className="bg-slate-800 p-3 rounded-lg">
+                  <p className="text-purple-300 text-xs">Life Path</p>
+                  <p className="text-white font-bold text-xl">{quantumProfile.life_path_number}</p>
+                </div>
+                <div className="bg-slate-800 p-3 rounded-lg">
+                  <p className="text-purple-300 text-xs">Sun Sign</p>
+                  <p className="text-white font-bold">{quantumProfile.sun_sign}</p>
+                </div>
+                <div className="bg-slate-800 p-3 rounded-lg">
+                  <p className="text-purple-300 text-xs">Moon Sign</p>
+                  <p className="text-white font-bold">{quantumProfile.moon_sign}</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
         
         {/* QuantumID Display */}
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-6">
@@ -220,7 +371,7 @@ export default function UserQuantumProfile() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {quantumProfile ? (
+            {quantumProfile?.quantum_id ? (
               <div className="space-y-4">
                 <div>
                   <label className="text-purple-300 text-sm">Your QuantumID (SHA-256)</label>
@@ -254,10 +405,12 @@ export default function UserQuantumProfile() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-purple-200 mb-4">No QuantumID generated yet</p>
+                <p className="text-purple-200 mb-4">
+                  {quantumProfile?.planets ? 'Profile calculated - ready to generate QuantumID' : 'Calculate your profile first'}
+                </p>
                 <Button
                   onClick={generateQuantumID}
-                  disabled={generating || !musicProfile}
+                  disabled={generating || !quantumProfile?.planets}
                   className="bg-gradient-to-r from-cyan-600 to-purple-600"
                 >
                   {generating ? (
