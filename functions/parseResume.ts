@@ -76,62 +76,16 @@ Return format:
       }
     });
 
-    // Validate and filter extracted data - only include what's actually found
-    const extractedData = {};
-    
-    // Validate full_name - reject job titles/descriptions
-    const invalidNames = ['designer', 'developer', 'engineer', 'manager', 'enthusiastic', 'anonymous', 'candidate'];
-    const nameText = response.full_name?.toLowerCase() || '';
-    const isValidName = response.full_name?.trim() && 
-                        !invalidNames.some(invalid => nameText.includes(invalid)) &&
-                        response.full_name.split(' ').length >= 2 && // At least first and last name
-                        response.full_name.split(' ').length <= 4;   // Not a long description
-    
-    if (isValidName) {
-      extractedData.full_name = response.full_name.trim();
-    }
-    
-    // Email must be valid format
-    if (response.email?.trim() && response.email.includes('@')) {
-      extractedData.email = response.email.trim();
-    }
-    
-    if (response.skills && response.skills.length > 0) {
-      extractedData.extracted_skills = response.skills.join(', ');
-    }
-    
-    if (response.years_experience && response.years_experience > 0) {
-      extractedData.years_experience = response.years_experience;
-    }
-    
-    if (response.education?.trim()) {
-      extractedData.education = response.education.trim();
-    }
-    
-    if (response.previous_roles && response.previous_roles.length > 0) {
-      extractedData.previous_roles = response.previous_roles
-        .map(r => `${r.title} at ${r.company} (${r.duration})`)
-        .join('; ');
-    }
-
-    // Generate resume summary
-    const summaryParts = [];
-    if (extractedData.years_experience >= 0) {
-      summaryParts.push(`${extractedData.years_experience} years of experience`);
-    }
-    if (extractedData.extracted_skills) {
-      summaryParts.push(`Skills: ${extractedData.extracted_skills}`);
-    }
-    if (extractedData.education) {
-      summaryParts.push(`Education: ${extractedData.education}`);
-    }
-    if (extractedData.previous_roles) {
-      summaryParts.push(`Previous roles: ${extractedData.previous_roles}`);
-    }
-    
-    if (summaryParts.length > 0) {
-      extractedData.parsed_resume_summary = summaryParts.join(' | ');
-    }
+    // Process and structure the extracted data
+    const extractedData = {
+      full_name: response.full_name || null,
+      email: response.email || null,
+      phone: response.phone || null,
+      years_experience: response.years_experience || 0,
+      skills: response.skills || [],
+      education: response.education || [],
+      job_history: response.job_history || []
+    };
 
     return Response.json({
       success: true,
