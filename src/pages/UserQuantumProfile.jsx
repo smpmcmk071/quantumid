@@ -502,7 +502,7 @@ export default function UserQuantumProfile() {
                 </p>
                 <Button
                   onClick={generateQuantumID}
-                  disabled={generating || !quantumProfile?.planets}
+                  disabled={generating || !quantumProfile?.planets || quantumProfile?.quantum_id}
                   className="bg-gradient-to-r from-cyan-600 to-purple-600"
                 >
                   {generating ? (
@@ -510,7 +510,7 @@ export default function UserQuantumProfile() {
                   ) : (
                     <Shield className="w-4 h-4 mr-2" />
                   )}
-                  Generate QuantumID
+                  {quantumProfile?.quantum_id ? 'QuantumID Already Generated' : 'Generate QuantumID'}
                 </Button>
               </div>
             )}
