@@ -19,11 +19,11 @@ Deno.serve(async (req) => {
         const response = await base44.integrations.Core.InvokeLLM({
           prompt: `You are parsing a professional resume. Extract information EXACTLY as presented in the document.
 
-          Here is the resume text:
+        Here is the resume text:
 
-          ${resume_text}
+        ${resume_text}
 
-          EXTRACT THESE FIELDS:
+        EXTRACT THESE FIELDS:
           - full_name: The person's actual name from the top of the resume
           - email: Email address
           - phone: Phone number if present
