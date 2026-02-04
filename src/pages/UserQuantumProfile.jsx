@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw } from 'lucide-react';
+import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw, Upload, Check, X } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UserQuantumProfile() {
@@ -36,6 +36,10 @@ export default function UserQuantumProfile() {
   // Hobbies
   const [hobbies, setHobbies] = useState([]);
   const [newHobby, setNewHobby] = useState({ name: '', category: '', skill_level: '', since_year: '' });
+  
+  // Resume parsing
+  const [parsing, setParsing] = useState(false);
+  const [parsedJobs, setParsedJobs] = useState(null);
   
   useEffect(() => {
     loadData();
@@ -187,18 +191,64 @@ export default function UserQuantumProfile() {
     setSaving(true);
     try {
       const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, {
-        job_history: jobs,
-        family_data: { members: familyMembers },
-        hobbies: hobbies
-      });
-      setQuantumProfile(updated);
-      alert('Profile saved successfully!');
-    } catch (error) {
-      alert('Error saving: ' + error.message);
-    } finally {
-      setSaving(false);
-    }
-  };
+                job_history: jobs,
+                family_data: { members: familyMembers },
+                hobbies: hobbies
+              });
+              setQuantumProfile(updated);
+              alert('Profile saved successfully!');
+            } catch (error) {
+              alert('Error saving: ' + error.message);
+            } finally {
+              setSaving(false);
+            }
+          };
+
+          const handleResumeUpload = async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            setParsing(true);
+            try {
+              const text = await file.text();
+              const response = await base44.functions.invoke('parseResume', { resumeText: text });
+
+              if (response.data?.success) {
+                const parsed = response.data.data;
+                setParsedJobs({
+                  skills: parsed.extracted_skills || '',
+                  education: parsed.education || '',
+                  years_exp: parsed.years_experience || '',
+                  roles: parsed.previous_roles || ''
+                });
+              } else {
+                alert('Error parsing resume: ' + response.data?.error);
+              }
+            } catch (error) {
+              alert('Error uploading resume: ' + error.message);
+            } finally {
+              setParsing(false);
+            }
+          };
+
+          const confirmParsedData = () => {
+            if (parsedJobs?.roles) {
+              // Parse roles string into job objects
+              const rolesList = parsedJobs.roles.split(';').map(role => {
+                const match = role.match(/(.+?)\sat\s(.+?)\s\((.+?)\)/);
+                return {
+                  position: match?.[1]?.trim() || 'Position',
+                  employer: match?.[2]?.trim() || 'Company',
+                  start_date: '',
+                  end_date: '',
+                  responsibilities: '',
+                  skills: parsedJobs.skills?.split(',').map(s => s.trim()) || []
+                };
+              });
+              setJobs([...jobs, ...rolesList]);
+            }
+            setParsedJobs(null);
+          };
   
   const addJob = () => {
     if (!newJob.employer || !newJob.position) {
@@ -446,6 +496,88 @@ export default function UserQuantumProfile() {
               
               {/* Jobs Tab */}
               <TabsContent value="jobs" className="space-y-4">
+                {/* Resume Upload */}
+                <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                  <label className="text-purple-300 text-sm font-semibold mb-3 block">
+                    Quick Import: Upload Resume
+                  </label>
+                  <input
+                    type="file"
+                    accept=".pdf,.txt,.doc,.docx"
+                    onChange={handleResumeUpload}
+                    disabled={parsing}
+                    className="block w-full text-sm text-purple-200 file:bg-purple-600 file:text-white file:border-0 file:rounded file:px-3 file:py-2 file:cursor-pointer hover:file:bg-purple-700"
+                  />
+                  <p className="text-purple-400 text-xs mt-2">Supports PDF, TXT, DOC, DOCX</p>
+                </div>
+
+                {/* Parsed Data Confirmation */}
+                {parsedJobs && (
+                  <div className="bg-cyan-900/30 border border-cyan-500/50 p-4 rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-cyan-300 font-semibold">Parsed Resume Data</h4>
+                      <button
+                        onClick={() => setParsedJobs(null)}
+                        className="text-cyan-400 hover:text-cyan-300"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {parsedJobs.education && (
+                      <div>
+                        <p className="text-purple-300 text-xs">Education</p>
+                        <p className="text-cyan-200">{parsedJobs.education}</p>
+                      </div>
+                    )}
+
+                    {parsedJobs.years_exp && (
+                      <div>
+                        <p className="text-purple-300 text-xs">Years of Experience</p>
+                        <p className="text-cyan-200">{parsedJobs.years_exp}+</p>
+                      </div>
+                    )}
+
+                    {parsedJobs.skills && (
+                      <div>
+                        <p className="text-purple-300 text-xs">Skills</p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {parsedJobs.skills.split(',').map((skill, i) => (
+                            <span key={i} className="bg-purple-600/30 px-2 py-1 rounded text-xs text-cyan-200">
+                              {skill.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {parsedJobs.roles && (
+                      <div>
+                        <p className="text-purple-300 text-xs">Previous Roles</p>
+                        <p className="text-cyan-200 text-sm">{parsedJobs.roles}</p>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        onClick={confirmParsedData}
+                        className="bg-green-600 hover:bg-green-700 flex-1"
+                      >
+                        <Check className="w-4 h-4 mr-2" />
+                        Add to Jobs
+                      </Button>
+                      <Button
+                        onClick={() => setParsedJobs(null)}
+                        variant="outline"
+                        className="border-purple-500/30 text-purple-200 flex-1"
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     placeholder="Employer"
