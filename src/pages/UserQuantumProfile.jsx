@@ -242,8 +242,16 @@ export default function UserQuantumProfile() {
 
             setParsing(true);
             try {
-              const text = await file.text();
-              const response = await base44.functions.invoke('parseResume', { resumeText: text });
+              const uploadResponse = await base44.integrations.Core.UploadFile({ file: file });
+              const fileUrl = uploadResponse.file_url;
+
+              if (!fileUrl) {
+                alert('Error uploading file.');
+                setParsing(false);
+                return;
+              }
+
+              const response = await base44.functions.invoke('parseResume', { file_url: fileUrl });
 
               if (response.data?.success) {
                 const parsed = response.data.data;

@@ -54,6 +54,7 @@ Return format:
   "education": null,
   "previous_roles": []
 }`,
+      file_urls: [file_url],
       response_json_schema: {
         type: 'object',
         properties: {
