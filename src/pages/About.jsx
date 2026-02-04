@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Music, Star, Sparkles, Zap } from 'lucide-react';
+import { Shield, Star, Sparkles, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
@@ -11,29 +11,29 @@ export default function About() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-12 h-12 text-yellow-400" />
-            <h1 className="text-5xl font-bold text-white">QuantumVibe</h1>
-            <Music className="w-12 h-12 text-purple-400" />
+            <Shield className="w-12 h-12 text-cyan-400" />
+            <h1 className="text-5xl font-bold text-white">QuantumID</h1>
           </div>
           <p className="text-purple-200 text-xl">
-            Discover music aligned with your cosmic energy through numerology and astrology
+            Self-sovereign identity powered by numerology, astrology, and blockchain-ready export
           </p>
         </div>
 
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30 mb-8">
           <CardHeader>
-            <CardTitle className="text-white text-2xl">What is QuantumVibe?</CardTitle>
+            <CardTitle className="text-white text-2xl">What is QuantumID?</CardTitle>
           </CardHeader>
           <CardContent className="text-purple-200 space-y-4">
             <p>
-              QuantumVibe is a revolutionary music recommendation system that goes beyond algorithms 
-              and listening history. We analyze your birth date, name, and astrological profile to 
-              discover music that resonates with your unique energetic signature.
+              QuantumID is a self-sovereign identity system that combines numerology, astrology, and 
+              cryptography to create a unique, portable digital identity. Unlike traditional databases, 
+              your QuantumID is generated client-side and stored nowhere—giving you complete control 
+              over your data.
             </p>
             <p>
-              By combining ancient wisdom from numerology and astrology with modern music data from 
-              Last.fm and MusicBrainz, we create deeply personalized recommendations that align with 
-              who you truly are at a cosmic level.
+              By analyzing your birth date, name, and astrological profile, we generate a SHA-256 hash-based 
+              identifier linked to planetary codes, numerological values, and protective security hashes. 
+              Your data is blockchain-ready for future decentralized systems and personal data portability.
             </p>
           </CardContent>
         </Card>
@@ -90,29 +90,29 @@ export default function About() {
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">1</div>
               <div>
-                <h3 className="font-semibold text-white mb-1">Create Your Cosmic Profile</h3>
-                <p>Enter your birth date, time, location, and full name to generate your numerological and astrological profile.</p>
+                <h3 className="font-semibold text-white mb-1">Build Your Cosmic Profile</h3>
+                <p>Enter your birth date, time, location, and full name to generate your numerological and astrological profile with complete details.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">2</div>
               <div>
-                <h3 className="font-semibold text-white mb-1">Search for Music</h3>
-                <p>Search for any track by artist and song name. We fetch data from Last.fm and analyze its cosmic properties.</p>
+                <h3 className="font-semibold text-white mb-1">Generate Your QuantumID</h3>
+                <p>We calculate your unique SHA-256 hash-based ID with planetary codes and protection hashes—never stored on servers.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">3</div>
               <div>
-                <h3 className="font-semibold text-white mb-1">Get Your Match Score</h3>
-                <p>We calculate a compatibility score based on zodiac alignment, planetary resonance, house placement, and numerological harmony.</p>
+                <h3 className="font-semibold text-white mb-1">Add Your Data</h3>
+                <p>Capture your job history, family information, hobbies, and other personal details—or import from your resume.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 text-white font-bold">4</div>
               <div>
-                <h3 className="font-semibold text-white mb-1">Discover Your Soundtrack</h3>
-                <p>Build a personalized library of music that truly resonates with your soul's frequency.</p>
+                <h3 className="font-semibold text-white mb-1">Export & Control</h3>
+                <p>Download your complete backup in blockchain-ready format. Your identity, your control, your data.</p>
               </div>
             </div>
           </CardContent>
@@ -120,9 +120,9 @@ export default function About() {
 
         <div className="text-center">
           <Link to={createPageUrl('UserMusicProfileSetup')}>
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6">
-              <Sparkles className="w-5 h-5 mr-2" />
-              Get Started
+            <Button className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-lg px-8 py-6">
+              <Shield className="w-5 h-5 mr-2" />
+              Create Your QuantumID
             </Button>
           </Link>
         </div>

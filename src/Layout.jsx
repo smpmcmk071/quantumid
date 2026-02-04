@@ -63,9 +63,9 @@ export default function Layout({ children, currentPageName }) {
       {currentPageName !== 'Marketing' && (
         <header className="bg-slate-900/90 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
-          <Link to={createPageUrl('MusicDiscovery')} className="flex items-center">
+          <Link to={createPageUrl('UserMusicProfileSetup')} className="flex items-center">
             <span className="text-xl font-bold text-white brand-logo">
-              <span className="text-purple-400">Quantum</span><span className="text-pink-400">Vibe</span>
+              <span className="text-cyan-400">Quantum</span><span className="text-purple-400">ID</span>
             </span>
           </Link>
 
@@ -148,11 +148,11 @@ export default function Layout({ children, currentPageName }) {
       {/* Footer */}
       {currentPageName !== 'Marketing' && (
         <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} QuantumVibe - Cosmic Music Recommendations Powered by Numerology & Astrology
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-gray-400 text-sm">
+            © {new Date().getFullYear()} QuantumID - Self-Sovereign Identity Powered by Numerology & Astrology
+          </p>
+        </div>
         </footer>
       )}
     </div>
