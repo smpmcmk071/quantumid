@@ -3,25 +3,27 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+        const user = await base44.auth.me();
 
-    const { file_url } = await req.json();
-    
-    if (!file_url) {
-      return Response.json({ error: 'File URL required' }, { status: 400 });
-    }
+        if (!user) {
+          return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-    // Use AI to extract structured data from resume
-    const response = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are parsing a professional resume. Extract information EXACTLY as presented in the document.
+        const { resume_text } = await req.json();
 
-Resume is attached as a file.
+        if (!resume_text) {
+          return Response.json({ error: 'Resume text required' }, { status: 400 });
+        }
 
-EXTRACT THESE FIELDS:
+        // Use AI to extract structured data from resume
+        const response = await base44.integrations.Core.InvokeLLM({
+          prompt: `You are parsing a professional resume. Extract information EXACTLY as presented in the document.
+
+    Here is the resume text:
+
+    ${resume_text}
+
+    EXTRACT THESE FIELDS:
 - full_name: The person's actual name from the top of the resume
 - email: Email address
 - phone: Phone number if present
