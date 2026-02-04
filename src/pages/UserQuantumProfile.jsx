@@ -237,36 +237,29 @@ export default function UserQuantumProfile() {
     }
   };
 
-          const handleResumeUpload = async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
+          const handleParseResumeText = async () => {
+            if (!resumeText.trim()) {
+              alert('Please paste your resume text');
+              return;
+            }
 
             setParsing(true);
             try {
-              const uploadResponse = await base44.integrations.Core.UploadFile({ file: file });
-              const fileUrl = uploadResponse.file_url;
-
-              if (!fileUrl) {
-                alert('Error uploading file.');
-                setParsing(false);
-                return;
-              }
-
-              const response = await base44.functions.invoke('parseResume', { file_url: fileUrl });
+              const response = await base44.functions.invoke('parseResume', { resume_text: resumeText });
 
               if (response.data?.success) {
                 const parsed = response.data.data;
                 setParsedJobs({
-                  skills: parsed.extracted_skills || '',
-                  education: parsed.education || '',
-                  years_exp: parsed.years_experience || '',
-                  roles: parsed.previous_roles || ''
+                  skills: parsed.skills || [],
+                  education: parsed.education || [],
+                  years_exp: parsed.years_experience || 0,
+                  jobs: parsed.job_history || []
                 });
               } else {
                 alert('Error parsing resume: ' + response.data?.error);
               }
             } catch (error) {
-              alert('Error uploading resume: ' + error.message);
+              alert('Error parsing resume: ' + error.message);
             } finally {
               setParsing(false);
             }
