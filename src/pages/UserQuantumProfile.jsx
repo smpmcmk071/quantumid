@@ -82,7 +82,8 @@ export default function UserQuantumProfile() {
     setCalculating(true);
     try {
       const response = await base44.functions.invoke('calculateNumerology', {
-        fullName: formData.full_name,
+        type: 'name',
+        name: formData.full_name,
         birthDate: formData.birth_date,
         birthTime: formData.birth_time || 'unknown',
         birthLocation: formData.birth_location || 'unknown'
