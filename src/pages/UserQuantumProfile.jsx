@@ -185,25 +185,25 @@ export default function UserQuantumProfile() {
   
   const saveProfile = async () => {
     if (!quantumProfile) {
-      alert('Generate QuantumID first');
+      alert('Calculate profile first before saving additional data');
       return;
     }
-    
+
     setSaving(true);
     try {
       const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, {
-                job_history: jobs,
-                family_data: { members: familyMembers },
-                hobbies: hobbies
-              });
-              setQuantumProfile(updated);
-              alert('Profile saved successfully!');
-            } catch (error) {
-              alert('Error saving: ' + error.message);
-            } finally {
-              setSaving(false);
-            }
-          };
+        job_history: jobs,
+        family_data: { members: familyMembers },
+        hobbies: hobbies
+      });
+      setQuantumProfile(updated);
+      alert('Profile saved successfully!');
+    } catch (error) {
+      alert('Error saving: ' + error.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
           const handleResumeUpload = async (e) => {
             const file = e.target.files?.[0];
