@@ -611,12 +611,19 @@ export default function UserQuantumProfile() {
                       </div>
                     )}
 
-                    {parsedJobs.roles && (
-                      <div>
-                        <p className="text-purple-300 text-xs">Previous Roles</p>
-                        <p className="text-cyan-200 text-sm">{parsedJobs.roles}</p>
-                      </div>
-                    )}
+                    {parsedJobs.jobs && parsedJobs.jobs.length > 0 && (
+                          <div>
+                            <p className="text-purple-300 text-xs">Job History</p>
+                            <div className="space-y-2 mt-2">
+                              {parsedJobs.jobs.map((job, i) => (
+                                <div key={i} className="text-cyan-200 text-sm bg-slate-700 p-2 rounded">
+                                  <p className="font-semibold">{job.position} at {job.employer}</p>
+                                  <p className="text-xs text-purple-300">{job.start_date} - {job.end_date}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
 
                     <div className="flex gap-2 mt-4">
                       <Button
