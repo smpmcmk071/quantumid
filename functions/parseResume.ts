@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { encrypt } from './encryptionUtils.js';
 
 Deno.serve(async (req) => {
   try {
@@ -10,18 +9,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { resumeText, encrypt: shouldEncrypt = true } = await req.json();
+    const { file_url } = await req.json();
     
-    if (!resumeText) {
-      return Response.json({ error: 'Resume text required' }, { status: 400 });
+    if (!file_url) {
+      return Response.json({ error: 'File URL required' }, { status: 400 });
     }
 
     // Use AI to extract structured data from resume
     const response = await base44.integrations.Core.InvokeLLM({
       prompt: `You are parsing a resume. Extract ONLY the information that is explicitly present. DO NOT MAKE UP OR GUESS ANY DATA.
 
-Resume:
-${resumeText}
+Resume is attached as a file.
 
 Extract ONLY if explicitly found:
 - full_name: A person's actual name (e.g., "Sarah Johnson", "Michael Chen"). 
