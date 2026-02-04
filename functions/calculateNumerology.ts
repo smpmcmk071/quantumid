@@ -1647,9 +1647,33 @@ Deno.serve(async (req) => {
                   return Response.json({ error: 'Name required' }, { status: 400 });
                 }
                 const calc = calculateFullNameNumerology(name, birthDate, body.birthTime, body.birthPlace);
-                // Add vibe strings for storage in database
+                // Flatten nested astrology and lifePath data for easier frontend access
                 result = {
                   ...calc,
+                  // Flatten astrology data from nested object
+                  ...(calc.astrology ? {
+                    sun_sign: calc.astrology.sunSign,
+                    moon_sign: calc.astrology.moonSign,
+                    rising_sign: calc.astrology.ascendant,
+                    element: calc.astrology.element,
+                    dominant_element: calc.astrology.dominantElement,
+                    chinese_zodiac: calc.astrology.chineseZodiac,
+                    chinese_animal: calc.astrology.chineseAnimal,
+                    chinese_element: calc.astrology.chineseElement,
+                    dominant_polarity: calc.astrology.dominantPolarity,
+                    preferred_keys: calc.astrology.preferredKeys,
+                    preferred_tempos: calc.astrology.preferredTempos,
+                    mood_preferences: calc.astrology.moodPreferences,
+                    houses: calc.astrology.houses,
+                    planets: calc.astrology.planets,
+                    aspects: calc.astrology.aspects,
+                  } : {}),
+                  // Flatten lifePath and numerology numbers
+                  life_path_number: calc.lifePath?.reduced,
+                  expression_number: calc.expression?.reduced,
+                  soul_urge_number: calc.soulUrge?.reduced,
+                  personality_number: calc.personality?.reduced,
+                  birthday_number: calc.birthday?.reduced,
                   // Western vibes (compound numbers like 16/7)
                   expression_western_vibe: calc.expression.display,
                   life_path_western_vibe: calc.lifePath ? calc.lifePath.display : null,
