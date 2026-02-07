@@ -53,7 +53,10 @@ Deno.serve(async (req) => {
       planets, 
       lifePathNumber,
       birthDate,
-      fullName 
+      fullName,
+      ssn,
+      country,
+      is_foreign_national
     } = await req.json();
     
     if (!planets || !lifePathNumber) {
@@ -77,6 +80,17 @@ Deno.serve(async (req) => {
     
     // Generate short code report for offline backup
     const shortCodeReport = seedComponents.join('|');
+    
+    // Add protected identity data to seed (SSN, country, foreign national flag)
+    if (ssn) {
+      seedComponents.push(`SSN${ssn.replace(/[^0-9]/g, '')}`);
+    }
+    if (country) {
+      seedComponents.push(`C${country.toUpperCase()}`);
+    }
+    if (is_foreign_national) {
+      seedComponents.push('FN');
+    }
     
     // Concatenate all components for final hash
     const seedString = seedComponents.join('') + fullName + birthDate;
