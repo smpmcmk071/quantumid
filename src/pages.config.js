@@ -60,7 +60,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "UserQuantumProfile",
+    mainPage: "Marketing",
     Pages: PAGES,
     Layout: __Layout,
 };
