@@ -59,11 +59,7 @@ export default function UserQuantumProfile() {
   const [newMember, setNewMember] = useState({ name: '', relationship: '', birth_date: '', ssn: '', country: '', is_foreign_national: false });
 
   // Hobbies
-  const [hobbies, setHobbies] = useState([
-    { name: 'Guitar Playing', category: 'Music', skill_level: 'Advanced', since_year: 2005 },
-    { name: 'Rock Climbing', category: 'Sports', skill_level: 'Intermediate', since_year: 2015 },
-    { name: 'Photography', category: 'Creative', skill_level: 'Intermediate', since_year: 2018 }
-  ]);
+  const [hobbies, setHobbies] = useState([]);
   const [newHobby, setNewHobby] = useState({ name: '', category: '', skill_level: '', since_year: '' });
 
   // Important Dates
