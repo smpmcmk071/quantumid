@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw, Upload, Check, X, Receipt } from 'lucide-react';
+import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw, Upload, Check, X, Receipt, Calendar } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UserQuantumProfile() {
@@ -64,6 +64,10 @@ export default function UserQuantumProfile() {
     { name: 'Photography', category: 'Creative', skill_level: 'Intermediate', since_year: 2018 }
   ]);
   const [newHobby, setNewHobby] = useState({ name: '', category: '', skill_level: '', since_year: '' });
+
+  // Important Dates
+  const [importantDates, setImportantDates] = useState([]);
+  const [newDate, setNewDate] = useState({ name: '', date: '' });
   
   // Tax Data
   const [taxData, setTaxData] = useState([]);
@@ -119,6 +123,7 @@ export default function UserQuantumProfile() {
         setJobs(qp.job_history || []);
         setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
+        setImportantDates(qp.important_dates || []);
         setTaxData(qp.tax_data || []);
       }
     } catch (error) {
@@ -258,11 +263,12 @@ export default function UserQuantumProfile() {
     try {
       // Merge new data with all existing fields
       const updateData = {
-        ...quantumProfile,
-        job_history: jobs,
-        family_data: { members: familyMembers },
-        hobbies: hobbies,
-        tax_data: taxData
+      ...quantumProfile,
+      job_history: jobs,
+      family_data: { members: familyMembers },
+      hobbies: hobbies,
+      important_dates: importantDates,
+      tax_data: taxData
       };
       const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, updateData);
       setQuantumProfile(updated);
@@ -346,6 +352,15 @@ export default function UserQuantumProfile() {
     }
     setHobbies([...hobbies, { ...newHobby, since_year: parseInt(newHobby.since_year) || new Date().getFullYear() }]);
     setNewHobby({ name: '', category: '', skill_level: '', since_year: '' });
+  };
+
+  const addImportantDate = () => {
+    if (!newDate.name || !newDate.date) {
+      alert('Event name and date are required');
+      return;
+    }
+    setImportantDates([...importantDates, newDate]);
+    setNewDate({ name: '', date: '' });
   };
   
   const addTaxYear = () => {
@@ -620,7 +635,7 @@ export default function UserQuantumProfile() {
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
           <CardContent className="pt-6">
             <Tabs defaultValue="jobs" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-slate-800">
+              <TabsList className="grid w-full grid-cols-5 bg-slate-800">
                 <TabsTrigger value="jobs" className="data-[state=active]:bg-purple-600">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Jobs
@@ -630,13 +645,17 @@ export default function UserQuantumProfile() {
                   Family
                 </TabsTrigger>
                 <TabsTrigger value="hobbies" className="data-[state=active]:bg-purple-600">
-                  <Heart className="w-4 h-4 mr-2" />
-                  Hobbies
-                </TabsTrigger>
-                <TabsTrigger value="tax" className="data-[state=active]:bg-purple-600">
-                  <Receipt className="w-4 h-4 mr-2" />
-                  Tax Data
-                </TabsTrigger>
+                      <Heart className="w-4 h-4 mr-2" />
+                      Hobbies
+                    </TabsTrigger>
+                    <TabsTrigger value="dates" className="data-[state=active]:bg-purple-600">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Important Dates
+                    </TabsTrigger>
+                    <TabsTrigger value="tax" className="data-[state=active]:bg-purple-600">
+                      <Receipt className="w-4 h-4 mr-2" />
+                      Tax Data
+                    </TabsTrigger>
               </TabsList>
               
               {/* Jobs Tab */}
@@ -935,6 +954,47 @@ export default function UserQuantumProfile() {
                       <p className="text-purple-300 text-sm">
                         {hobby.category} • {hobby.skill_level} • Since {hobby.since_year}
                       </p>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+              
+              {/* Important Dates Tab */}
+              <TabsContent value="dates" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Event Name (e.g., Graduation, Wedding)"
+                    value={newDate.name}
+                    onChange={(e) => setNewDate({...newDate, name: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="date"
+                    placeholder="Date"
+                    value={newDate.date}
+                    onChange={(e) => setNewDate({...newDate, date: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                </div>
+                <Button onClick={addImportantDate} className="bg-purple-600 hover:bg-purple-700">
+                  Add Important Date
+                </Button>
+                
+                <div className="space-y-2 mt-4">
+                  {importantDates.map((item, idx) => (
+                    <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-white font-semibold">{item.name}</h4>
+                          <p className="text-purple-300 text-sm">{item.date}</p>
+                        </div>
+                        <button
+                          onClick={() => setImportantDates(importantDates.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
