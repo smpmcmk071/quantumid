@@ -1086,10 +1086,20 @@ export default function UserQuantumProfile() {
                 <div className="space-y-2 mt-4">
                   {hobbies.map((hobby, idx) => (
                     <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
-                      <h4 className="text-white font-semibold">{hobby.name}</h4>
-                      <p className="text-purple-300 text-sm">
-                        {hobby.category} • {hobby.skill_level} • Since {hobby.since_year}
-                      </p>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-white font-semibold">{hobby.name}</h4>
+                          <p className="text-purple-300 text-sm">
+                            {hobby.category} • {hobby.skill_level} • Since {hobby.since_year}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setHobbies(hobbies.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
