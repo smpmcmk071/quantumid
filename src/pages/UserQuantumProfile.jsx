@@ -1008,12 +1008,30 @@ export default function UserQuantumProfile() {
                     type="password"
                     className="bg-slate-800 border-purple-500/30 text-white"
                   />
-                  <Input
-                    placeholder="Country"
-                    value={newMember.country}
-                    onChange={(e) => setNewMember({...newMember, country: e.target.value})}
-                    className="bg-slate-800 border-purple-500/30 text-white"
-                  />
+                  <Select value={newMember.country} onValueChange={(value) => setNewMember({...newMember, country: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USA">United States</SelectItem>
+                      <SelectItem value="Canada">Canada</SelectItem>
+                      <SelectItem value="Mexico">Mexico</SelectItem>
+                      <SelectItem value="UK">United Kingdom</SelectItem>
+                      <SelectItem value="France">France</SelectItem>
+                      <SelectItem value="Germany">Germany</SelectItem>
+                      <SelectItem value="Italy">Italy</SelectItem>
+                      <SelectItem value="Japan">Japan</SelectItem>
+                      <SelectItem value="Australia">Australia</SelectItem>
+                      <SelectItem value="Brazil">Brazil</SelectItem>
+                      <SelectItem value="India">India</SelectItem>
+                      <SelectItem value="China">China</SelectItem>
+                      <SelectItem value="Spain">Spain</SelectItem>
+                      <SelectItem value="Netherlands">Netherlands</SelectItem>
+                      <SelectItem value="Switzerland">Switzerland</SelectItem>
+                      <SelectItem value="Sweden">Sweden</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
