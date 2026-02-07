@@ -854,7 +854,7 @@ export default function UserQuantumProfile() {
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
           <CardContent className="pt-6">
             <Tabs defaultValue="jobs" className="w-full">
-              <TabsList className="grid w-full grid-cols-6 bg-slate-800">
+              <TabsList className="grid w-full grid-cols-7 bg-slate-800 overflow-x-auto">
                 <TabsTrigger value="jobs" className="data-[state=active]:bg-purple-600">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Jobs
@@ -878,6 +878,10 @@ export default function UserQuantumProfile() {
                     <TabsTrigger value="tax" className="data-[state=active]:bg-purple-600">
                       <Receipt className="w-4 h-4 mr-2" />
                       Tax Data
+                    </TabsTrigger>
+                    <TabsTrigger value="astrology" className="data-[state=active]:bg-purple-600">
+                      <Shield className="w-4 h-4 mr-2" />
+                      Astrology
                     </TabsTrigger>
               </TabsList>
               
@@ -1616,9 +1620,86 @@ export default function UserQuantumProfile() {
                   ))}
                 </div>
               </TabsContent>
-            </Tabs>
-            
-            <div className="mt-6 flex justify-end">
+
+              {/* Astrology Tab */}
+              <TabsContent value="astrology" className="space-y-4">
+                {quantumProfile && (
+                  <div className="space-y-6">
+                    {/* Planets */}
+                    <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <h4 className="text-white font-semibold mb-4">Planets</h4>
+                      {quantumProfile.planets && Object.keys(quantumProfile.planets).length > 0 ? (
+                        <div className="grid grid-cols-2 gap-4">
+                          {Object.entries(quantumProfile.planets).map(([planet, data]) => (
+                            <div key={planet} className="bg-slate-700 p-3 rounded">
+                              <p className="text-purple-300 text-sm">{planet}</p>
+                              <p className="text-white">{data.sign || 'N/A'} {data.degree || 'N/A'}°</p>
+                              {data.house && <p className="text-purple-200 text-xs">House {data.house}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-purple-300">Calculate your profile to populate planets data</p>
+                      )}
+                    </div>
+
+                    {/* Houses */}
+                    <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <h4 className="text-white font-semibold mb-4">12 Houses</h4>
+                      {quantumProfile.houses && Object.keys(quantumProfile.houses).length > 0 ? (
+                        <div className="grid grid-cols-3 gap-3">
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const house = quantumProfile.houses[`house_${i + 1}`] || quantumProfile.houses[i + 1];
+                            return (
+                              <div key={i} className="bg-slate-700 p-3 rounded text-center">
+                                <p className="text-purple-300 text-xs">House {i + 1}</p>
+                                <p className="text-white text-sm">{house?.sign || 'N/A'}</p>
+                                {house?.degree && <p className="text-purple-200 text-xs">{house.degree}°</p>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-purple-300">Calculate your profile to populate houses data</p>
+                      )}
+                    </div>
+
+                    {/* Aspects */}
+                    <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <h4 className="text-white font-semibold mb-4">Aspects</h4>
+                      {quantumProfile.aspects && Object.keys(quantumProfile.aspects).length > 0 ? (
+                        <div className="space-y-2 max-h-64 overflow-y-auto">
+                          {Object.entries(quantumProfile.aspects).map(([key, aspect]) => (
+                            <div key={key} className="bg-slate-700 p-2 rounded text-sm">
+                              <p className="text-white">{aspect.planet1 || key} {aspect.type || ''}</p>
+                              <p className="text-purple-300 text-xs">{aspect.planet2 || ''} {aspect.orb ? `(Orb: ${aspect.orb}°)` : ''}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-purple-300">Calculate your profile to populate aspects data</p>
+                      )}
+                    </div>
+
+                    {/* Summary */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-slate-700 p-4 rounded">
+                        <p className="text-purple-300 text-sm">Element</p>
+                        <p className="text-white font-semibold">{quantumProfile.element || 'N/A'}</p>
+                      </div>
+                      <div className="bg-slate-700 p-4 rounded">
+                        <p className="text-purple-300 text-sm">Dominant Polarity</p>
+                        <p className="text-white font-semibold capitalize">{quantumProfile.dominant_polarity || 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-purple-300 text-center py-8">Create a profile first to view astrology data</p>
+                )}
+              </TabsContent>
+              </Tabs>
+
+              <div className="mt-6 flex justify-end">
               <Button
                 onClick={saveProfile}
                 disabled={saving || !quantumProfile}
