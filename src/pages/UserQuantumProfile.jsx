@@ -120,7 +120,7 @@ export default function UserQuantumProfile() {
         setJobs(qp.job_history || []);
         setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
-        setImportantDates(qp.important_dates || []);
+        setImportantDates(Array.isArray(qp.important_dates) ? qp.important_dates : []);
         setTaxData(qp.tax_data || []);
       }
     } catch (error) {
