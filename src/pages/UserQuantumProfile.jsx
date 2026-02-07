@@ -487,9 +487,9 @@ export default function UserQuantumProfile() {
           </div>
           
           {quantumProfile?.quantum_id && (
-            <Button onClick={downloadReport} variant="outline" className="border-cyan-500/30 text-cyan-300">
+            <Button onClick={() => setShowExportOptions(!showExportOptions)} variant="outline" className="border-cyan-500/30 text-cyan-300">
               <Download className="w-4 h-4 mr-2" />
-              Export Backup
+              Export Data
             </Button>
           )}
         </div>
