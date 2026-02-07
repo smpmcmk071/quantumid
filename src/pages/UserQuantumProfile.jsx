@@ -1623,7 +1623,7 @@ export default function UserQuantumProfile() {
 
               {/* Astrology Tab */}
               <TabsContent value="astrology" className="space-y-4">
-                {quantumProfile && (
+                {quantumProfile ? (
                   <div className="space-y-6">
                     {/* Planets */}
                     <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
