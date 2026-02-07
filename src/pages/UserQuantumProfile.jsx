@@ -476,6 +476,77 @@ export default function UserQuantumProfile() {
             </div>
           </div>
         )}
+
+        {showExportOptions && (
+          <div className="bg-slate-900/50 backdrop-blur-sm border border-purple-500/30 rounded-lg p-6 mb-6">
+            <h3 className="text-white font-semibold mb-4">Select Data to Export</h3>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.quantumID}
+                  onChange={(e) => setExportSelections({...exportSelections, quantumID: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">QuantumID & Hashes</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.jobHistory}
+                  onChange={(e) => setExportSelections({...exportSelections, jobHistory: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Job History</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.family}
+                  onChange={(e) => setExportSelections({...exportSelections, family: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Family Data</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.hobbies}
+                  onChange={(e) => setExportSelections({...exportSelections, hobbies: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Hobbies</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.importantDates}
+                  onChange={(e) => setExportSelections({...exportSelections, importantDates: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Important Dates</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportSelections.taxData}
+                  onChange={(e) => setExportSelections({...exportSelections, taxData: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Tax Data</span>
+              </label>
+            </div>
+            <div className="flex gap-3">
+              <Button onClick={downloadReport} className="bg-gradient-to-r from-cyan-600 to-purple-600">
+                <Download className="w-4 h-4 mr-2" />
+                Download Export
+              </Button>
+              <Button onClick={() => setShowExportOptions(false)} variant="outline" className="border-purple-500/30 text-purple-200">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
         
         <div className="flex items-center justify-between mb-8">
           <div>
