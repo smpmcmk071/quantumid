@@ -923,18 +923,35 @@ export default function UserQuantumProfile() {
                     onChange={(e) => setNewHobby({...newHobby, name: e.target.value})}
                     className="bg-slate-800 border-purple-500/30 text-white"
                   />
-                  <Input
-                    placeholder="Category"
-                    value={newHobby.category}
-                    onChange={(e) => setNewHobby({...newHobby, category: e.target.value})}
-                    className="bg-slate-800 border-purple-500/30 text-white"
-                  />
-                  <Input
-                    placeholder="Skill Level"
-                    value={newHobby.skill_level}
-                    onChange={(e) => setNewHobby({...newHobby, skill_level: e.target.value})}
-                    className="bg-slate-800 border-purple-500/30 text-white"
-                  />
+                  <Select value={newHobby.category} onValueChange={(value) => setNewHobby({...newHobby, category: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Music">Music</SelectItem>
+                      <SelectItem value="Sports">Sports</SelectItem>
+                      <SelectItem value="Creative">Creative</SelectItem>
+                      <SelectItem value="Outdoor">Outdoor</SelectItem>
+                      <SelectItem value="Gaming">Gaming</SelectItem>
+                      <SelectItem value="Reading">Reading</SelectItem>
+                      <SelectItem value="Cooking">Cooking</SelectItem>
+                      <SelectItem value="Travel">Travel</SelectItem>
+                      <SelectItem value="Fitness">Fitness</SelectItem>
+                      <SelectItem value="Collectibles">Collectibles</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={newHobby.skill_level} onValueChange={(value) => setNewHobby({...newHobby, skill_level: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Skill Level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Beginner">Beginner</SelectItem>
+                      <SelectItem value="Intermediate">Intermediate</SelectItem>
+                      <SelectItem value="Advanced">Advanced</SelectItem>
+                      <SelectItem value="Expert">Expert</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Input
                     type="number"
                     placeholder="Since Year"
@@ -962,12 +979,26 @@ export default function UserQuantumProfile() {
               {/* Important Dates Tab */}
               <TabsContent value="dates" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Event Name (e.g., Graduation, Wedding)"
-                    value={newDate.name}
-                    onChange={(e) => setNewDate({...newDate, name: e.target.value})}
-                    className="bg-slate-800 border-purple-500/30 text-white"
-                  />
+                  <Select value={newDate.name} onValueChange={(value) => setNewDate({...newDate, name: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Event Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Graduation">Graduation</SelectItem>
+                      <SelectItem value="Wedding">Wedding</SelectItem>
+                      <SelectItem value="Birth">Birth</SelectItem>
+                      <SelectItem value="Job Start">Job Start</SelectItem>
+                      <SelectItem value="Job End">Job End</SelectItem>
+                      <SelectItem value="Promotion">Promotion</SelectItem>
+                      <SelectItem value="Business Launch">Business Launch</SelectItem>
+                      <SelectItem value="Relocation">Relocation</SelectItem>
+                      <SelectItem value="Travel">Travel</SelectItem>
+                      <SelectItem value="Achievement">Achievement</SelectItem>
+                      <SelectItem value="Breakup">Breakup</SelectItem>
+                      <SelectItem value="Recovery">Recovery</SelectItem>
+                      <SelectItem value="Custom">Custom Event</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Input
                     type="date"
                     placeholder="Date"
