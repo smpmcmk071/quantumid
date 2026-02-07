@@ -324,20 +324,8 @@ export default function UserQuantumProfile() {
           };
 
           const confirmParsedData = () => {
-            if (parsedJobs?.roles) {
-              // Parse roles string into job objects
-              const rolesList = parsedJobs.roles.split(';').map(role => {
-                const match = role.match(/(.+?)\sat\s(.+?)\s\((.+?)\)/);
-                return {
-                  position: match?.[1]?.trim() || 'Position',
-                  employer: match?.[2]?.trim() || 'Company',
-                  start_date: '',
-                  end_date: '',
-                  responsibilities: '',
-                  skills: parsedJobs.skills?.split(',').map(s => s.trim()) || []
-                };
-              });
-              setJobs([...jobs, ...rolesList]);
+            if (parsedJobs?.jobs && parsedJobs.jobs.length > 0) {
+              setJobs([...jobs, ...parsedJobs.jobs]);
             }
             setParsedJobs(null);
           };
