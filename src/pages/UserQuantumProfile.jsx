@@ -86,7 +86,8 @@ export default function UserQuantumProfile() {
 
   // Alternative Documents
   const [alternativeDocuments, setAlternativeDocuments] = useState([]);
-  const [newDocument, setNewDocument] = useState({ document_type: '', id_number: '', issuing_country: '', expiry_date: '' });
+  const [newDocument, setNewDocument] = useState({ document_type: '', id_number: '', issuing_country: '', expiry_date: '', image_urls: [] });
+  const [uploadingDocImages, setUploadingDocImages] = useState({});
 
   // Tax Data
   const [taxData, setTaxData] = useState([]);
@@ -426,7 +427,30 @@ export default function UserQuantumProfile() {
     const hashedIdNumber = await hashDocumentID(newDocument.id_number);
     const docWithHashedId = { ...newDocument, id_number: hashedIdNumber };
     setAlternativeDocuments([...alternativeDocuments, docWithHashedId]);
-    setNewDocument({ document_type: '', id_number: '', issuing_country: '', expiry_date: '' });
+    setNewDocument({ document_type: '', id_number: '', issuing_country: '', expiry_date: '', image_urls: [] });
+  };
+
+  const handleDocumentImageUpload = async (e, docIndex) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingDocImages({ ...uploadingDocImages, [docIndex]: true });
+    try {
+      const response = await base44.integrations.Core.UploadFile({ file });
+      const newDocs = [...alternativeDocuments];
+      newDocs[docIndex].image_urls = [...(newDocs[docIndex].image_urls || []), response.file_url];
+      setAlternativeDocuments(newDocs);
+    } catch (error) {
+      alert('Error uploading image: ' + error.message);
+    } finally {
+      setUploadingDocImages({ ...uploadingDocImages, [docIndex]: false });
+    }
+  };
+
+  const removeDocumentImage = (docIndex, imgIndex) => {
+    const newDocs = [...alternativeDocuments];
+    newDocs[docIndex].image_urls.splice(imgIndex, 1);
+    setAlternativeDocuments(newDocs);
   };
   
   const addTaxYear = () => {
@@ -1317,10 +1341,47 @@ export default function UserQuantumProfile() {
                     onChange={(e) => setNewDocument({...newDocument, expiry_date: e.target.value})}
                     className="bg-slate-800 border-purple-500/30 text-white"
                   />
-                </div>
-                <Button onClick={addAlternativeDocument} className="bg-purple-600 hover:bg-purple-700">
+                  </div>
+                  <div className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                  <label className="text-purple-300 text-sm block mb-2">Upload Document Images (optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setUploadingDocImages({ temp: true });
+                        base44.integrations.Core.UploadFile({ file }).then(res => {
+                          setNewDocument({...newDocument, image_urls: [...(newDocument.image_urls || []), res.file_url]});
+                          setUploadingDocImages({ temp: false });
+                        }).catch(err => {
+                          alert('Error uploading: ' + err.message);
+                          setUploadingDocImages({ temp: false });
+                        });
+                      }
+                    }}
+                    disabled={uploadingDocImages.temp}
+                    className="text-sm text-purple-300"
+                  />
+                  {newDocument.image_urls && newDocument.image_urls.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {newDocument.image_urls.map((url, idx) => (
+                        <div key={idx} className="flex items-center justify-between bg-slate-700 p-2 rounded">
+                          <img src={url} alt="doc" className="h-12 w-12 object-cover rounded" />
+                          <button
+                            onClick={() => setNewDocument({...newDocument, image_urls: newDocument.image_urls.filter((_, i) => i !== idx)})}
+                            className="text-red-400 hover:text-red-300 text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  </div>
+                  <Button onClick={addAlternativeDocument} className="bg-purple-600 hover:bg-purple-700">
                   Add Document
-                </Button>
+                  </Button>
 
                 <div className="space-y-2 mt-4">
                   {alternativeDocuments.map((doc, idx) => (
@@ -1330,6 +1391,33 @@ export default function UserQuantumProfile() {
                           <h4 className="text-white font-semibold">{doc.document_type}</h4>
                           <p className="text-purple-400 text-sm font-mono">Hash: {doc.id_number.substring(0, 16)}...</p>
                           <p className="text-purple-300 text-sm">{doc.issuing_country} • Expires: {doc.expiry_date || 'No expiry'}</p>
+
+                          {doc.image_urls && doc.image_urls.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {doc.image_urls.map((imgUrl, imgIdx) => (
+                                <div key={imgIdx} className="flex items-center gap-2">
+                                  <img src={imgUrl} alt={`${doc.document_type}-${imgIdx}`} className="h-20 w-auto rounded border border-purple-500/30" />
+                                  <button
+                                    onClick={() => removeDocumentImage(idx, imgIdx)}
+                                    className="text-red-400 hover:text-red-300 text-sm"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          <div className="mt-3">
+                            <label className="text-purple-300 text-xs block mb-1">Add More Images</label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleDocumentImageUpload(e, idx)}
+                              disabled={uploadingDocImages[idx]}
+                              className="text-xs text-purple-300"
+                            />
+                          </div>
                         </div>
                         <button
                           onClick={() => setAlternativeDocuments(alternativeDocuments.filter((_, i) => i !== idx))}
