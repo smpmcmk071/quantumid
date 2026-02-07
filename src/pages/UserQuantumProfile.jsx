@@ -251,25 +251,32 @@ export default function UserQuantumProfile() {
   };
   
   const saveProfile = async () => {
-    if (!quantumProfile) {
-      alert('Calculate profile first before saving additional data');
-      return;
-    }
-
     setSaving(true);
     try {
-      // Merge new data with all existing fields
+      let profileToUpdate = quantumProfile;
+      
+      // If no profile exists, create a minimal one
+      if (!profileToUpdate) {
+        const minimal = {
+          user_id: user.id,
+          full_name: formData.full_name || user.full_name || 'User',
+          birth_date: formData.birth_date || '1970-01-01'
+        };
+        profileToUpdate = await base44.entities.QuantumProfile.create(minimal);
+        setQuantumProfile(profileToUpdate);
+      }
+
+      // Update with supplementary data
       const updateData = {
-      ...quantumProfile,
-      job_history: jobs,
-      family_data: { members: familyMembers },
-      hobbies: hobbies,
-      important_dates: importantDates,
-      tax_data: taxData
+        job_history: jobs,
+        family_data: { members: familyMembers },
+        hobbies: hobbies,
+        important_dates: importantDates,
+        tax_data: taxData
       };
-      const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, updateData);
+      const updated = await base44.entities.QuantumProfile.update(profileToUpdate.id, updateData);
       setQuantumProfile(updated);
-      alert('Profile saved successfully!');
+      alert('Data saved successfully!');
     } catch (error) {
       alert('Error saving: ' + error.message);
     } finally {
