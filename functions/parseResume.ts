@@ -46,34 +46,61 @@ Deno.serve(async (req) => {
       response_json_schema: {
         type: 'object',
         properties: {
-          full_name: { type: 'string' },
-          email: { type: 'string' },
-          phone: { type: 'string' },
+          personal_info: {
+            type: 'object',
+            properties: {
+              full_name: { type: 'string' },
+              email: { type: 'string' },
+              phone: { type: 'string' },
+              linkedin: { type: 'string' },
+              location: { type: 'string' }
+            }
+          },
+          professional_summary: { type: 'string', description: '2-3 sentence summary of expertise' },
+          experience: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                company: { type: 'string' },
+                title: { type: 'string' },
+                start_date: { type: 'string' },
+                end_date: { type: 'string' },
+                is_current: { type: 'boolean' },
+                duration_years: { type: 'string' },
+                highlights: { type: 'array', items: { type: 'string' } },
+                technologies: { type: 'array', items: { type: 'string' } }
+              }
+            }
+          },
           education: {
             type: 'array',
             items: {
               type: 'object',
               properties: {
                 degree: { type: 'string' },
+                major: { type: 'string' },
                 school: { type: 'string' },
-                year: { type: 'string' }
+                graduation_year: { type: 'number' }
               }
             }
           },
-          years_experience: { type: 'number' },
-          skills: { type: 'array', items: { type: 'string' } },
-          job_history: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                position: { type: 'string' },
-                employer: { type: 'string' },
-                start_date: { type: 'string', description: 'Date as written in resume (mm/yyyy, yyyy, etc)' },
-                end_date: { type: 'string', description: 'Date as written in resume or "Present"' },
-                responsibilities: { type: 'string' },
-                skills: { type: 'array', items: { type: 'string' } }
-              }
+          skills: {
+            type: 'object',
+            properties: {
+              leadership: { type: 'array', items: { type: 'string' } },
+              technology: { type: 'array', items: { type: 'string' } },
+              analytics: { type: 'array', items: { type: 'string' } },
+              tools: { type: 'array', items: { type: 'string' } },
+              other: { type: 'array', items: { type: 'string' } }
+            }
+          },
+          metadata: {
+            type: 'object',
+            properties: {
+              total_experience_years: { type: 'string' },
+              strongest_keywords: { type: 'array', items: { type: 'string' } },
+              primary_domain: { type: 'string' }
             }
           }
         }
