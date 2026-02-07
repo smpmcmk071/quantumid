@@ -132,7 +132,7 @@ export default function UserQuantumProfile() {
     };
 
     saveSupplementaryData();
-  }, [jobs, familyMembers, hobbies, importantDates, taxData]);
+  }, [jobs, familyMembers, hobbies, importantDates, alternativeDocuments, taxData]);
   
   const loadData = async () => {
     setLoading(true);
