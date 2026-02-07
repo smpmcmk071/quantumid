@@ -8,6 +8,24 @@ import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshC
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+async function hashSSN(ssn) {
+  if (!ssn) return '';
+  const encoder = new TextEncoder();
+  const data = encoder.encode(ssn.replace(/[^0-9]/g, ''));
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashDocumentID(idNumber) {
+  if (!idNumber) return '';
+  const encoder = new TextEncoder();
+  const data = encoder.encode(idNumber);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default function UserQuantumProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -371,13 +389,15 @@ export default function UserQuantumProfile() {
     setNewJob({ employer: '', position: '', start_date: '', end_date: '', responsibilities: '', skills: '' });
   };
   
-  const addFamilyMember = () => {
+  const addFamilyMember = async () => {
     if (!newMember.name || !newMember.relationship) {
       alert('Name and relationship are required');
       return;
     }
-    setFamilyMembers([...familyMembers, newMember]);
-    setNewMember({ name: '', relationship: '', birth_date: '' });
+    const hashedSsn = newMember.ssn ? await hashSSN(newMember.ssn) : '';
+    const memberWithHashedSsn = { ...newMember, ssn: hashedSsn };
+    setFamilyMembers([...familyMembers, memberWithHashedSsn]);
+    setNewMember({ name: '', relationship: '', birth_date: '', ssn: '', country: '', is_foreign_national: false });
   };
   
   const addHobby = () => {
@@ -398,12 +418,14 @@ export default function UserQuantumProfile() {
     setNewDate({ name: '', date: '' });
   };
 
-  const addAlternativeDocument = () => {
+  const addAlternativeDocument = async () => {
     if (!newDocument.document_type || !newDocument.id_number) {
       alert('Document type and ID number are required');
       return;
     }
-    setAlternativeDocuments([...alternativeDocuments, newDocument]);
+    const hashedIdNumber = await hashDocumentID(newDocument.id_number);
+    const docWithHashedId = { ...newDocument, id_number: hashedIdNumber };
+    setAlternativeDocuments([...alternativeDocuments, docWithHashedId]);
     setNewDocument({ document_type: '', id_number: '', issuing_country: '', expiry_date: '' });
   };
   
@@ -1303,7 +1325,7 @@ export default function UserQuantumProfile() {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <h4 className="text-white font-semibold">{doc.document_type}</h4>
-                          <p className="text-purple-300 text-sm">ID: {doc.id_number}</p>
+                          <p className="text-purple-400 text-sm font-mono">Hash: {doc.id_number.substring(0, 16)}...</p>
                           <p className="text-purple-300 text-sm">{doc.issuing_country} • Expires: {doc.expiry_date || 'No expiry'}</p>
                         </div>
                         <button
