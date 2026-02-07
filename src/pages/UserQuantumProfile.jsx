@@ -584,10 +584,16 @@ export default function UserQuantumProfile() {
                       </button>
                     </div>
 
-                    {parsedJobs.education && (
+                    {parsedJobs.education && parsedJobs.education.length > 0 && (
                       <div>
                         <p className="text-purple-300 text-xs">Education</p>
-                        <p className="text-cyan-200">{parsedJobs.education}</p>
+                        <div className="space-y-1">
+                          {parsedJobs.education.map((edu, i) => (
+                            <p key={i} className="text-cyan-200 text-sm">
+                              {edu.degree} {edu.major && `in ${edu.major}`} - {edu.school} {edu.graduation_year && `(${edu.graduation_year})`}
+                            </p>
+                          ))}
+                        </div>
                       </div>
                     )}
 
