@@ -1112,12 +1112,15 @@ export default function UserQuantumProfile() {
                   {familyMembers.map((member, idx) => (
                     <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
                       <div className="flex justify-between items-start">
-                        <div>
+                        <div className="flex-1">
                           <h4 className="text-white font-semibold">{member.name}</h4>
                           <p className="text-purple-300 text-sm">{member.relationship} • {member.birth_date}</p>
                           <p className="text-purple-300 text-xs mt-1">
                             {member.country || 'No country'} {member.is_foreign_national && '• Foreign National'}
                           </p>
+                          {member.ssn && (
+                            <p className="text-purple-400 text-xs mt-1 font-mono">SSN: {member.ssn.substring(0, 16)}...</p>
+                          )}
                         </div>
                         <button
                           onClick={() => setFamilyMembers(familyMembers.filter((_, i) => i !== idx))}
