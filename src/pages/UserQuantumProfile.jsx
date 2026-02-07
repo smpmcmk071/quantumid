@@ -412,22 +412,46 @@ export default function UserQuantumProfile() {
   
   const downloadReport = () => {
     if (!quantumProfile) return;
-    
-    const report = {
-      quantumID: quantumProfile.quantum_id,
-      shortCodes: quantumProfile.short_code_report,
-      planetaryCodes: quantumProfile.planetary_codes,
-      lifePathNumber: quantumProfile.life_path_number,
-      protectionHash: quantumProfile.protection_hash,
-      blockchainExportData: quantumProfile.export_data,
-      generatedAt: new Date().toISOString()
-    };
-    
+
+    const report = {};
+
+    if (exportSelections.quantumID) {
+      report.quantumID = {
+        quantumID: quantumProfile.quantum_id,
+        shortCodes: quantumProfile.short_code_report,
+        planetaryCodes: quantumProfile.planetary_codes,
+        lifePathNumber: quantumProfile.life_path_number,
+        protectionHash: quantumProfile.protection_hash,
+        blockchainExportData: quantumProfile.export_data,
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    if (exportSelections.jobHistory && jobs.length > 0) {
+      report.jobHistory = jobs;
+    }
+
+    if (exportSelections.family && familyMembers.length > 0) {
+      report.family = familyMembers;
+    }
+
+    if (exportSelections.hobbies && hobbies.length > 0) {
+      report.hobbies = hobbies;
+    }
+
+    if (exportSelections.importantDates && importantDates.length > 0) {
+      report.importantDates = importantDates;
+    }
+
+    if (exportSelections.taxData && taxData.length > 0) {
+      report.taxData = taxData;
+    }
+
     const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'quantum-id-backup.json';
+    a.download = 'quantum-profile-export.json';
     a.click();
     URL.revokeObjectURL(url);
   };
