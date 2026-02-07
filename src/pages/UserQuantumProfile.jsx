@@ -864,6 +864,192 @@ export default function UserQuantumProfile() {
                   ))}
                 </div>
               </TabsContent>
+              
+              {/* Tax Data Tab */}
+              <TabsContent value="tax" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    type="number"
+                    placeholder="Tax Year (e.g., 2024)"
+                    value={newTaxYear.tax_year}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, tax_year: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    placeholder="Filing Status"
+                    value={newTaxYear.filing_status}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, filing_status: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="W-2 Wages"
+                    value={newTaxYear.w2_wages}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, w2_wages: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="1099-MISC Income"
+                    value={newTaxYear.income_1099_misc}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, income_1099_misc: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="1099-NEC Income"
+                    value={newTaxYear.income_1099_nec}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, income_1099_nec: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="1099-INT Interest"
+                    value={newTaxYear.income_1099_int}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, income_1099_int: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="1099-DIV Dividends"
+                    value={newTaxYear.income_1099_div}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, income_1099_div: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Total Income (Line 9)"
+                    value={newTaxYear.total_income}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, total_income: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="AGI (Line 11)"
+                    value={newTaxYear.adjusted_gross_income}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, adjusted_gross_income: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Deductions (Line 12)"
+                    value={newTaxYear.deductions}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, deductions: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Taxable Income (Line 15)"
+                    value={newTaxYear.taxable_income}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, taxable_income: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Total Tax (Line 24)"
+                    value={newTaxYear.total_tax}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, total_tax: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Federal Withheld"
+                    value={newTaxYear.federal_withheld}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, federal_withheld: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Refund Amount"
+                    value={newTaxYear.refund_amount}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, refund_amount: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Amount Owed"
+                    value={newTaxYear.amount_owed}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, amount_owed: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Number of Dependents"
+                    value={newTaxYear.num_dependents}
+                    onChange={(e) => setNewTaxYear({...newTaxYear, num_dependents: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                </div>
+                <Textarea
+                  placeholder="Notes (e.g., special deductions, reminders)"
+                  value={newTaxYear.notes}
+                  onChange={(e) => setNewTaxYear({...newTaxYear, notes: e.target.value})}
+                  className="bg-slate-800 border-purple-500/30 text-white"
+                />
+                <Button onClick={addTaxYear} className="bg-purple-600 hover:bg-purple-700">
+                  Add Tax Year
+                </Button>
+                
+                <div className="space-y-2 mt-4">
+                  {taxData.sort((a, b) => b.tax_year - a.tax_year).map((tax, idx) => (
+                    <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="text-white font-semibold text-lg">Tax Year {tax.tax_year}</h4>
+                        <button
+                          onClick={() => setTaxData(taxData.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-purple-300">Filing Status:</span>
+                          <span className="text-white ml-2">{tax.filing_status || 'N/A'}</span>
+                        </div>
+                        <div>
+                          <span className="text-purple-300">Dependents:</span>
+                          <span className="text-white ml-2">{tax.num_dependents || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-purple-300">W-2 Wages:</span>
+                          <span className="text-white ml-2">${tax.w2_wages?.toLocaleString() || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-purple-300">AGI (Line 11):</span>
+                          <span className="text-white ml-2">${tax.adjusted_gross_income?.toLocaleString() || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-purple-300">Total Tax (Line 24):</span>
+                          <span className="text-white ml-2">${tax.total_tax?.toLocaleString() || 0}</span>
+                        </div>
+                        <div>
+                          <span className="text-purple-300">Federal Withheld:</span>
+                          <span className="text-white ml-2">${tax.federal_withheld?.toLocaleString() || 0}</span>
+                        </div>
+                        {tax.refund_amount > 0 && (
+                          <div>
+                            <span className="text-purple-300">Refund:</span>
+                            <span className="text-green-400 ml-2">${tax.refund_amount?.toLocaleString()}</span>
+                          </div>
+                        )}
+                        {tax.amount_owed > 0 && (
+                          <div>
+                            <span className="text-purple-300">Amount Owed:</span>
+                            <span className="text-red-400 ml-2">${tax.amount_owed?.toLocaleString()}</span>
+                          </div>
+                        )}
+                      </div>
+                      {tax.notes && (
+                        <div className="mt-2 text-sm">
+                          <span className="text-purple-300">Notes:</span>
+                          <p className="text-gray-300 mt-1">{tax.notes}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
             </Tabs>
             
             <div className="mt-6 flex justify-end">
