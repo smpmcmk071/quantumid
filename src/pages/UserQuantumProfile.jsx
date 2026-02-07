@@ -92,6 +92,17 @@ export default function UserQuantumProfile() {
   const [parsing, setParsing] = useState(false);
   const [parsedJobs, setParsedJobs] = useState(null);
   const [resumeText, setResumeText] = useState('');
+
+  // Export selections
+  const [exportSelections, setExportSelections] = useState({
+    quantumID: true,
+    jobHistory: true,
+    family: true,
+    hobbies: true,
+    importantDates: true,
+    taxData: true
+  });
+  const [showExportOptions, setShowExportOptions] = useState(false);
   
   useEffect(() => {
     loadData();
