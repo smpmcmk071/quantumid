@@ -65,7 +65,11 @@ export default function UserQuantumProfile() {
   // Important Dates
   const [importantDates, setImportantDates] = useState([]);
   const [newDate, setNewDate] = useState({ name: '', date: '' });
-  
+
+  // Alternative Documents
+  const [alternativeDocuments, setAlternativeDocuments] = useState([]);
+  const [newDocument, setNewDocument] = useState({ document_type: '', id_number: '', issuing_country: '', expiry_date: '' });
+
   // Tax Data
   const [taxData, setTaxData] = useState([]);
   const [newTaxYear, setNewTaxYear] = useState({
@@ -119,6 +123,7 @@ export default function UserQuantumProfile() {
           family_data: { members: familyMembers },
           hobbies: hobbies,
           important_dates: importantDates,
+          alternative_documents: alternativeDocuments,
           tax_data: taxData
         });
       } catch (error) {
@@ -153,6 +158,7 @@ export default function UserQuantumProfile() {
         setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
         setImportantDates(Array.isArray(qp.important_dates) ? qp.important_dates : []);
+        setAlternativeDocuments(qp.alternative_documents || []);
         setTaxData(qp.tax_data || []);
       }
     } catch (error) {
@@ -391,6 +397,15 @@ export default function UserQuantumProfile() {
     setImportantDates([...importantDates, newDate]);
     setNewDate({ name: '', date: '' });
   };
+
+  const addAlternativeDocument = () => {
+    if (!newDocument.document_type || !newDocument.id_number) {
+      alert('Document type and ID number are required');
+      return;
+    }
+    setAlternativeDocuments([...alternativeDocuments, newDocument]);
+    setNewDocument({ document_type: '', id_number: '', issuing_country: '', expiry_date: '' });
+  };
   
   const addTaxYear = () => {
     if (!newTaxYear.tax_year) {
@@ -462,6 +477,10 @@ export default function UserQuantumProfile() {
 
     if (exportSelections.taxData && taxData.length > 0) {
       report.taxData = taxData;
+    }
+
+    if (alternativeDocuments.length > 0) {
+      report.alternativeDocuments = alternativeDocuments;
     }
 
     const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
@@ -551,6 +570,15 @@ export default function UserQuantumProfile() {
                   className="w-4 h-4"
                 />
                 <span className="text-purple-200">Tax Data</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  defaultChecked={true}
+                  disabled
+                  className="w-4 h-4"
+                />
+                <span className="text-purple-200">Alternative Documents</span>
               </label>
             </div>
             <div className="flex gap-3">
@@ -780,7 +808,7 @@ export default function UserQuantumProfile() {
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
           <CardContent className="pt-6">
             <Tabs defaultValue="jobs" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 bg-slate-800">
+              <TabsList className="grid w-full grid-cols-6 bg-slate-800">
                 <TabsTrigger value="jobs" className="data-[state=active]:bg-purple-600">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Jobs
@@ -796,6 +824,10 @@ export default function UserQuantumProfile() {
                     <TabsTrigger value="dates" className="data-[state=active]:bg-purple-600">
                       <Calendar className="w-4 h-4 mr-2" />
                       Important Dates
+                    </TabsTrigger>
+                    <TabsTrigger value="documents" className="data-[state=active]:bg-purple-600">
+                      <Shield className="w-4 h-4 mr-2" />
+                      Documents
                     </TabsTrigger>
                     <TabsTrigger value="tax" className="data-[state=active]:bg-purple-600">
                       <Receipt className="w-4 h-4 mr-2" />
@@ -1204,6 +1236,88 @@ export default function UserQuantumProfile() {
                 </div>
               </TabsContent>
               
+              {/* Alternative Documents Tab */}
+              <TabsContent value="documents" className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Select value={newDocument.document_type} onValueChange={(value) => setNewDocument({...newDocument, document_type: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Document Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Driver's License">Driver's License</SelectItem>
+                      <SelectItem value="Passport">Passport</SelectItem>
+                      <SelectItem value="National ID Card">National ID Card</SelectItem>
+                      <SelectItem value="Travel Document">Travel Document</SelectItem>
+                      <SelectItem value="Visa">Visa</SelectItem>
+                      <SelectItem value="Work Permit">Work Permit</SelectItem>
+                      <SelectItem value="Residency Card">Residency Card</SelectItem>
+                      <SelectItem value="Birth Certificate">Birth Certificate</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    placeholder="ID Number"
+                    value={newDocument.id_number}
+                    onChange={(e) => setNewDocument({...newDocument, id_number: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Select value={newDocument.issuing_country} onValueChange={(value) => setNewDocument({...newDocument, issuing_country: value})}>
+                    <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
+                      <SelectValue placeholder="Issuing Country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USA">United States</SelectItem>
+                      <SelectItem value="Canada">Canada</SelectItem>
+                      <SelectItem value="Mexico">Mexico</SelectItem>
+                      <SelectItem value="UK">United Kingdom</SelectItem>
+                      <SelectItem value="France">France</SelectItem>
+                      <SelectItem value="Germany">Germany</SelectItem>
+                      <SelectItem value="Italy">Italy</SelectItem>
+                      <SelectItem value="Japan">Japan</SelectItem>
+                      <SelectItem value="Australia">Australia</SelectItem>
+                      <SelectItem value="Brazil">Brazil</SelectItem>
+                      <SelectItem value="India">India</SelectItem>
+                      <SelectItem value="China">China</SelectItem>
+                      <SelectItem value="Spain">Spain</SelectItem>
+                      <SelectItem value="Netherlands">Netherlands</SelectItem>
+                      <SelectItem value="Switzerland">Switzerland</SelectItem>
+                      <SelectItem value="Sweden">Sweden</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="date"
+                    placeholder="Expiry Date"
+                    value={newDocument.expiry_date}
+                    onChange={(e) => setNewDocument({...newDocument, expiry_date: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                </div>
+                <Button onClick={addAlternativeDocument} className="bg-purple-600 hover:bg-purple-700">
+                  Add Document
+                </Button>
+
+                <div className="space-y-2 mt-4">
+                  {alternativeDocuments.map((doc, idx) => (
+                    <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h4 className="text-white font-semibold">{doc.document_type}</h4>
+                          <p className="text-purple-300 text-sm">ID: {doc.id_number}</p>
+                          <p className="text-purple-300 text-sm">{doc.issuing_country} • Expires: {doc.expiry_date || 'No expiry'}</p>
+                        </div>
+                        <button
+                          onClick={() => setAlternativeDocuments(alternativeDocuments.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
               {/* Tax Data Tab */}
               <TabsContent value="tax" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
