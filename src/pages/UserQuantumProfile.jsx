@@ -107,6 +107,27 @@ export default function UserQuantumProfile() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Auto-save supplementary data when jobs, family, hobbies, dates, or tax data change
+  useEffect(() => {
+    if (!quantumProfile) return;
+
+    const saveSupplementaryData = async () => {
+      try {
+        await base44.entities.QuantumProfile.update(quantumProfile.id, {
+          job_history: jobs,
+          family_data: { members: familyMembers },
+          hobbies: hobbies,
+          important_dates: importantDates,
+          tax_data: taxData
+        });
+      } catch (error) {
+        console.error('Error auto-saving data:', error);
+      }
+    };
+
+    saveSupplementaryData();
+  }, [jobs, familyMembers, hobbies, importantDates, taxData]);
   
   const loadData = async () => {
     setLoading(true);
