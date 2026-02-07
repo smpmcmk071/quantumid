@@ -20,7 +20,10 @@ export default function UserQuantumProfile() {
     full_name: '',
     birth_date: '',
     birth_time: '',
-    birth_location: ''
+    birth_location: '',
+    ssn: '',
+    country: '',
+    is_foreign_national: false
   });
   
   // Job History
@@ -48,11 +51,11 @@ export default function UserQuantumProfile() {
 
   // Family Data
   const [familyMembers, setFamilyMembers] = useState([
-    { name: 'Margaret Maher', relationship: 'Mother', birth_date: '1947-03-22' },
-    { name: 'Paul Maher Sr.', relationship: 'Father', birth_date: '1945-08-15' },
-    { name: 'Lisa Maher', relationship: 'Sister', birth_date: '1972-05-10' }
+    { name: 'Margaret Maher', relationship: 'Mother', birth_date: '1947-03-22', ssn: '', country: 'USA', is_foreign_national: false },
+    { name: 'Paul Maher Sr.', relationship: 'Father', birth_date: '1945-08-15', ssn: '', country: 'USA', is_foreign_national: false },
+    { name: 'Lisa Maher', relationship: 'Sister', birth_date: '1972-05-10', ssn: '', country: 'USA', is_foreign_national: false }
   ]);
-  const [newMember, setNewMember] = useState({ name: '', relationship: '', birth_date: '' });
+  const [newMember, setNewMember] = useState({ name: '', relationship: '', birth_date: '', ssn: '', country: '', is_foreign_national: false });
 
   // Hobbies
   const [hobbies, setHobbies] = useState([
@@ -108,7 +111,10 @@ export default function UserQuantumProfile() {
           full_name: qp.full_name || '',
           birth_date: qp.birth_date || '',
           birth_time: qp.birth_time || '',
-          birth_location: qp.birth_location || ''
+          birth_location: qp.birth_location || '',
+          ssn: qp.ssn || '',
+          country: qp.country || '',
+          is_foreign_national: qp.is_foreign_national || false
         });
         setJobs(qp.job_history || []);
         setFamilyMembers(qp.family_data?.members || []);
@@ -151,6 +157,9 @@ export default function UserQuantumProfile() {
           birth_time: formData.birth_time || 'None',
           birth_location: formData.birth_location || 'None',
           full_name: formData.full_name,
+          ssn: formData.ssn || '',
+          country: formData.country || '',
+          is_foreign_national: formData.is_foreign_national || false,
           sun_sign: calcData.sun_sign || calcData.astrology?.sunSign || 'None',
           moon_sign: calcData.moon_sign || calcData.astrology?.moonSign || 'None',
           rising_sign: calcData.rising_sign || calcData.astrology?.ascendant || 'None',
@@ -210,7 +219,10 @@ export default function UserQuantumProfile() {
         planets: quantumProfile.planets,
         lifePathNumber: quantumProfile.life_path_number,
         birthDate: quantumProfile.birth_date,
-        fullName: quantumProfile.full_name
+        fullName: quantumProfile.full_name,
+        ssn: quantumProfile.ssn,
+        country: quantumProfile.country,
+        is_foreign_national: quantumProfile.is_foreign_national
       });
       
       if (response.data?.success) {
@@ -470,6 +482,34 @@ export default function UserQuantumProfile() {
                   placeholder="City, Country"
                   className="bg-slate-800 border-purple-500/30 text-white mt-2"
                 />
+              </div>
+              <div>
+                <label className="text-purple-300 text-sm">SSN / National ID</label>
+                <Input
+                  value={formData.ssn}
+                  onChange={(e) => setFormData({...formData, ssn: e.target.value})}
+                  placeholder="Protected - used in hash"
+                  type="password"
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+              <div>
+                <label className="text-purple-300 text-sm">Country</label>
+                <Input
+                  value={formData.country}
+                  onChange={(e) => setFormData({...formData, country: e.target.value})}
+                  placeholder="e.g., USA, Canada"
+                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
+                />
+              </div>
+              <div className="flex items-center gap-2 col-span-2">
+                <input
+                  type="checkbox"
+                  checked={formData.is_foreign_national}
+                  onChange={(e) => setFormData({...formData, is_foreign_national: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <label className="text-purple-300 text-sm">Foreign National</label>
               </div>
             </div>
             
@@ -785,7 +825,7 @@ export default function UserQuantumProfile() {
               
               {/* Family Tab */}
               <TabsContent value="family" className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <Input
                     placeholder="Name"
                     value={newMember.name}
@@ -805,6 +845,28 @@ export default function UserQuantumProfile() {
                     onChange={(e) => setNewMember({...newMember, birth_date: e.target.value})}
                     className="bg-slate-800 border-purple-500/30 text-white"
                   />
+                  <Input
+                    placeholder="SSN / National ID"
+                    value={newMember.ssn}
+                    onChange={(e) => setNewMember({...newMember, ssn: e.target.value})}
+                    type="password"
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <Input
+                    placeholder="Country"
+                    value={newMember.country}
+                    onChange={(e) => setNewMember({...newMember, country: e.target.value})}
+                    className="bg-slate-800 border-purple-500/30 text-white"
+                  />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={newMember.is_foreign_national}
+                      onChange={(e) => setNewMember({...newMember, is_foreign_national: e.target.checked})}
+                      className="w-4 h-4"
+                    />
+                    <label className="text-purple-300 text-sm">Foreign National</label>
+                  </div>
                 </div>
                 <Button onClick={addFamilyMember} className="bg-purple-600 hover:bg-purple-700">
                   Add Family Member
@@ -813,8 +875,21 @@ export default function UserQuantumProfile() {
                 <div className="space-y-2 mt-4">
                   {familyMembers.map((member, idx) => (
                     <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
-                      <h4 className="text-white font-semibold">{member.name}</h4>
-                      <p className="text-purple-300 text-sm">{member.relationship} • {member.birth_date}</p>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-white font-semibold">{member.name}</h4>
+                          <p className="text-purple-300 text-sm">{member.relationship} • {member.birth_date}</p>
+                          <p className="text-purple-300 text-xs mt-1">
+                            {member.country || 'No country'} {member.is_foreign_national && '• Foreign National'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setFamilyMembers(familyMembers.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
