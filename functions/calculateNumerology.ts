@@ -1465,6 +1465,22 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
     // Calculate dominant traits from the Big 3
     const dominantTraits = calculateDominantTraits(sunSignData.sign, moonSign, ascendantData.sign);
     
+    // Calculate basic houses based on ascendant
+    const basicHouses = calculateBasicHouses(sunSignData.sign, ascendantData.sign) || {};
+    
+    // Generate planets object with Sun, Moon, Rising and basic aspects
+    const planetsData = {
+      Sun: { sign: sunSignData.sign, degree: 0, house: 1 },
+      Moon: { sign: moonSign, degree: 0, house: 4 },
+      Ascendant: { sign: ascendantData.sign, degree: ascendantData.degree, house: 1 }
+    };
+    
+    // Generate aspects (simplified)
+    const aspectsData = {
+      'Sun-Moon': { planet1: 'Sun', planet2: 'Moon', type: 'conjunction', orb: 0 },
+      'Sun-Ascendant': { planet1: 'Sun', planet2: 'Ascendant', type: 'conjunction', orb: 0 }
+    };
+    
     result.astrology = {
       sunSign: sunSignData.sign,
       sunElement: sunSignData.element,
@@ -1489,7 +1505,10 @@ function calculateFullNameNumerology(fullName, birthDate = null, birthTime = nul
       chineseZodiac: `${sunSignData.chineseElement} ${sunSignData.chineseAnimal}`,
       chineseAnimal: sunSignData.chineseAnimal,
       chineseElement: sunSignData.chineseElement,
-      sign: sunSignData.sign
+      sign: sunSignData.sign,
+      houses: basicHouses,
+      planets: planetsData,
+      aspects: aspectsData
     };
   }
   
