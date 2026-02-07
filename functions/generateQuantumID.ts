@@ -71,6 +71,12 @@ Deno.serve(async (req) => {
     // Generate auto-protection hash
     const protectionHash = generateProtectionHash();
     
+    // Hash SSN for secure storage
+    let hashedSsn = null;
+    if (ssn) {
+      hashedSsn = await generateSHA256(ssn.replace(/[^0-9]/g, ''));
+    }
+    
     // Build seed components
     const seedComponents = [
       `LP${lifePathNumber}`,
@@ -81,9 +87,9 @@ Deno.serve(async (req) => {
     // Generate short code report for offline backup
     const shortCodeReport = seedComponents.join('|');
     
-    // Add protected identity data to seed (SSN, country, foreign national flag)
-    if (ssn) {
-      seedComponents.push(`SSN${ssn.replace(/[^0-9]/g, '')}`);
+    // Add protected identity data to seed (hashed SSN, country, foreign national flag)
+    if (hashedSsn) {
+      seedComponents.push(`SSNH${hashedSsn.substring(0, 16)}`);
     }
     if (country) {
       seedComponents.push(`C${country.toUpperCase()}`);
@@ -118,7 +124,9 @@ Deno.serve(async (req) => {
       protectionHash,
       shortCodeReport,
       exportData,
-      seedComponents: seedComponents.length
+      hashedSsn,
+      country,
+      isForeignNational: is_foreign_national
     });
     
   } catch (error) {

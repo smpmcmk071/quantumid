@@ -269,7 +269,12 @@ export default function UserQuantumProfile() {
           protection_hash: qData.protectionHash,
           short_code_report: qData.shortCodeReport,
           blockchain_ready: true,
-          export_data: qData.exportData
+          export_data: {
+            ...qData.exportData,
+            hashedSsn: qData.hashedSsn,
+            country: qData.country,
+            isForeignNational: qData.isForeignNational
+          }
         });
         
         setQuantumProfile(updated);
@@ -431,6 +436,9 @@ export default function UserQuantumProfile() {
         planetaryCodes: quantumProfile.planetary_codes,
         lifePathNumber: quantumProfile.life_path_number,
         protectionHash: quantumProfile.protection_hash,
+        country: quantumProfile.export_data?.country,
+        isForeignNational: quantumProfile.export_data?.isForeignNational,
+        hashedSsn: quantumProfile.export_data?.hashedSsn,
         blockchainExportData: quantumProfile.export_data,
         generatedAt: new Date().toISOString()
       };
