@@ -602,9 +602,9 @@ export default function UserQuantumProfile() {
                       <div>
                         <p className="text-purple-300 text-xs">Skills</p>
                         <div className="flex flex-wrap gap-2 mt-1">
-                          {parsedJobs.skills.split(',').map((skill, i) => (
+                          {parsedJobs.skills.map((skill, i) => (
                             <span key={i} className="bg-purple-600/30 px-2 py-1 rounded text-xs text-cyan-200">
-                              {skill.trim()}
+                              {skill}
                             </span>
                           ))}
                         </div>
