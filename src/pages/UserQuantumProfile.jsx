@@ -203,8 +203,11 @@ export default function UserQuantumProfile() {
         birthLocation: formData.birth_location || 'unknown'
       });
 
+      console.log('calculateNumerology response:', response.data);
+
       if (response.data?.success) {
         const calcData = response.data.data;
+        console.log('calcData planets:', calcData.planets);
 
         // Start with existing profile data to prevent overwriting
         const profileData = quantumProfile ? { ...quantumProfile } : {};
