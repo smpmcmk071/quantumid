@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw, Upload, Check, X } from 'lucide-react';
+import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshCw, Upload, Check, X, Receipt } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UserQuantumProfile() {
@@ -62,6 +62,28 @@ export default function UserQuantumProfile() {
   ]);
   const [newHobby, setNewHobby] = useState({ name: '', category: '', skill_level: '', since_year: '' });
   
+  // Tax Data
+  const [taxData, setTaxData] = useState([]);
+  const [newTaxYear, setNewTaxYear] = useState({
+    tax_year: new Date().getFullYear() - 1,
+    w2_wages: '',
+    income_1099_misc: '',
+    income_1099_nec: '',
+    income_1099_int: '',
+    income_1099_div: '',
+    total_income: '',
+    adjusted_gross_income: '',
+    deductions: '',
+    taxable_income: '',
+    total_tax: '',
+    federal_withheld: '',
+    refund_amount: '',
+    amount_owed: '',
+    filing_status: '',
+    num_dependents: '',
+    notes: ''
+  });
+  
   // Resume parsing
   const [parsing, setParsing] = useState(false);
   const [parsedJobs, setParsedJobs] = useState(null);
@@ -91,6 +113,7 @@ export default function UserQuantumProfile() {
         setJobs(qp.job_history || []);
         setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
+        setTaxData(qp.tax_data || []);
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -153,7 +176,8 @@ export default function UserQuantumProfile() {
           mood_preferences: calcData.astrology?.moodPreferences || {},
           job_history: jobs,
           family_data: { members: familyMembers },
-          hobbies: hobbies
+          hobbies: hobbies,
+          tax_data: taxData
         });
 
         if (quantumProfile) {
@@ -225,7 +249,8 @@ export default function UserQuantumProfile() {
         ...quantumProfile,
         job_history: jobs,
         family_data: { members: familyMembers },
-        hobbies: hobbies
+        hobbies: hobbies,
+        tax_data: taxData
       };
       const updated = await base44.entities.QuantumProfile.update(quantumProfile.id, updateData);
       setQuantumProfile(updated);
@@ -309,6 +334,38 @@ export default function UserQuantumProfile() {
     }
     setHobbies([...hobbies, { ...newHobby, since_year: parseInt(newHobby.since_year) || new Date().getFullYear() }]);
     setNewHobby({ name: '', category: '', skill_level: '', since_year: '' });
+  };
+  
+  const addTaxYear = () => {
+    if (!newTaxYear.tax_year) {
+      alert('Tax year is required');
+      return;
+    }
+    const taxYearData = {
+      ...newTaxYear,
+      tax_year: parseInt(newTaxYear.tax_year),
+      w2_wages: parseFloat(newTaxYear.w2_wages) || 0,
+      income_1099_misc: parseFloat(newTaxYear.income_1099_misc) || 0,
+      income_1099_nec: parseFloat(newTaxYear.income_1099_nec) || 0,
+      income_1099_int: parseFloat(newTaxYear.income_1099_int) || 0,
+      income_1099_div: parseFloat(newTaxYear.income_1099_div) || 0,
+      total_income: parseFloat(newTaxYear.total_income) || 0,
+      adjusted_gross_income: parseFloat(newTaxYear.adjusted_gross_income) || 0,
+      deductions: parseFloat(newTaxYear.deductions) || 0,
+      taxable_income: parseFloat(newTaxYear.taxable_income) || 0,
+      total_tax: parseFloat(newTaxYear.total_tax) || 0,
+      federal_withheld: parseFloat(newTaxYear.federal_withheld) || 0,
+      refund_amount: parseFloat(newTaxYear.refund_amount) || 0,
+      amount_owed: parseFloat(newTaxYear.amount_owed) || 0,
+      num_dependents: parseInt(newTaxYear.num_dependents) || 0
+    };
+    setTaxData([...taxData, taxYearData]);
+    setNewTaxYear({
+      tax_year: new Date().getFullYear() - 1,
+      w2_wages: '', income_1099_misc: '', income_1099_nec: '', income_1099_int: '', income_1099_div: '',
+      total_income: '', adjusted_gross_income: '', deductions: '', taxable_income: '', total_tax: '',
+      federal_withheld: '', refund_amount: '', amount_owed: '', filing_status: '', num_dependents: '', notes: ''
+    });
   };
   
   const downloadReport = () => {
@@ -523,7 +580,7 @@ export default function UserQuantumProfile() {
         <Card className="bg-slate-900/50 backdrop-blur-sm border-purple-500/30">
           <CardContent className="pt-6">
             <Tabs defaultValue="jobs" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-slate-800">
+              <TabsList className="grid w-full grid-cols-4 bg-slate-800">
                 <TabsTrigger value="jobs" className="data-[state=active]:bg-purple-600">
                   <Briefcase className="w-4 h-4 mr-2" />
                   Jobs
@@ -535,6 +592,10 @@ export default function UserQuantumProfile() {
                 <TabsTrigger value="hobbies" className="data-[state=active]:bg-purple-600">
                   <Heart className="w-4 h-4 mr-2" />
                   Hobbies
+                </TabsTrigger>
+                <TabsTrigger value="tax" className="data-[state=active]:bg-purple-600">
+                  <Receipt className="w-4 h-4 mr-2" />
+                  Tax Data
                 </TabsTrigger>
               </TabsList>
               
