@@ -629,12 +629,30 @@ export default function UserQuantumProfile() {
               </div>
               <div>
                 <label className="text-purple-300 text-sm">Country</label>
-                <Input
-                  value={formData.country}
-                  onChange={(e) => setFormData({...formData, country: e.target.value})}
-                  placeholder="e.g., USA, Canada"
-                  className="bg-slate-800 border-purple-500/30 text-white mt-2"
-                />
+                <Select value={formData.country} onValueChange={(value) => setFormData({...formData, country: value})}>
+                  <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white mt-2">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USA">United States</SelectItem>
+                    <SelectItem value="Canada">Canada</SelectItem>
+                    <SelectItem value="Mexico">Mexico</SelectItem>
+                    <SelectItem value="UK">United Kingdom</SelectItem>
+                    <SelectItem value="France">France</SelectItem>
+                    <SelectItem value="Germany">Germany</SelectItem>
+                    <SelectItem value="Italy">Italy</SelectItem>
+                    <SelectItem value="Japan">Japan</SelectItem>
+                    <SelectItem value="Australia">Australia</SelectItem>
+                    <SelectItem value="Brazil">Brazil</SelectItem>
+                    <SelectItem value="India">India</SelectItem>
+                    <SelectItem value="China">China</SelectItem>
+                    <SelectItem value="Spain">Spain</SelectItem>
+                    <SelectItem value="Netherlands">Netherlands</SelectItem>
+                    <SelectItem value="Switzerland">Switzerland</SelectItem>
+                    <SelectItem value="Sweden">Sweden</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex items-center gap-2 col-span-2">
                 <input
