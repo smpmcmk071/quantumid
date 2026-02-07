@@ -17,54 +17,32 @@ Deno.serve(async (req) => {
 
         // Use AI to extract structured data from resume
         const response = await base44.integrations.Core.InvokeLLM({
-          prompt: `You are parsing a professional resume. Extract information EXACTLY as presented in the document.
+          prompt: `You are an advanced resume parser. Extract and normalize the following resume into a rich structured format.
 
-        Here is the resume text:
-
+        RESUME TEXT:
         ${resume_text}
 
-        EXTRACT THESE FIELDS:
-          - full_name: The person's actual name from the top of the resume
-          - email: Email address
-          - phone: Phone number if present
-          - education: Array of education entries with degree, school, year
-          - years_experience: Total years (extract from summary or calculate from dates)
-          - skills: Array of all skills mentioned (technical and soft skills)
-          - job_history: Array of all jobs with ACCURATE details:
-          * position: The exact job title
-          * employer: The exact company/organization name
-          * start_date: Extract date AS WRITTEN in the resume (e.g., "06/2020", "2005", "January 2020", "Present")
-          * end_date: Extract date AS WRITTEN in the resume (e.g., "09/2025", "Present", "Current")
-          * responsibilities: ALL bullet points/descriptions for this job as one string, preserving the original text
-          * skills: Array of specific skills used in this role
+        PARSING INSTRUCTIONS:
+        1. Personal Info: Extract name, email, phone, LinkedIn URL, location if present
+        2. Professional Summary: Create a 2-3 sentence summary of their experience, expertise, and key strengths based on the entire resume
+        3. Experience: For each job:
+        - Extract company, title, start/end dates (keep original format like "2024-02", "2005", "Present")
+        - Calculate approximate duration in years
+        - Determine if role is current (end_date is "Present" or similar)
+        - Extract highlights/accomplishments as bullet points (preserve action verbs)
+        - List technologies/tools mentioned for that role
+        4. Education: Extract degree, major, school, graduation year
+        5. Skills: Categorize into leadership, technology, analytics, tools, and other
+        6. Metadata: Calculate total years of experience, identify strongest keywords/domains
 
-          CRITICAL RULES:
-          1. For dates: Use the EXACT format from the resume - do NOT convert or reformat
-          2. For "Present" or current roles: Use "Present" as the end_date
-          3. For responsibilities: Include ALL bullet points exactly as written in the resume
-          4. For job_history: Return one entry per job, in chronological order (most recent first)
-          5. Do NOT combine or summarize responsibilities - preserve the original text
-          6. Keep dates as they appear - no conversion needed
+        CRITICAL RULES:
+        - Keep dates in their original format from the resume (don't convert to standard format)
+        - Preserve all accomplishments and responsibilities
+        - Extract ALL technologies, tools, and skills mentioned
+        - Create professional summary from the overall resume context
+        - For current roles use "Present" or null for end_date
 
-          Return format:
-          {
-            "full_name": "string",
-            "email": "string",
-            "phone": "string",
-            "education": [{"degree": "string", "school": "string", "year": "string"}],
-            "years_experience": number,
-            "skills": ["skill1", "skill2"],
-            "job_history": [
-              {
-                "position": "string",
-                "employer": "string",
-                "start_date": "string (as written in resume)",
-                "end_date": "string (as written in resume)",
-                "responsibilities": "string with all bullet points",
-                "skills": ["skill1", "skill2"]
-              }
-            ]
-          }`,
+        Return this exact JSON structure:`,
       response_json_schema: {
         type: 'object',
         properties: {
