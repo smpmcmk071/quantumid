@@ -109,17 +109,32 @@ Deno.serve(async (req) => {
 
         // Process and structure the extracted data
         if (!response) {
-        return Response.json({ success: false, error: 'No response from LLM' }, { status: 500 });
+          return Response.json({ success: false, error: 'No response from LLM' }, { status: 500 });
         }
-    const extractedData = {
-      full_name: response.full_name || null,
-      email: response.email || null,
-      phone: response.phone || null,
-      years_experience: response.years_experience || 0,
-      skills: response.skills || [],
-      education: response.education || [],
-      job_history: response.job_history || []
-    };
+
+        // Transform the LLM response into our job_history format for compatibility
+        const job_history = (response.experience || []).map(exp => ({
+          employer: exp.company || '',
+          position: exp.title || '',
+          start_date: exp.start_date || '',
+          end_date: exp.end_date || '',
+          responsibilities: (exp.highlights || []).join('\n• '),
+          skills: exp.technologies || []
+        }));
+
+        const extractedData = {
+          full_name: response.personal_info?.full_name || null,
+          email: response.personal_info?.email || null,
+          phone: response.personal_info?.phone || null,
+          linkedin: response.personal_info?.linkedin || null,
+          location: response.personal_info?.location || null,
+          professional_summary: response.professional_summary || '',
+          years_experience: parseInt(response.metadata?.total_experience_years) || 0,
+          skills: response.metadata?.strongest_keywords || [],
+          education: response.education || [],
+          job_history: job_history,
+          raw_parsed: response
+        };
 
     return Response.json({
       success: true,
