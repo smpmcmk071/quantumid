@@ -212,8 +212,9 @@ export default function Marketing() {
 
       {/* Footer */}
       <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-purple-500/20 py-8 mt-20">
-        <div className="max-w-7xl mx-auto px-6 text-center text-purple-200">
+        <div className="max-w-7xl mx-auto px-6 text-center text-purple-200 space-y-2">
           <p>© {new Date().getFullYear()} QuantumID - Self-Sovereign Identity Powered by Numerology & Astrology</p>
+          <p className="text-sm text-purple-300">All rights reserved © 7day11.com and Threshold7 Analytics</p>
         </div>
       </footer>
     </div>
