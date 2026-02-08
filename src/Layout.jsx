@@ -147,10 +147,11 @@ export default function Layout({ children, currentPageName }) {
       {/* Footer */}
       {currentPageName !== 'Marketing' && (
         <footer className="bg-slate-900/90 backdrop-blur-sm border-t border-slate-700 py-6 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+        <div className="max-w-7xl mx-auto px-4 text-center space-y-1">
           <p className="text-gray-400 text-sm">
             © {new Date().getFullYear()} QuantumID - Self-Sovereign Identity Powered by Numerology & Astrology
           </p>
+          <p className="text-gray-500 text-xs">All rights reserved © 7day11.com and Threshold7 Analytics</p>
         </div>
         </footer>
       )}
