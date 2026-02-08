@@ -1208,6 +1208,10 @@ export default function UserQuantumProfile() {
               
               {/* Family Tab */}
               <TabsContent value="family" className="space-y-4">
+                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-green-400" />
+                  <span className="text-green-300 text-sm font-semibold">SSN/National IDs are encrypted (AES-256-GCM)</span>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     placeholder="Name"
@@ -1437,6 +1441,10 @@ export default function UserQuantumProfile() {
               
               {/* Alternative Documents Tab */}
               <TabsContent value="documents" className="space-y-4">
+                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-green-400" />
+                  <span className="text-green-300 text-sm font-semibold">Document IDs are encrypted (AES-256-GCM)</span>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Select value={newDocument.document_type} onValueChange={(value) => setNewDocument({...newDocument, document_type: value})}>
                     <SelectTrigger className="bg-slate-800 border-purple-500/30 text-white">
@@ -1583,6 +1591,10 @@ export default function UserQuantumProfile() {
 
               {/* Tax Data Tab */}
               <TabsContent value="tax" className="space-y-4">
+                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-green-400" />
+                  <span className="text-green-300 text-sm font-semibold">All monetary values are encrypted (AES-256-GCM)</span>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     type="number"
