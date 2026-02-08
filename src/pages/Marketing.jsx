@@ -144,8 +144,8 @@ export default function Marketing() {
             </Link>
           </div>
           <img 
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=600&fit=crop" 
-            alt="Data Export Visualization" 
+            src="https://images.unsplash.com/photo-1526374965328-7f5ae4e8a0c9?w=500&h=600&fit=crop" 
+            alt="Data Export" 
             className="rounded-xl border border-purple-500/30"
           />
         </div>
