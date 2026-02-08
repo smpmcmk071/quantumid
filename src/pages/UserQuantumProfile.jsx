@@ -91,6 +91,7 @@ export default function UserQuantumProfile() {
 
   // Tax Data
   const [taxData, setTaxData] = useState([]);
+  const [decryptedTaxData, setDecryptedTaxData] = useState([]);
   const [newTaxYear, setNewTaxYear] = useState({
     tax_year: new Date().getFullYear() - 1,
     w2_wages: '',
@@ -179,6 +180,19 @@ export default function UserQuantumProfile() {
         setImportantDates(Array.isArray(qp.important_dates) ? qp.important_dates : []);
         setAlternativeDocuments(qp.alternative_documents || []);
         setTaxData(qp.tax_data || []);
+
+        // Decrypt tax data for display
+        if (qp.tax_data && qp.tax_data.length > 0) {
+          try {
+            const response = await base44.functions.invoke('decryptTaxData', { taxData: qp.tax_data });
+            if (response.data?.success) {
+              setDecryptedTaxData(response.data.decryptedTaxData);
+            }
+          } catch (error) {
+            console.error('Error decrypting tax data:', error);
+            setDecryptedTaxData([]);
+          }
+        }
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -456,7 +470,7 @@ export default function UserQuantumProfile() {
     setAlternativeDocuments(newDocs);
   };
   
-  const addTaxYear = () => {
+  const addTaxYear = async () => {
     if (!newTaxYear.tax_year) {
       alert('Tax year is required');
       return;
@@ -479,7 +493,18 @@ export default function UserQuantumProfile() {
       amount_owed: parseFloat(newTaxYear.amount_owed) || 0,
       num_dependents: parseInt(newTaxYear.num_dependents) || 0
     };
-    setTaxData([...taxData, taxYearData]);
+    
+    // Encrypt the new tax year data before adding to state
+    try {
+      const response = await base44.functions.invoke('encryptTaxData', { taxData: [taxYearData] });
+      if (response.data?.success) {
+        setTaxData([...taxData, response.data.encryptedTaxData[0]]);
+      }
+    } catch (error) {
+      alert('Error encrypting tax data: ' + error.message);
+      return;
+    }
+    
     setNewTaxYear({
       tax_year: new Date().getFullYear() - 1,
       w2_wages: '', income_1099_misc: '', income_1099_nec: '', income_1099_int: '', income_1099_div: '',
@@ -488,7 +513,7 @@ export default function UserQuantumProfile() {
     });
   };
   
-  const downloadReport = () => {
+  const downloadReport = async () => {
     if (!quantumProfile) return;
 
     const report = {};
@@ -525,7 +550,15 @@ export default function UserQuantumProfile() {
     }
 
     if (exportSelections.taxData && taxData.length > 0) {
-      report.taxData = taxData;
+      // Decrypt tax data for export
+      try {
+        const response = await base44.functions.invoke('decryptTaxData', { taxData });
+        if (response.data?.success) {
+          report.taxData = response.data.decryptedTaxData;
+        }
+      } catch (error) {
+        console.error('Error decrypting tax data for export:', error);
+      }
     }
 
     if (alternativeDocuments.length > 0) {
@@ -1573,12 +1606,15 @@ export default function UserQuantumProfile() {
                 </Button>
                 
                 <div className="space-y-2 mt-4">
-                  {taxData.sort((a, b) => b.tax_year - a.tax_year).map((tax, idx) => (
+                  {decryptedTaxData.sort((a, b) => b.tax_year - a.tax_year).map((tax, idx) => (
                     <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="text-white font-semibold text-lg">Tax Year {tax.tax_year}</h4>
                         <button
-                          onClick={() => setTaxData(taxData.filter((_, i) => i !== idx))}
+                          onClick={() => {
+                            setTaxData(taxData.filter((_, i) => i !== idx));
+                            setDecryptedTaxData(decryptedTaxData.filter((_, i) => i !== idx));
+                          }}
                           className="text-red-400 hover:text-red-300"
                         >
                           <X className="w-5 h-5" />
