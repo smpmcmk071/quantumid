@@ -8,23 +8,67 @@ import { Loader2, Shield, Briefcase, Users, Heart, Download, Key, Lock, RefreshC
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-async function hashSSN(ssn) {
-  if (!ssn) return '';
+async function encryptField(value, key) {
+  if (!value) return '';
+  
   const encoder = new TextEncoder();
-  const data = encoder.encode(ssn.replace(/[^0-9]/g, ''));
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  const data = encoder.encode(String(value));
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(key.padEnd(32, '0').substring(0, 32)),
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt']
+  );
+  
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    cryptoKey,
+    data
+  );
+  
+  const combined = new Uint8Array(iv.length + encrypted.byteLength);
+  combined.set(iv);
+  combined.set(new Uint8Array(encrypted), iv.length);
+  
+  return btoa(String.fromCharCode(...combined));
 }
 
-async function hashDocumentID(idNumber) {
-  if (!idNumber) return '';
-  const encoder = new TextEncoder();
-  const data = encoder.encode(idNumber);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+async function decryptField(encryptedValue, key) {
+  if (!encryptedValue || encryptedValue === '') return '';
+  
+  try {
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    
+    const combined = Uint8Array.from(atob(encryptedValue), c => c.charCodeAt(0));
+    const iv = combined.slice(0, 12);
+    const encrypted = combined.slice(12);
+    
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(key.padEnd(32, '0').substring(0, 32)),
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+    
+    const decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      cryptoKey,
+      encrypted
+    );
+    
+    return decoder.decode(decrypted);
+  } catch (error) {
+    console.error('Decryption error:', error);
+    return '';
+  }
 }
+
+const ENCRYPTION_KEY = 'quantum-profile-encryption-key-2026';
 
 export default function UserQuantumProfile() {
   const [loading, setLoading] = useState(true);
@@ -138,12 +182,28 @@ export default function UserQuantumProfile() {
 
     const saveSupplementaryData = async () => {
       try {
+        // Encrypt family member SSNs before saving
+        const encryptedFamilyMembers = await Promise.all(
+          familyMembers.map(async (member) => ({
+            ...member,
+            ssn: member.ssn ? await encryptField(member.ssn, ENCRYPTION_KEY) : ''
+          }))
+        );
+
+        // Encrypt alternative document IDs before saving
+        const encryptedDocs = await Promise.all(
+          alternativeDocuments.map(async (doc) => ({
+            ...doc,
+            id_number: doc.id_number ? await encryptField(doc.id_number, ENCRYPTION_KEY) : ''
+          }))
+        );
+
         await base44.entities.QuantumProfile.update(quantumProfile.id, {
           job_history: jobs,
-          family_data: { members: familyMembers },
+          family_data: { members: encryptedFamilyMembers },
           hobbies: hobbies,
           important_dates: importantDates,
-          alternative_documents: alternativeDocuments,
+          alternative_documents: encryptedDocs,
           tax_data: taxData
         });
       } catch (error) {
@@ -175,10 +235,8 @@ export default function UserQuantumProfile() {
           is_foreign_national: qp.is_foreign_national || false
         });
         setJobs(qp.job_history || []);
-        setFamilyMembers(qp.family_data?.members || []);
         setHobbies(qp.hobbies || []);
         setImportantDates(Array.isArray(qp.important_dates) ? qp.important_dates : []);
-        setAlternativeDocuments(qp.alternative_documents || []);
         setTaxData(qp.tax_data || []);
 
         // Decrypt tax data for display
@@ -192,6 +250,32 @@ export default function UserQuantumProfile() {
             console.error('Error decrypting tax data:', error);
             setDecryptedTaxData([]);
           }
+        }
+
+        // Decrypt family member SSNs
+        if (qp.family_data?.members) {
+          const decryptedMembers = await Promise.all(
+            qp.family_data.members.map(async (member) => ({
+              ...member,
+              ssn: member.ssn ? await decryptField(member.ssn, ENCRYPTION_KEY) : ''
+            }))
+          );
+          setFamilyMembers(decryptedMembers);
+        } else {
+          setFamilyMembers([]);
+        }
+
+        // Decrypt alternative document IDs
+        if (qp.alternative_documents) {
+          const decryptedDocs = await Promise.all(
+            qp.alternative_documents.map(async (doc) => ({
+              ...doc,
+              id_number: doc.id_number ? await decryptField(doc.id_number, ENCRYPTION_KEY) : ''
+            }))
+          );
+          setAlternativeDocuments(decryptedDocs);
+        } else {
+          setAlternativeDocuments([]);
         }
       }
     } catch (error) {
@@ -345,12 +429,29 @@ export default function UserQuantumProfile() {
         setQuantumProfile(profileToUpdate);
       }
 
+      // Encrypt family member SSNs before saving
+      const encryptedFamilyMembers = await Promise.all(
+        familyMembers.map(async (member) => ({
+          ...member,
+          ssn: member.ssn ? await encryptField(member.ssn, ENCRYPTION_KEY) : ''
+        }))
+      );
+
+      // Encrypt alternative document IDs before saving
+      const encryptedDocs = await Promise.all(
+        alternativeDocuments.map(async (doc) => ({
+          ...doc,
+          id_number: doc.id_number ? await encryptField(doc.id_number, ENCRYPTION_KEY) : ''
+        }))
+      );
+
       // Update with supplementary data
       const updateData = {
         job_history: jobs,
-        family_data: { members: familyMembers },
+        family_data: { members: encryptedFamilyMembers },
         hobbies: hobbies,
         important_dates: importantDates,
+        alternative_documents: encryptedDocs,
         tax_data: taxData
       };
       const updated = await base44.entities.QuantumProfile.update(profileToUpdate.id, updateData);
@@ -412,9 +513,9 @@ export default function UserQuantumProfile() {
       alert('Name and relationship are required');
       return;
     }
-    const hashedSsn = newMember.ssn ? await hashSSN(newMember.ssn) : '';
-    const memberWithHashedSsn = { ...newMember, ssn: hashedSsn };
-    setFamilyMembers([...familyMembers, memberWithHashedSsn]);
+    const encryptedSsn = newMember.ssn ? await encryptField(newMember.ssn, ENCRYPTION_KEY) : '';
+    const memberWithEncryptedSsn = { ...newMember, ssn: encryptedSsn };
+    setFamilyMembers([...familyMembers, memberWithEncryptedSsn]);
     setNewMember({ name: '', relationship: '', birth_date: '', ssn: '', country: '', is_foreign_national: false });
   };
   
@@ -441,9 +542,9 @@ export default function UserQuantumProfile() {
       alert('Document type and ID number are required');
       return;
     }
-    const hashedIdNumber = await hashDocumentID(newDocument.id_number);
-    const docWithHashedId = { ...newDocument, id_number: hashedIdNumber };
-    setAlternativeDocuments([...alternativeDocuments, docWithHashedId]);
+    const encryptedIdNumber = await encryptField(newDocument.id_number, ENCRYPTION_KEY);
+    const docWithEncryptedId = { ...newDocument, id_number: encryptedIdNumber };
+    setAlternativeDocuments([...alternativeDocuments, docWithEncryptedId]);
     setNewDocument({ document_type: '', id_number: '', issuing_country: '', expiry_date: '', image_urls: [] });
   };
 
@@ -1183,7 +1284,7 @@ export default function UserQuantumProfile() {
                             {member.country || 'No country'} {member.is_foreign_national && '• Foreign National'}
                           </p>
                           {member.ssn && (
-                            <p className="text-purple-400 text-xs mt-1 font-mono">SSN: {member.ssn.substring(0, 16)}...</p>
+                            <p className="text-purple-400 text-xs mt-1 font-mono">SSN: ••••••{member.ssn.slice(-4)}</p>
                           )}
                         </div>
                         <button
@@ -1438,7 +1539,7 @@ export default function UserQuantumProfile() {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <h4 className="text-white font-semibold">{doc.document_type}</h4>
-                          <p className="text-purple-400 text-sm font-mono">Hash: {doc.id_number.substring(0, 16)}...</p>
+                          <p className="text-purple-400 text-sm font-mono">ID: {doc.id_number ? '••••••' + doc.id_number.slice(-4) : 'N/A'}</p>
                           <p className="text-purple-300 text-sm">{doc.issuing_country} • Expires: {doc.expiry_date || 'No expiry'}</p>
 
                           {doc.image_urls && doc.image_urls.length > 0 && (
