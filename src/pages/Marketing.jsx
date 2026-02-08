@@ -117,6 +117,10 @@ export default function Marketing() {
                 Export QuantumID & Security Hashes
               </li>
               <li className="flex items-center gap-3">
+                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                <strong>AES-256-GCM Encrypted:</strong> SSNs, tax data, and document IDs are encrypted at rest
+              </li>
+              <li className="flex items-center gap-3">
                 <span className="w-2 h-2 bg-cyan-400 rounded-full"></span>
                 Include Job History & Experience
               </li>
