@@ -48,15 +48,15 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import About from './pages/About';
-import UserQuantumProfile from './pages/UserQuantumProfile';
 import Marketing from './pages/Marketing';
+import UserQuantumProfile from './pages/UserQuantumProfile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
-    "UserQuantumProfile": UserQuantumProfile,
     "Marketing": Marketing,
+    "UserQuantumProfile": UserQuantumProfile,
 }
 
 export const pagesConfig = {

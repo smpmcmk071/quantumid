@@ -82,7 +82,7 @@ export default function UserQuantumProfile() {
 
   // Important Dates
   const [importantDates, setImportantDates] = useState([]);
-  const [newDate, setNewDate] = useState({ name: '', date: '' });
+  const [newDate, setNewDate] = useState({ name: '', date: '', note: '' });
 
   // Alternative Documents
   const [alternativeDocuments, setAlternativeDocuments] = useState([]);
@@ -419,7 +419,7 @@ export default function UserQuantumProfile() {
       return;
     }
     setImportantDates([...importantDates, newDate]);
-    setNewDate({ name: '', date: '' });
+    setNewDate({ name: '', date: '', note: '' });
   };
 
   const addAlternativeDocument = async () => {
@@ -1268,6 +1268,12 @@ export default function UserQuantumProfile() {
                     className="bg-slate-800 border-purple-500/30 text-white"
                   />
                 </div>
+                <Input
+                  placeholder="Add a note (e.g., 'University of Colorado - Computer Science')"
+                  value={newDate.note}
+                  onChange={(e) => setNewDate({...newDate, note: e.target.value})}
+                  className="bg-slate-800 border-purple-500/30 text-white"
+                />
                 <Button onClick={addImportantDate} className="bg-purple-600 hover:bg-purple-700">
                   Add Important Date
                 </Button>
@@ -1276,9 +1282,12 @@ export default function UserQuantumProfile() {
                   {importantDates.map((item, idx) => (
                     <div key={idx} className="bg-slate-800 p-4 rounded-lg border border-purple-500/20">
                       <div className="flex justify-between items-start">
-                        <div>
+                        <div className="flex-1">
                           <h4 className="text-white font-semibold">{item.name}</h4>
                           <p className="text-purple-300 text-sm">{item.date}</p>
+                          {item.note && (
+                            <p className="text-purple-200 text-sm mt-1">{item.note}</p>
+                          )}
                         </div>
                         <button
                           onClick={() => setImportantDates(importantDates.filter((_, i) => i !== idx))}
