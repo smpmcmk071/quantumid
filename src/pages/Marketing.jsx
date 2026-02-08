@@ -157,8 +157,8 @@ export default function Marketing() {
         
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <img 
-            src="https://images.unsplash.com/photo-1516321318423-f06f70550b60?w=500&h=400&fit=crop" 
-            alt="Security" 
+            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=500&h=400&fit=crop" 
+            alt="Enterprise Security" 
             className="rounded-xl border border-purple-500/30"
           />
           <div>
