@@ -1,0 +1,31 @@
+{
+  "name": "MusicArtist",
+  "type": "object",
+  "properties": {
+    "musicbrainz_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "genres": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "numerology_value": {
+      "type": "integer"
+    },
+    "astrological_profile": {
+      "type": "object",
+      "description": "Rich MusicBrainz data"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

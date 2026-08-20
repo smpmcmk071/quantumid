@@ -1,0 +1,148 @@
+{
+  "name": "MusicTrack",
+  "type": "object",
+  "properties": {
+    "musicbrainz_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "artist_name": {
+      "type": "string"
+    },
+    "album_name": {
+      "type": "string"
+    },
+    "release_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "release_year": {
+      "type": "integer"
+    },
+    "key": {
+      "type": "integer",
+      "description": "0-11 (C to B)"
+    },
+    "mode": {
+      "type": "integer",
+      "description": "0=minor, 1=major"
+    },
+    "tempo": {
+      "type": "number"
+    },
+    "time_signature": {
+      "type": "integer"
+    },
+    "danceability": {
+      "type": "number"
+    },
+    "energy": {
+      "type": "number"
+    },
+    "valence": {
+      "type": "number"
+    },
+    "acousticness": {
+      "type": "number"
+    },
+    "instrumentalness": {
+      "type": "number"
+    },
+    "liveness": {
+      "type": "number"
+    },
+    "speechiness": {
+      "type": "number"
+    },
+    "loudness": {
+      "type": "number"
+    },
+    "duration_ms": {
+      "type": "integer"
+    },
+    "popularity": {
+      "type": "integer"
+    },
+    "explicit": {
+      "type": "boolean"
+    },
+    "numerology_artist": {
+      "type": "integer"
+    },
+    "numerology_album": {
+      "type": "integer"
+    },
+    "numerology_track": {
+      "type": "integer"
+    },
+    "numerology_release_date": {
+      "type": "integer"
+    },
+    "numerology_release_year": {
+      "type": "integer"
+    },
+    "master_number": {
+      "type": "integer"
+    },
+    "is_master_number": {
+      "type": "boolean"
+    },
+    "astrology_zodiac_affinity": {
+      "type": "string"
+    },
+    "astrology_planetary_influence": {
+      "type": "string"
+    },
+    "astrology_house_placement": {
+      "type": "integer"
+    },
+    "album_art_url": {
+      "type": "string"
+    },
+    "preview_url": {
+      "type": "string"
+    },
+    "lastfm_playcount": {
+      "type": "integer"
+    },
+    "lastfm_listeners": {
+      "type": "integer"
+    },
+    "lastfm_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lastfm_mood_scores": {
+      "type": "object"
+    },
+    "track_url": {
+      "type": "string"
+    },
+    "artist_url": {
+      "type": "string"
+    },
+    "artist_mbid": {
+      "type": "string"
+    },
+    "lastfm_track_wiki_summary": {
+      "type": "string"
+    },
+    "lastfm_artist_bio_summary": {
+      "type": "string"
+    },
+    "similar_tracks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "artist_name"
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "name": "UserMusicProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Links to the Base44 built-in User entity"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "User's birth date for calculations"
+    },
+    "birth_time": {
+      "type": "string",
+      "description": "User's birth time (e.g., '14:30' or 'morning')"
+    },
+    "birth_location": {
+      "type": "string",
+      "description": "User's birth location"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name for numerology"
+    },
+    "sun_sign": {
+      "type": "string"
+    },
+    "moon_sign": {
+      "type": "string"
+    },
+    "rising_sign": {
+      "type": "string"
+    },
+    "houses": {
+      "type": "object",
+      "description": "All 12 houses data"
+    },
+    "planets": {
+      "type": "object",
+      "description": "Planetary positions"
+    },
+    "aspects": {
+      "type": "object",
+      "description": "Planetary aspects"
+    },
+    "element": {
+      "type": "string"
+    },
+    "dominant_element": {
+      "type": "string"
+    },
+    "chinese_zodiac": {
+      "type": "string"
+    },
+    "chinese_animal": {
+      "type": "string"
+    },
+    "chinese_element": {
+      "type": "string"
+    },
+    "life_path_number": {
+      "type": "integer"
+    },
+    "expression_number": {
+      "type": "integer"
+    },
+    "soul_urge_number": {
+      "type": "integer"
+    },
+    "personality_number": {
+      "type": "integer"
+    },
+    "birthday_number": {
+      "type": "integer"
+    },
+    "master_numbers": {
+      "type": "string",
+      "description": "Comma-separated master numbers"
+    },
+    "karmic_debt": {
+      "type": "string"
+    },
+    "karmic_lessons": {
+      "type": "string"
+    },
+    "dominant_polarity": {
+      "type": "string",
+      "enum": [
+        "masculine",
+        "feminine",
+        "neutral"
+      ]
+    },
+    "preferred_keys": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "preferred_tempos": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "mood_preferences": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "user_id",
+    "birth_date",
+    "full_name"
+  ]
+}

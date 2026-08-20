@@ -1,0 +1,376 @@
+{
+  "name": "QuantumProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Links to User entity"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "User's birth date for calculations"
+    },
+    "birth_time": {
+      "type": "string",
+      "description": "User's birth time (e.g., '14:30' or 'morning')"
+    },
+    "birth_location": {
+      "type": "string",
+      "description": "User's birth location"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name for numerology"
+    },
+    "ssn": {
+      "type": "string",
+      "description": "Social Security Number (U.S.) or national ID"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country of citizenship"
+    },
+    "is_foreign_national": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the person is a foreign national"
+    },
+    "alternative_documents": {
+      "type": "array",
+      "description": "Alternative identity documents",
+      "items": {
+        "type": "object",
+        "properties": {
+          "document_type": {
+            "type": "string",
+            "description": "Type of document (e.g., Driver's License, Passport, National ID Card)"
+          },
+          "id_number": {
+            "type": "string",
+            "description": "Document ID number"
+          },
+          "issuing_country": {
+            "type": "string",
+            "description": "Country that issued the document"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Document expiry date"
+          },
+          "image_urls": {
+            "type": "array",
+            "description": "URLs of document images (front, back, etc.)",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sun_sign": {
+      "type": "string"
+    },
+    "moon_sign": {
+      "type": "string"
+    },
+    "rising_sign": {
+      "type": "string"
+    },
+    "houses": {
+      "type": "object",
+      "description": "All 12 houses data"
+    },
+    "planets": {
+      "type": "object",
+      "description": "Planetary positions"
+    },
+    "aspects": {
+      "type": "object",
+      "description": "Planetary aspects"
+    },
+    "element": {
+      "type": "string"
+    },
+    "dominant_element": {
+      "type": "string"
+    },
+    "chinese_zodiac": {
+      "type": "string"
+    },
+    "chinese_animal": {
+      "type": "string"
+    },
+    "chinese_element": {
+      "type": "string"
+    },
+    "life_path_number": {
+      "type": "integer"
+    },
+    "expression_number": {
+      "type": "integer"
+    },
+    "soul_urge_number": {
+      "type": "integer"
+    },
+    "personality_number": {
+      "type": "integer"
+    },
+    "birthday_number": {
+      "type": "integer"
+    },
+    "master_numbers": {
+      "type": "string",
+      "description": "Comma-separated master numbers"
+    },
+    "karmic_debt": {
+      "type": "string"
+    },
+    "karmic_lessons": {
+      "type": "string"
+    },
+    "dominant_polarity": {
+      "type": "string",
+      "enum": [
+        "masculine",
+        "feminine",
+        "neutral"
+      ]
+    },
+    "preferred_keys": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "preferred_tempos": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "mood_preferences": {
+      "type": "object"
+    },
+    "quantum_id": {
+      "type": "string",
+      "description": "SHA-256 hash-based unique identifier"
+    },
+    "quantum_seed": {
+      "type": "string",
+      "description": "Encrypted seed components for recovery"
+    },
+    "planetary_codes": {
+      "type": "object",
+      "description": "Planet positions as short codes (Su-SC15, Mo-LI22, etc.)"
+    },
+    "protection_hash": {
+      "type": "string",
+      "description": "Auto-generated random hash for additional security"
+    },
+    "short_code_report": {
+      "type": "string",
+      "description": "Compressed offline recovery codes"
+    },
+    "job_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "employer": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "responsibilities": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "family_data": {
+      "type": "object",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string"
+              },
+              "birth_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "ssn": {
+                "type": "string",
+                "description": "Social Security Number or national ID"
+              },
+              "country": {
+                "type": "string",
+                "description": "Country of citizenship"
+              },
+              "is_foreign_national": {
+                "type": "boolean",
+                "description": "Whether the person is a foreign national"
+              }
+            }
+          }
+        }
+      }
+    },
+    "hobbies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "skill_level": {
+            "type": "string"
+          },
+          "since_year": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "important_dates": {
+      "type": "array",
+      "description": "Important dates for numerology analysis",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Event name (e.g., Graduation, Wedding)"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the event"
+          },
+          "note": {
+            "type": "string",
+            "description": "Additional details or context about the event"
+          }
+        }
+      }
+    },
+    "tax_data": {
+      "type": "array",
+      "description": "Multi-year tax summary data (encrypted)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tax_year": {
+            "type": "integer",
+            "description": "Tax year (e.g., 2024)"
+          },
+          "w2_wages": {
+            "type": "string",
+            "description": "Total W-2 wages (encrypted)"
+          },
+          "income_1099_misc": {
+            "type": "string",
+            "description": "1099-MISC income (encrypted)"
+          },
+          "income_1099_nec": {
+            "type": "string",
+            "description": "1099-NEC income (encrypted)"
+          },
+          "income_1099_int": {
+            "type": "string",
+            "description": "1099-INT interest income (encrypted)"
+          },
+          "income_1099_div": {
+            "type": "string",
+            "description": "1099-DIV dividend income (encrypted)"
+          },
+          "total_income": {
+            "type": "string",
+            "description": "Form 1040 Line 9 - Total Income (encrypted)"
+          },
+          "adjusted_gross_income": {
+            "type": "string",
+            "description": "Form 1040 Line 11 - AGI (encrypted)"
+          },
+          "deductions": {
+            "type": "string",
+            "description": "Form 1040 Line 12 - Standard or Itemized Deductions (encrypted)"
+          },
+          "taxable_income": {
+            "type": "string",
+            "description": "Form 1040 Line 15 - Taxable Income (encrypted)"
+          },
+          "total_tax": {
+            "type": "string",
+            "description": "Form 1040 Line 24 - Total Tax (encrypted)"
+          },
+          "federal_withheld": {
+            "type": "string",
+            "description": "Federal income tax withheld (encrypted)"
+          },
+          "refund_amount": {
+            "type": "string",
+            "description": "Refund amount (encrypted)"
+          },
+          "amount_owed": {
+            "type": "string",
+            "description": "Amount owed (encrypted)"
+          },
+          "filing_status": {
+            "type": "string",
+            "description": "Single, Married Filing Jointly, etc."
+          },
+          "num_dependents": {
+            "type": "integer",
+            "description": "Number of dependents claimed"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes or reminders"
+          }
+        }
+      }
+    },
+    "blockchain_ready": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag for future blockchain export"
+    },
+    "export_data": {
+      "type": "object",
+      "description": "Prepared data structure for blockchain export"
+    }
+  },
+  "required": [
+    "user_id",
+    "birth_date",
+    "full_name"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "archetype_primary_test": {
+      "type": "string",
+      "enum": [
+        "visionary",
+        "strategist",
+        "creator",
+        "harmonizer"
+      ],
+      "description": "Primary archetype from self-assessment test"
+    },
+    "archetype_secondary_test": {
+      "type": "string",
+      "enum": [
+        "visionary",
+        "strategist",
+        "creator",
+        "harmonizer"
+      ],
+      "description": "Secondary archetype from test"
+    },
+    "archetype_primary_calculated": {
+      "type": "string",
+      "enum": [
+        "visionary",
+        "strategist",
+        "creator",
+        "harmonizer"
+      ],
+      "description": "Primary archetype from numerology"
+    },
+    "archetype_secondary_calculated": {
+      "type": "string",
+      "enum": [
+        "visionary",
+        "strategist",
+        "creator",
+        "harmonizer"
+      ],
+      "description": "Secondary archetype from numerology"
+    },
+    "archetype_test_scores": {
+      "type": "string",
+      "description": "JSON of test archetype scores"
+    },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Birth date for numerology calculations"
+    },
+    "life_path_western": {
+      "type": "integer",
+      "description": "Life Path number"
+    },
+    "expression_western": {
+      "type": "integer",
+      "description": "Expression number"
+    },
+    "master_numbers": {
+      "type": "string",
+      "description": "Master numbers found"
+    }
+  },
+  "required": [
+    "archetype_primary_test",
+    "archetype_secondary_test",
+    "archetype_primary_calculated",
+    "archetype_secondary_calculated",
+    "archetype_test_scores",
+    "birth_date",
+    "life_path_western",
+    "expression_western",
+    "master_numbers"
+  ]
+}

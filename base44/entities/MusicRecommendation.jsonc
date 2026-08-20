@@ -1,0 +1,41 @@
+{
+  "name": "MusicRecommendation",
+  "type": "object",
+  "properties": {
+    "user_music_profile_id": {
+      "type": "string"
+    },
+    "music_track_id": {
+      "type": "string"
+    },
+    "match_score": {
+      "type": "number"
+    },
+    "match_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "match_zodiac": {
+      "type": "string"
+    },
+    "match_planet_influence": {
+      "type": "string"
+    },
+    "match_house_position": {
+      "type": "integer"
+    },
+    "user_rating": {
+      "type": "integer"
+    },
+    "user_feedback": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_music_profile_id",
+    "music_track_id",
+    "match_score"
+  ]
+}
